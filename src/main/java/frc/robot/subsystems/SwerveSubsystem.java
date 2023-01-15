@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -32,6 +33,7 @@ public class SwerveSubsystem extends SubsystemBase{
     
     private ArrayList<SwerveModuleState> moduleStates = new ArrayList<>();
     private ArrayList<SwerveModule> swerveModules = new ArrayList<>();
+
 
     private final SwerveModule frontLeft = new SwerveModule(
         WheelPosition.FRONT_LEFT,
@@ -81,10 +83,25 @@ public class SwerveSubsystem extends SubsystemBase{
         IdleMode.kCoast,
         IdleMode.kCoast);
 
+      private final SwerveModulePosition[] modulePositions = new SwerveModulePosition[]{
+            frontLeft.getPosition(),
+            frontRight.getPosition(),
+            backLeft.getPosition(),
+            backRight.getPosition() };
+
     //idk if this is the gyro we have 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics,
-     new Rotation2d(0), new Pose2d(0.0, 3.0, new Rotation2d(0)));
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
+        DriveConstants.kDriveKinematics,
+     new Rotation2d(0),
+     modulePositions,
+      new Pose2d(1.8942766039, 4.3233, new Rotation2d(0)));
+
+ 
+
+      
+
+
     private int loopCount = 0;
 
     public SwerveSubsystem(){
@@ -128,7 +145,7 @@ public Pose2d getPose(){
 }
 
 public void resetOdometry(Pose2d pose){
-    odometry.resetPosition(pose, getRotation2d());
+    odometry.resetPosition( getRotation2d(), modulePositions, pose);
 }
 
 public void zeroHeading(){
@@ -153,7 +170,7 @@ public void stopModules(){
 }
 @Override
 public void periodic() {
-    odometry.update(getRotation2d(), frontLeft.getState(), frontRight.getState(),backLeft.getState(), backRight.getState());
+    odometry.update(getRotation2d(),modulePositions);
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     
     SmartDashboard.putNumber("Loop Count: ", loopCount++);

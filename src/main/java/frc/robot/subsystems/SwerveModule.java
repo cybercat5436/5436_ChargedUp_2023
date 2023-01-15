@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -118,7 +119,9 @@ public class SwerveModule implements Sendable{
     DataLogManager.log(String.format("after zero turningEncoder %.2f", turningEncoder.getPosition()));
     DataLogManager.log(String.format("after zero absoluteEncoder %.2f", this.getAbsoluteEncoderRadians()));
   }
-
+  public SwerveModulePosition getPosition() {
+    return new SwerveModulePosition( driveEncoder.getPosition(), new Rotation2d(turningEncoder.getPosition()));
+  }
   public void zeroTurningEncoder(){
     turningEncoder.setPosition(0);  
   }
