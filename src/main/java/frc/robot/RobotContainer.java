@@ -51,7 +51,7 @@ public class RobotContainer {
     private final Joystick driverJoystick = new Joystick(0);
     private final XboxController xboxController = new XboxController(1);
 
-    String trajectoryJSON = "paths/Unnamed.wpilib.json";
+    String trajectoryJSON = "paths/straight.wpilib.json";
     Trajectory trajectory3 = new Trajectory();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */

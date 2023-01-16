@@ -95,7 +95,7 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kDriveKinematics,
      new Rotation2d(0),
      modulePositions,
-      new Pose2d(1.8942766039, 4.3233, new Rotation2d(0)));
+      new Pose2d(1.608, 4.985, new Rotation2d(0)));
 
  
 

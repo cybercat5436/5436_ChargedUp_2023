@@ -47,10 +47,10 @@ public final class Constants {
         public static final int ABSOLUTE_ENCODER_BACK_LEFT = 2;
         public static final int ABSOLUTE_ENCODER_BACK_RIGHT = 3;
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 2.82;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 2.74;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = -1.77;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -2.50;
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 3.57;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 1.03;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 2.68;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 3.32;
         
     }
 
