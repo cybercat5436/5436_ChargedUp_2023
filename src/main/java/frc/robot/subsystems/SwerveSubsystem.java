@@ -34,6 +34,8 @@ public class SwerveSubsystem extends SubsystemBase{
     private ArrayList<SwerveModuleState> moduleStates = new ArrayList<>();
     private ArrayList<SwerveModule> swerveModules = new ArrayList<>();
 
+    private boolean halfSpeed;
+
 
     private final SwerveModule frontLeft = new SwerveModule(
         WheelPosition.FRONT_LEFT,
@@ -45,7 +47,8 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.kFrontLeftDriveAbsoluteEncoderOffsetRad,
         true,
         IdleMode.kCoast,
-        IdleMode.kCoast);
+        IdleMode.kCoast,
+        halfSpeed);
 
     private final SwerveModule frontRight = new SwerveModule(
         WheelPosition.FRONT_RIGHT,
@@ -57,7 +60,8 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.kFrontRightDriveAbsoluteEncoderOffsetRad,
         true,
         IdleMode.kCoast,
-        IdleMode.kCoast);
+        IdleMode.kCoast,
+        halfSpeed);
 
     private final SwerveModule backLeft = new SwerveModule(
         WheelPosition.BACK_LEFT,
@@ -69,7 +73,8 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.kBackLeftDriveAbsoluteEncoderOffsetRad,
         true,
         IdleMode.kCoast,
-        IdleMode.kCoast);
+        IdleMode.kCoast,
+        halfSpeed);
 
     private final SwerveModule backRight = new SwerveModule(
         WheelPosition.BACK_RIGHT,
@@ -81,7 +86,8 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.kBackRightDriveAbsoluteEncoderOffsetRad,
         true,
         IdleMode.kCoast,
-        IdleMode.kCoast);
+        IdleMode.kCoast,
+        halfSpeed);
 
       private final SwerveModulePosition[] modulePositions = new SwerveModulePosition[]{
             frontLeft.getPosition(),
@@ -104,7 +110,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     private int loopCount = 0;
 
-    public SwerveSubsystem(){
+    public SwerveSubsystem(boolean halfSpeed){
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -124,6 +130,8 @@ public class SwerveSubsystem extends SubsystemBase{
         this.swerveModules.add(this.frontRight);
         this.swerveModules.add(this.backLeft);
         this.swerveModules.add(this.backRight);
+
+        this.halfSpeed = halfSpeed;
     }
 
     public double getHeading(){

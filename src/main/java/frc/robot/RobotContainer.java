@@ -46,10 +46,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    public boolean halfSpeed = false;
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(halfSpeed);
 
     private final Joystick driverJoystick = new Joystick(0);
     private final XboxController xboxController = new XboxController(1);
+    
 
     String trajectoryJSON = "paths/Unnamed.wpilib.json";
     Trajectory trajectory3 = new Trajectory();
@@ -76,7 +78,13 @@ public class RobotContainer {
       } catch (IOException ex) {
               System.out.println("Unable to open trajectory");
       }
-    }
+
+      if (xboxController.getLeftBumperPressed()){
+        halfSpeed = true;
+      } else{
+        halfSpeed = false;
+      }
+}
   
     /**
      * Use this method to define your button->command mappings. Buttons can be created by
@@ -86,6 +94,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
       new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
+      
     }
   
     /**
