@@ -79,11 +79,6 @@ public class RobotContainer {
               System.out.println("Unable to open trajectory");
       }
 
-      if (xboxController.getLeftBumperPressed()){
-        halfSpeed = true;
-      } else{
-        halfSpeed = false;
-      }
 }
   
     /**
@@ -93,8 +88,11 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        halfSpeed = false;
       new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
-      
+      while(xboxController.getLeftBumperPressed()){
+        halfSpeed = true;
+        }
     }
   
     /**
@@ -190,5 +188,6 @@ public class RobotContainer {
               // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
               
   }
+
   }
   

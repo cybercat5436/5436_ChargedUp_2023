@@ -215,6 +215,7 @@ public class SwerveModule implements Sendable{
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
     builder.addDoubleProperty("Power From Module", () -> this.getDriveVelocity(), null);
+    builder.addDoubleProperty("Physical Restraints", () -> DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond, null);
   }
 
 
