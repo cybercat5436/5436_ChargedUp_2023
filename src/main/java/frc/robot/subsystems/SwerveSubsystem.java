@@ -170,8 +170,16 @@ public void stopModules(){
 }
 @Override
 public void periodic() {
-    odometry.update(getRotation2d(),modulePositions);
+    odometry.update(getRotation2d(), modulePositions);
+
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    SmartDashboard.putNumber("Robot Location x:", getPose().getX());
+    SmartDashboard.putNumber("Robot Location Y", getPose().getY());
+    System.out.println("Robot Locaton X:" + getPose().getX());
+    System.out.println("Robot Location Y:" + getPose().getY());
+    for(int i = 0; i < modulePositions.length; i++ ){
+        System.out.println(modulePositions[i]);
+    }
     
     SmartDashboard.putNumber("Loop Count: ", loopCount++);
     // DataLogManager.log(String.format("Loop count %d", loopCount));
