@@ -30,6 +30,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualEncoderCalibration;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LimeLight2;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -46,6 +47,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
+    private final LimeLight2 limeLight2 = new LimeLight2();    
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
     private final Joystick driverJoystick = new Joystick(0);
@@ -56,7 +58,8 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-      swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
+        
+        swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
         swerveSubsystem,
         () -> -xboxController.getLeftY(),
         () -> -xboxController.getLeftX(),
