@@ -89,13 +89,20 @@ public class SwerveSubsystem extends SubsystemBase{
             backLeft.getPosition(),
             backRight.getPosition() };
 
+      public SwerveModulePosition[] getModulePositions(){
+            return new SwerveModulePosition[]{
+                frontLeft.getPosition(),
+                frontRight.getPosition(),
+                backLeft.getPosition(),
+                backRight.getPosition() };
+      }
     //idk if this is the gyro we have 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
         DriveConstants.kDriveKinematics,
      new Rotation2d(0),
-     modulePositions,
-      new Pose2d(1.608, 4.985, new Rotation2d(0)));
+     getModulePositions(),
+      new Pose2d(3.62, 6.20, new Rotation2d(0)));
 
  
 
@@ -145,7 +152,7 @@ public Pose2d getPose(){
 }
 
 public void resetOdometry(Pose2d pose){
-    odometry.resetPosition( getRotation2d(), modulePositions, pose);
+    odometry.resetPosition( getRotation2d(), getModulePositions(), pose);
 }
 
 public void zeroHeading(){
@@ -170,16 +177,16 @@ public void stopModules(){
 }
 @Override
 public void periodic() {
-    odometry.update(getRotation2d(), modulePositions);
+    odometry.update(getRotation2d(), getModulePositions());
 
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     SmartDashboard.putNumber("Robot Location x:", getPose().getX());
     SmartDashboard.putNumber("Robot Location Y", getPose().getY());
-    System.out.println("Robot Locaton X:" + getPose().getX());
-    System.out.println("Robot Location Y:" + getPose().getY());
-    for(int i = 0; i < modulePositions.length; i++ ){
-        System.out.println(modulePositions[i]);
-    }
+    // System.out.println("Robot Locaton X:" + getPose().getX());
+    // System.out.println("Robot Location Y:" + getPose().getY());
+    // for(int i = 0; i < modulePositions.length; i++ ){
+    //     System.out.println(modulePositions[i]);
+    // }
     
     SmartDashboard.putNumber("Loop Count: ", loopCount++);
     // DataLogManager.log(String.format("Loop count %d", loopCount));
