@@ -64,7 +64,9 @@ public class RobotContainer {
         () -> -xboxController.getLeftY(),
         () -> -xboxController.getLeftX(),
         () -> -xboxController.getRightX(),
-        () -> !xboxController.getStartButtonPressed()));
+        () -> !xboxController.getStartButtonPressed(),
+        () -> xboxController.getRightBumper(),
+        limeLight2));
       // Configure the button bindings
       ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);
       SmartDashboard.putData(manualEncoderCalibration);

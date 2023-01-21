@@ -67,6 +67,8 @@ public final class Constants {
                 new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
                 new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+        //public static final double kLimelightHorizontal = 0.0667;
+        //public static final double kLimelightForward = 0.0833; //CHANGE
     }
 
     public static class OIConstants{
