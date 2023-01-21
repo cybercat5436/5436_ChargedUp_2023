@@ -64,7 +64,7 @@ public class RobotContainer {
         () -> -xboxController.getLeftX(),
         () -> -xboxController.getRightX(),
         () -> !xboxController.getStartButtonPressed(),
-        () -> xboxController.getLeftBumperPressed()));
+        () -> xboxController.getLeftBumper()));
       // Configure the button bindings
       ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);
       SmartDashboard.putData(manualEncoderCalibration);
@@ -72,6 +72,7 @@ public class RobotContainer {
       DataLogManager.logNetworkTables(true);
       DataLogManager.start();
       DataLogManager.log("Started the DataLogManager!!!");
+      manualEncoderCalibration.execute();
     
       try {
               Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);

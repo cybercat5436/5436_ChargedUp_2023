@@ -75,9 +75,9 @@ public class SwerveJoystickCmd extends CommandBase {
         // turningSpeed = slewRateLimiter.calculate(turningSpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
 
         if(halfSpeed){
-            xSpeed /= 2;
-            ySpeed /= 2;
-            turningSpeed /= 2;
+            xSpeed *= .3;
+            ySpeed *= .3;
+            turningSpeed *= .3;
         }
 
         // convert speeds to reference frames
@@ -107,6 +107,7 @@ public class SwerveJoystickCmd extends CommandBase {
         SmartDashboard.putNumber("Drive Angle", Math.atan2(ySpeed,xSpeed));
         SmartDashboard.putNumber("vxSpeed", chassisSpeeds.vxMetersPerSecond);
         SmartDashboard.putNumber("vySpeed", chassisSpeeds.vyMetersPerSecond);
+        SmartDashboard.putBoolean(" half speed", halfSpeed);
 
 
     }
