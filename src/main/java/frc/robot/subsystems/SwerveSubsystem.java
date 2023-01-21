@@ -47,8 +47,8 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.kFrontLeftDriveAbsoluteEncoderOffsetRad,
         true,
         IdleMode.kCoast,
-        IdleMode.kCoast,
-        halfSpeed);
+        IdleMode.kCoast
+       );
 
     private final SwerveModule frontRight = new SwerveModule(
         WheelPosition.FRONT_RIGHT,
@@ -60,8 +60,8 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.kFrontRightDriveAbsoluteEncoderOffsetRad,
         true,
         IdleMode.kCoast,
-        IdleMode.kCoast,
-        halfSpeed);
+        IdleMode.kCoast
+        );
 
     private final SwerveModule backLeft = new SwerveModule(
         WheelPosition.BACK_LEFT,
@@ -73,8 +73,8 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.kBackLeftDriveAbsoluteEncoderOffsetRad,
         true,
         IdleMode.kCoast,
-        IdleMode.kCoast,
-        halfSpeed);
+        IdleMode.kCoast
+    );
 
     private final SwerveModule backRight = new SwerveModule(
         WheelPosition.BACK_RIGHT,
@@ -86,8 +86,8 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.kBackRightDriveAbsoluteEncoderOffsetRad,
         true,
         IdleMode.kCoast,
-        IdleMode.kCoast,
-        halfSpeed);
+        IdleMode.kCoast
+        );
 
       private final SwerveModulePosition[] modulePositions = new SwerveModulePosition[]{
             frontLeft.getPosition(),
@@ -131,7 +131,6 @@ public class SwerveSubsystem extends SubsystemBase{
         this.swerveModules.add(this.backLeft);
         this.swerveModules.add(this.backRight);
 
-        this.halfSpeed = halfSpeed;
     }
 
     public double getHeading(){
@@ -165,7 +164,7 @@ public void setModuleStates(SwerveModuleState[] desiredStates){
     for(int i = 0; i < 4; i++){
         moduleStates.add(desiredStates[i]);
     }
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kTeleDriveMaxSpeedMetersPerSecond);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
     frontLeft.setDesiredState(desiredStates[0]);
     frontRight.setDesiredState(desiredStates[1]);
     backLeft.setDesiredState(desiredStates[2]);

@@ -63,7 +63,8 @@ public class RobotContainer {
         () -> -xboxController.getLeftY(),
         () -> -xboxController.getLeftX(),
         () -> -xboxController.getRightX(),
-        () -> !xboxController.getStartButtonPressed()));
+        () -> !xboxController.getStartButtonPressed(),
+        () -> xboxController.getLeftBumperPressed()));
       // Configure the button bindings
       ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);
       SmartDashboard.putData(manualEncoderCalibration);
@@ -88,11 +89,8 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        halfSpeed = false;
+        
       new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
-      while(xboxController.getLeftBumperPressed()){
-        halfSpeed = true;
-        }
     }
   
     /**

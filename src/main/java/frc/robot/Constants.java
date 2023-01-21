@@ -56,7 +56,8 @@ public final class Constants {
 
 
     public static class DriveConstants{
-        public static final double kTeleDriveMaxSpeedMetersPerSecond = 5;
+        public static final double kTranslateDriveMaxSpeedMetersPerSecond = 5;
+        public static final double kRotateDriveMaxSpeedMetersPerSecond = 3;
         public static final double kPhysicalMaxSpeedMetersPerSecond = 8;
         public static final double kTrackWidth = Units.inchesToMeters(19);
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;

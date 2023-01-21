@@ -44,11 +44,11 @@ public class SwerveModule implements Sendable{
 
   public final WheelPosition wheelPosition;
   
-  public boolean halfSpeed;
+  
 
   /** Creates a new SwerveModule. */
   public SwerveModule(WheelPosition wheelPosition, int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed,
-   int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed, IdleMode driveMode, IdleMode turningMode, boolean halfSpeed) {
+   int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed, IdleMode driveMode, IdleMode turningMode) {
 
     this.wheelPosition = wheelPosition;
     this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
@@ -81,7 +81,7 @@ public class SwerveModule implements Sendable{
     turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
     turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
-    this.halfSpeed = halfSpeed;
+    
 
     //NEED TO ADD CONVERSIONS HERE
 
@@ -167,9 +167,6 @@ public class SwerveModule implements Sendable{
 
     double driveMotorPower = state.speedMetersPerSecond /DriveConstants.kPhysicalMaxSpeedMetersPerSecond;
     
-    if (halfSpeed){
-      driveMotorPower /= 2;
-    }
     driveMotor.set(driveMotorPower);
 
     turningMotor.set(turningPidController.calculate(turningEncoder.getPosition(), state.angle.getRadians()));
