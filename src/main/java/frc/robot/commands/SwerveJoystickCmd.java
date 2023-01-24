@@ -19,18 +19,20 @@ public class SwerveJoystickCmd extends CommandBase {
     private SwerveSubsystem swerveSubsystem;
     private Supplier <Double> xSpdFunction, ySpdFunction, turningSpdFunction;
     private Supplier<Boolean> fieldOrientedFunction;
+    private Supplier<Boolean> halfSpeedFunction;
     private SlewRateLimiter slewRateLimiter = new SlewRateLimiter(0.5);
     private XboxController xboxController;
 
 
     public  SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
-                Supplier<Double>xSpdFunction, Supplier<Double>ySpdFunction, Supplier<Double>turningSpdFunction,
-                Supplier<Boolean> fieldOrientedFunction){
+                Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
+                Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> halfSpeedFunction){
                     this.swerveSubsystem = swerveSubsystem;
                     this.xSpdFunction = xSpdFunction;
                     this.ySpdFunction = ySpdFunction;
                     this.turningSpdFunction = turningSpdFunction;
                     this.fieldOrientedFunction = fieldOrientedFunction;
+                    this.halfSpeedFunction = halfSpeedFunction;
                     this.addRequirements(swerveSubsystem);
 
                 }
@@ -43,17 +45,18 @@ public class SwerveJoystickCmd extends CommandBase {
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
         double turningSpeed = turningSpdFunction.get();
+        boolean halfSpeed = halfSpeedFunction.get();
 
         //apply dead band 
         //xSpeed = Math.abs(xSpeed) > OIConstants.K_DEADBAND ? xSpeed : 0.0 *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         if (Math.abs(xSpeed) > OIConstants.K_DEADBAND) {
-            xSpeed *= DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+            xSpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
         } else {
             xSpeed = 0.0;
         }
         //ySpeed = Math.abs(ySpeed) > OIConstants.K_DEADBAND ? ySpeed : 0.0 *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         if (Math.abs(ySpeed) > OIConstants.K_DEADBAND){
-            ySpeed *= DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+            ySpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
         } else {
             ySpeed = 0.0;
         }
@@ -61,7 +64,7 @@ public class SwerveJoystickCmd extends CommandBase {
         //turningSpeed = Math.abs(turningSpeed) > OIConstants.K_DEADBAND ? turningSpeed : 0.0;
 
         if (Math.abs(turningSpeed) > OIConstants.K_DEADBAND){
-            turningSpeed *= DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+            turningSpeed *= DriveConstants.kRotateDriveMaxSpeedMetersPerSecond;
         } else {
             turningSpeed = 0.0;
         }
@@ -70,6 +73,12 @@ public class SwerveJoystickCmd extends CommandBase {
         // xSpeed = slewRateLimiter.calculate(xSpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         // ySpeed = slewRateLimiter.calculate(ySpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         // turningSpeed = slewRateLimiter.calculate(turningSpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+
+        if(halfSpeed){
+            xSpeed *= .3;
+            ySpeed *= .3;
+            turningSpeed *= .3;
+        }
 
         // convert speeds to reference frames
         ChassisSpeeds chassisSpeeds;
@@ -98,6 +107,7 @@ public class SwerveJoystickCmd extends CommandBase {
         SmartDashboard.putNumber("Drive Angle", Math.atan2(ySpeed,xSpeed));
         SmartDashboard.putNumber("vxSpeed", chassisSpeeds.vxMetersPerSecond);
         SmartDashboard.putNumber("vySpeed", chassisSpeeds.vyMetersPerSecond);
+        SmartDashboard.putBoolean(" half speed", halfSpeed);
 
 
     }

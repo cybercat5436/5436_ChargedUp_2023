@@ -46,10 +46,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    public boolean halfSpeed = false;
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(halfSpeed);
 
     private final Joystick driverJoystick = new Joystick(0);
     private final XboxController xboxController = new XboxController(1);
+    
 
     String trajectoryJSON = "paths/Unnamed.wpilib.json";
     Trajectory trajectory3 = new Trajectory();
@@ -61,7 +63,8 @@ public class RobotContainer {
         () -> -xboxController.getLeftY(),
         () -> -xboxController.getLeftX(),
         () -> -xboxController.getRightX(),
-        () -> !xboxController.getStartButtonPressed()));
+        () -> !xboxController.getStartButtonPressed(),
+        () -> xboxController.getLeftBumper()));
       // Configure the button bindings
       ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);
       SmartDashboard.putData(manualEncoderCalibration);
@@ -69,6 +72,7 @@ public class RobotContainer {
       DataLogManager.logNetworkTables(true);
       DataLogManager.start();
       DataLogManager.log("Started the DataLogManager!!!");
+      manualEncoderCalibration.execute();
     
       try {
               Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
@@ -76,7 +80,8 @@ public class RobotContainer {
       } catch (IOException ex) {
               System.out.println("Unable to open trajectory");
       }
-    }
+
+}
   
     /**
      * Use this method to define your button->command mappings. Buttons can be created by
@@ -85,6 +90,7 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        
       new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
     }
   
@@ -181,5 +187,6 @@ public class RobotContainer {
               // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
               
   }
+
   }
   
