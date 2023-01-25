@@ -56,7 +56,8 @@ public final class Constants {
 
 
     public static class DriveConstants{
-        public static final double kTeleDriveMaxSpeedMetersPerSecond = 4;
+        public static final double kTranslateDriveMaxSpeedMetersPerSecond = 5;
+        public static final double kRotateDriveMaxSpeedMetersPerSecond = 10;
         public static final double kPhysicalMaxSpeedMetersPerSecond = 8;
         public static final double kTrackWidth = Units.inchesToMeters(19);
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -67,6 +68,8 @@ public final class Constants {
                 new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
                 new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+        //public static final double kLimelightHorizontal = 0.0667;
+        //public static final double kLimelightForward = 0.0833; //CHANGE
     }
 
     public static class OIConstants{
@@ -75,8 +78,8 @@ public final class Constants {
 
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 4;
-        public static final double kMaxAngularSpeedRadiansPerSecond = //
-                DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 
+                DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 7.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
         //used to be 1.5
