@@ -102,7 +102,7 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kDriveKinematics,
      new Rotation2d(0),
      getModulePositions(),
-      new Pose2d(3.62, 6.20, new Rotation2d(0)));
+      new Pose2d(0, 0, new Rotation2d(0)));
 
  
 
@@ -153,6 +153,13 @@ public Pose2d getPose(){
 
 public void resetOdometry(Pose2d pose){
     odometry.resetPosition( getRotation2d(), getModulePositions(), pose);
+}
+
+public void resetEncoders(){
+    frontLeft.resetEncoders();
+    backLeft.resetEncoders();
+    frontRight.resetEncoders();
+    backRight.resetEncoders();
 }
 
 public void zeroHeading(){

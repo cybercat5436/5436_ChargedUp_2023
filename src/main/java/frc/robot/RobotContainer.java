@@ -150,7 +150,10 @@ public class RobotContainer {
       ProfiledPIDController thetaController = new ProfiledPIDController(
               AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
       thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
+      //Set the odometry to initial pose of the trajectory
+      swerveSubsystem.resetOdometry(trajectory3.getInitialPose());
+      //Reset all the drive motors of the swervemodules to 0
+      swerveSubsystem.resetEncoders();
       // 4. Construct command to follow trajectory
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
               trajectory3,
@@ -161,6 +164,8 @@ public class RobotContainer {
               thetaController,
               swerveSubsystem::setModuleStates,
               swerveSubsystem);
+      
+     
       
       /**SwerveControllerCommand swerveControllerCommand2 = new SwerveControllerCommand(
                 trajectory2,

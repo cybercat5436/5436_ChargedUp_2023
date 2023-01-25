@@ -108,7 +108,7 @@ public class SwerveModule implements Sendable{
   }
   */
 
-  private void resetEncoders() {
+  public void resetEncoders() {
     driveEncoder.setPosition(0.0);
     
     DataLogManager.log(String.format("About to reset encoders for position %s", this.wheelPosition.name()));
