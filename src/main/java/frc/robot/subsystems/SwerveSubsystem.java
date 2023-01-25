@@ -160,6 +160,13 @@ public void resetOdometry(Pose2d pose){
     odometry.resetPosition( getRotation2d(), getModulePositions(), pose);
 }
 
+public void resetEncoders(){
+    frontLeft.resetEncoders();
+    backLeft.resetEncoders();
+    frontRight.resetEncoders();
+    backRight.resetEncoders();
+}
+
 public void zeroHeading(){
     gyro.reset();
 }
