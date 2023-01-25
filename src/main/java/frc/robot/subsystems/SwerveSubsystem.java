@@ -34,8 +34,6 @@ public class SwerveSubsystem extends SubsystemBase{
     private ArrayList<SwerveModuleState> moduleStates = new ArrayList<>();
     private ArrayList<SwerveModule> swerveModules = new ArrayList<>();
 
-    private boolean halfSpeed;
-
 
     private final SwerveModule frontLeft = new SwerveModule(
         WheelPosition.FRONT_LEFT,
@@ -110,7 +108,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     private int loopCount = 0;
 
-    public SwerveSubsystem(boolean halfSpeed){
+    public SwerveSubsystem(){
         new Thread(() -> {
             try {
                 Thread.sleep(1000);

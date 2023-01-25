@@ -10,7 +10,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
@@ -26,7 +25,6 @@ public class SwerveJoystickCmd extends CommandBase {
     private Supplier<Boolean> visionAdjustmentFunction;
     private Supplier<Boolean> halfSpeedFunction;
     private SlewRateLimiter slewRateLimiter = new SlewRateLimiter(0.5);
-    private XboxController xboxController;
     private double kLimelightHorizontal = 0.08;
     private double kLimelightForward = 1.3;
     private double kLimelightTurning =  0.1;
@@ -36,22 +34,19 @@ public class SwerveJoystickCmd extends CommandBase {
                 Supplier<Double> xSpdFunction, 
                 Supplier<Double> ySpdFunction, 
                 Supplier<Double> turningSpdFunction,
-                Supplier<Boolean> fieldOrientedFunction, 
+                Supplier<Boolean> fieldOrientedFunction,
+                Supplier<Boolean> halfSpeedFunction,
                 Supplier<Boolean> visionAdjustmentFunction, 
-                LimeLight2 limeLight2
-                , Supplier<Boolean> halfSpeedFunction){
-                    this.swerveSubsystem = swerveSubsystem;
-                    this.xSpdFunction = xSpdFunction;
-                    this.ySpdFunction = ySpdFunction;
-                    this.turningSpdFunction = turningSpdFunction;
-                    this.fieldOrientedFunction = fieldOrientedFunction;
-                    this.halfSpeedFunction = halfSpeedFunction;
-                    this.addRequirements(swerveSubsystem);
-                    this.visionAdjustmentFunction = visionAdjustmentFunction;
-                    visionSubsystem = limeLight2;
-                    SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
-                    SmartDashboard.putData(this);
-                }
+                LimeLight2 limeLight2){
+        this.halfSpeedFunction = halfSpeedFunction;
+        this.addRequirements(swerveSubsystem);
+        this.visionAdjustmentFunction = visionAdjustmentFunction;
+        visionSubsystem = limeLight2;
+
+        // Register the sendable to LiveWindow and SmartDashboard
+        SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
+        SmartDashboard.putData(this);
+    }
                 
 
     @Override
