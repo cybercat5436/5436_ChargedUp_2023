@@ -39,7 +39,7 @@ public class LimeLight2 extends SubsystemBase {
   public void periodic() {
     horizontalError = getVisionTargetHorizontalError();
     verticalError = getVisionTargetVerticalError();
-    area = getVisionTargetArea();
+    area = getVisionTargetAreaError();
     targetInView = getVisionTargetStatus();
     SmartDashboard.putBoolean("Valid Target Found", targetInView);
     SmartDashboard.putNumber("tx", getVisionTargetHorizontalError());
@@ -128,8 +128,8 @@ public class LimeLight2 extends SubsystemBase {
     return txLocal.getDouble(0);
   }
 
-  public double getVisionTargetArea(){
-    return taLocal.getDouble(0);
+  public double getVisionTargetAreaError(){
+    return 0.9-taLocal.getDouble(0);
   }
 
 public double getVisionTargetVerticalError(){

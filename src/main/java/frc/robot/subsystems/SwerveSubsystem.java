@@ -125,8 +125,8 @@ public class SwerveSubsystem extends SubsystemBase{
         this.swerveModules.add(this.backLeft);
         this.swerveModules.add(this.backRight);
     }
-
-    public double getHeading(){
+//todo make sure we only do hardware call once (getAngle)
+public double getHeading(){
     return Math.IEEEremainder(-(gyro.getAngle()), 360);
 }
 

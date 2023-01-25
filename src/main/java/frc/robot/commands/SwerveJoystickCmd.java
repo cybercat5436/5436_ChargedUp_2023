@@ -8,6 +8,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,8 +26,10 @@ public class SwerveJoystickCmd extends CommandBase {
     private Supplier<Boolean> visionAdjustmentFunction;
     private SlewRateLimiter slewRateLimiter = new SlewRateLimiter(0.5);
     private XboxController xboxController;
-    private double kLimelightHorizontal = 0.0667;
+    private double kLimelightHorizontal = 0.08;
     private double kLimelightForward = 1.3;
+    private double kLimelightTurning =  0.1;
+    private double targetHeading = 0;
 
     public  SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
                 Supplier<Double>xSpdFunction, 
@@ -44,6 +47,8 @@ public class SwerveJoystickCmd extends CommandBase {
                     this.addRequirements(swerveSubsystem);
                     this.visionAdjustmentFunction = visionAdjustmentFunction;
                     visionSubsystem = limeLight2;
+                    SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
+                    SmartDashboard.putData(this);
                 }
                 
 
@@ -85,10 +90,13 @@ public class SwerveJoystickCmd extends CommandBase {
         // turningSpeed = slewRateLimiter.calculate(turningSpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         if(targetInView && autoVisionFunction){
             fieldOrientedFunction = () -> false;
-            xSpeed = (0.9-visionSubsystem.getVisionTargetArea()) * kLimelightForward;
+            xSpeed = visionSubsystem.getVisionTargetAreaError() * kLimelightForward;
             ySpeed = -visionSubsystem.getVisionTargetHorizontalError() * kLimelightHorizontal;
         }else{
             fieldOrientedFunction = () -> true;
+        }
+        if(autoVisionFunction){
+            turningSpeed=(targetHeading - swerveSubsystem.getHeading())*kLimelightTurning;
         }
 
         // convert speeds to reference frames
@@ -147,6 +155,8 @@ public class SwerveJoystickCmd extends CommandBase {
         builder.addDoubleProperty("kLimeLightForward", () -> kLimelightForward, (value) -> kLimelightForward = value);
         builder.addBooleanProperty("targetInView", () -> visionSubsystem.getVisionTargetStatus(), null);
         builder.addBooleanProperty("autoVisionFunction", () -> visionAdjustmentFunction.get(), null);
+        builder.addDoubleProperty("kLimeLightTurning", () -> kLimelightTurning, (value) -> kLimelightTurning = value);
+        builder.addDoubleProperty("targetHeading", () -> targetHeading, (value) -> targetHeading = value);
     }
 
 }
