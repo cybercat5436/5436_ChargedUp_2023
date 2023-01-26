@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
@@ -114,6 +116,8 @@ public class SwerveSubsystem extends SubsystemBase{
 
 
     private int loopCount = 0;
+    private double kPXController =  1.0;
+    PIDController xController;
 
     public SwerveSubsystem(){
         new Thread(() -> {
@@ -129,12 +133,19 @@ public class SwerveSubsystem extends SubsystemBase{
         moduleStates.add(new SwerveModuleState());
         moduleStates.add(new SwerveModuleState());
         moduleStates.add(new SwerveModuleState());
+
+        //Initialize the x PID controller for autonomous swerve Controller command
+        //xController = new PIDController(kPXController, 0, 0);
         
         // Initialize the swerveModules array
         this.swerveModules.add(this.frontLeft);
         this.swerveModules.add(this.frontRight);
         this.swerveModules.add(this.backLeft);
         this.swerveModules.add(this.backRight);
+
+        //Register the sendables
+        SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
+        SmartDashboard.putData(this);
 
     }
 //todo make sure we only do hardware call once (getAngle)
@@ -154,6 +165,11 @@ public Rotation2d getRotation2d(){
 
 public Pose2d getPose(){
     return odometry.getPoseMeters();
+}
+
+public PIDController getxController(){
+    System.out.println(kPXController);
+    return xController = new PIDController(kPXController, 0, 0);
 }
 
 public void resetOdometry(Pose2d pose){
@@ -241,6 +257,7 @@ public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("FR Power", () -> frontRight.getDriveVelocity(), null);
     builder.addDoubleProperty("BL Power", () -> backLeft.getDriveVelocity(), null);
     builder.addDoubleProperty("BR Power", () -> backRight.getDriveVelocity(), null);
+    builder.addDoubleProperty("kPXController", () -> kPXController, (value) -> kPXController = value);
 }
 
 }

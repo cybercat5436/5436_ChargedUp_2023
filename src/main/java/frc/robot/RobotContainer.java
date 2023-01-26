@@ -157,7 +157,7 @@ public class RobotContainer {
           trajectoryConfig);**/
 
       // 3. Define PID controllers for tracking trajectory
-      PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+      //PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
       PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
       ProfiledPIDController thetaController = new ProfiledPIDController(
               AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
@@ -166,12 +166,13 @@ public class RobotContainer {
       swerveSubsystem.resetOdometry(trajectory3.getInitialPose());
       //Reset all the drive motors of the swervemodules to 0
       swerveSubsystem.resetEncoders();
+      //System.out.println("The xpidcontroller");
       // 4. Construct command to follow trajectory
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
               trajectory3,
               swerveSubsystem::getPose,
               DriveConstants.kDriveKinematics,
-              xController,
+              swerveSubsystem.getxController(),
               yController,
               thetaController,
               swerveSubsystem::setModuleStates,
