@@ -10,6 +10,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.enums.WheelPosition;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -117,7 +119,11 @@ public class SwerveSubsystem extends SubsystemBase{
 
     private int loopCount = 0;
     private double kPXController =  1.0;
+    private double kPYController = 1.0;
+    private double kThetaController = 0.0;
     PIDController xController;
+    PIDController yController;
+    ProfiledPIDController thetaController;
 
     public SwerveSubsystem(){
         new Thread(() -> {
@@ -168,8 +174,18 @@ public Pose2d getPose(){
 }
 
 public PIDController getxController(){
-    System.out.println(kPXController);
+    DataLogManager.log(String.format("X conroller %.2f", kPXController));
     return xController = new PIDController(kPXController, 0, 0);
+}
+
+public PIDController getyController(){
+    DataLogManager.log(String.format("Y controller %.2f", kPYController));
+    return yController = new PIDController(kPYController, 0, 0);
+}
+
+public ProfiledPIDController getThetaController(){
+    DataLogManager.log(String.format("Theta controller %.2f", kThetaController));
+    return thetaController = new ProfiledPIDController(kThetaController, 0, 0,AutoConstants.kThetaControllerConstraints);
 }
 
 public void resetOdometry(Pose2d pose){
@@ -258,6 +274,10 @@ public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("BL Power", () -> backLeft.getDriveVelocity(), null);
     builder.addDoubleProperty("BR Power", () -> backRight.getDriveVelocity(), null);
     builder.addDoubleProperty("kPXController", () -> kPXController, (value) -> kPXController = value);
+    builder.addDoubleProperty("kPYController", () -> kPYController, (value) -> kPYController = value);
+    builder.addDoubleProperty("kThetaController", () -> kThetaController, (value) -> kThetaController = value);
+
+
 }
 
 }
