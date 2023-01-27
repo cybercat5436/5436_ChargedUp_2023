@@ -120,7 +120,7 @@ public class SwerveSubsystem extends SubsystemBase{
     private int loopCount = 0;
     private double kPXController =  1.0;
     private double kPYController = 1.0;
-    private double kThetaController = 0.0;
+    private double kThetaController = 1.0;
     PIDController xController;
     PIDController yController;
     ProfiledPIDController thetaController;
