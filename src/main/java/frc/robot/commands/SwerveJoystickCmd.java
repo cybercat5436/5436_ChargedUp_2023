@@ -38,6 +38,10 @@ public class SwerveJoystickCmd extends CommandBase {
                 Supplier<Boolean> halfSpeedFunction,
                 Supplier<Boolean> visionAdjustmentFunction, 
                 LimeLight2 limeLight2){
+        this.swerveSubsystem = swerveSubsystem;
+        this.xSpdFunction = xSpdFunction;
+        this.ySpdFunction = ySpdFunction;
+        this.turningSpdFunction = turningSpdFunction;
         this.halfSpeedFunction = halfSpeedFunction;
         this.addRequirements(swerveSubsystem);
         this.visionAdjustmentFunction = visionAdjustmentFunction;
