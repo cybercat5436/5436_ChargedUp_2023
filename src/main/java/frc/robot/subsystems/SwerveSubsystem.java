@@ -44,7 +44,7 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.ABSOLUTE_ENCODER_FRONT_LEFT,
         Constants.RoboRioPortConfig.kFrontLeftDriveAbsoluteEncoderOffsetRad,
         true,
-        IdleMode.kCoast,
+        IdleMode.kBrake,
         IdleMode.kCoast
        );
 
@@ -57,7 +57,7 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.ABSOLUTE_ENCODER_FRONT_RIGHT,
         Constants.RoboRioPortConfig.kFrontRightDriveAbsoluteEncoderOffsetRad,
         true,
-        IdleMode.kCoast,
+        IdleMode.kBrake,
         IdleMode.kCoast
         );
 
@@ -70,7 +70,7 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.ABSOLUTE_ENCODER_BACK_LEFT,
         Constants.RoboRioPortConfig.kBackLeftDriveAbsoluteEncoderOffsetRad,
         true,
-        IdleMode.kCoast,
+        IdleMode.kBrake,
         IdleMode.kCoast
     );
 
@@ -83,7 +83,7 @@ public class SwerveSubsystem extends SubsystemBase{
         Constants.RoboRioPortConfig.ABSOLUTE_ENCODER_BACK_RIGHT,
         Constants.RoboRioPortConfig.kBackRightDriveAbsoluteEncoderOffsetRad,
         true,
-        IdleMode.kCoast,
+        IdleMode.kBrake,
         IdleMode.kCoast
         );
 
@@ -131,6 +131,10 @@ public class SwerveSubsystem extends SubsystemBase{
 
     }
 //todo make sure we only do hardware call once (getAngle)
+
+public double getRollDegrees(){
+    return gyro.getRoll();
+}
 public double getHeading(){
     return Math.IEEEremainder(-(gyro.getAngle()), 360);
 }
@@ -197,8 +201,10 @@ public void periodic() {
     
     // SmartDashboard.putNumber("FL Target Angle", moduleStates.get(0).angle.getRadians());
     SmartDashboard.putNumber("Gyro", gyro.getAngle());
-    SmartDashboard.putNumber("Mystery", getHeading());
-
+   // SmartDashboard.putNumber("Mystery", getHeading());
+   SmartDashboard.putNumber ("Pitch", gyro.getPitch());
+   SmartDashboard.putNumber ("Roll", gyro.getRoll());
+   
     // DataLogManager.log(String.format("Back Left Encoder Voltage %f", backLeft.getAbsoluteEncoder().getVoltage()));
     // DataLogManager.log(String.format("Back Right Encoder Voltage %f", backRight.getAbsoluteEncoder().getVoltage()));
 
