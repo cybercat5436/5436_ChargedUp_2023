@@ -55,8 +55,11 @@ public class RobotContainer {
     private final XboxController xboxController = new XboxController(1);
     
 
-    String trajectoryJSON = "paths/Unnamed.wpilib.json";
+    String trajectoryJSON = "paths/ForwardPath.wpilib.json";
     Trajectory trajectory3 = new Trajectory();
+
+    String trajectoryJSON2 = "paths/ReversedPath.wpilib.json";
+    Trajectory trajectory4 = new Trajectory();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -84,6 +87,13 @@ public class RobotContainer {
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
         trajectory3 = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+        System.out.println("Unable to open trajectory");
+      }
+
+      try {
+        Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
+        trajectory4 = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
       } catch (IOException ex) {
         System.out.println("Unable to open trajectory");
       }
@@ -158,22 +168,36 @@ public class RobotContainer {
           trajectoryConfig);**/
 
       // 3. Define PID controllers for tracking trajectory
-      PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-      PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-      ProfiledPIDController thetaController = new ProfiledPIDController(
-              AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+      //PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+      //PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+      ProfiledPIDController thetaController = swerveSubsystem.getThetaController();
       thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
+      //Set the odometry to initial pose of the trajectory
+      swerveSubsystem.resetOdometry(trajectory3.getInitialPose());
+      //Reset all the drive motors of the swervemodules to 0
+      swerveSubsystem.resetEncoders();
+      //System.out.println("The xpidcontroller");
       // 4. Construct command to follow trajectory
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
               trajectory3,
               swerveSubsystem::getPose,
               DriveConstants.kDriveKinematics,
-              xController,
-              yController,
+              swerveSubsystem.getxController(),
+              swerveSubsystem.getyController(),
               thetaController,
               swerveSubsystem::setModuleStates,
               swerveSubsystem);
+
+        SwerveControllerCommand swerveControllerCommand1 = new SwerveControllerCommand(
+                trajectory4,
+                swerveSubsystem::getPose,
+                DriveConstants.kDriveKinematics,
+                swerveSubsystem.getxController(),
+                swerveSubsystem.getyController(),
+                thetaController,
+                swerveSubsystem::setModuleStates,
+                swerveSubsystem);      
+     
       
       /**SwerveControllerCommand swerveControllerCommand2 = new SwerveControllerCommand(
                 trajectory2,
@@ -190,6 +214,7 @@ public class RobotContainer {
               //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
               new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
               swerveControllerCommand, 
+              swerveControllerCommand1, 
               new InstantCommand(() -> swerveSubsystem.stopModules()));
               // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
               
