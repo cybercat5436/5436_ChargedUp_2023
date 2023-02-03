@@ -24,11 +24,17 @@ public class SwerveJoystickCmd extends CommandBase {
     private Supplier<Boolean> fieldOrientedFunction;
     private Supplier<Boolean> visionAdjustmentFunction;
     private Supplier<Boolean> halfSpeedFunction;
+    private Supplier<Boolean> chargePadFunction;
     private SlewRateLimiter slewRateLimiter = new SlewRateLimiter(0.5);
     private double kLimelightHorizontal = 0.08;
     private double kLimelightForward = 1.3;
     private double kLimelightTurning =  0.1;
     private double targetHeading = 0;
+    private double balanceConstant = (.007);
+    private double previousRoll = 0;
+    private double rollROC;
+    private double rollROCConstant = -3.61;
+
 
     public  SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
                 Supplier<Double> xSpdFunction, 
@@ -36,8 +42,14 @@ public class SwerveJoystickCmd extends CommandBase {
                 Supplier<Double> turningSpdFunction,
                 Supplier<Boolean> fieldOrientedFunction,
                 Supplier<Boolean> halfSpeedFunction,
+                Supplier<Boolean> chargePadFunction,
                 Supplier<Boolean> visionAdjustmentFunction, 
                 LimeLight2 limeLight2){
+        this.swerveSubsystem = swerveSubsystem;
+        this.xSpdFunction = xSpdFunction;
+        this.ySpdFunction = ySpdFunction;
+        this.turningSpdFunction = turningSpdFunction;
+        this.chargePadFunction = chargePadFunction;
         this.halfSpeedFunction = halfSpeedFunction;
         this.addRequirements(swerveSubsystem);
         this.visionAdjustmentFunction = visionAdjustmentFunction;
@@ -103,6 +115,21 @@ public class SwerveJoystickCmd extends CommandBase {
             turningSpeed *= .3;
         }
 
+
+
+        rollROC = ((swerveSubsystem.getRollDegrees() - previousRoll)/20);
+        if (chargePadFunction.get()) {
+            double balanceError = 0 - swerveSubsystem.getRollDegrees();
+            //rollROC (rate of change) is in Degrees/Milisecond
+            xSpeed = (balanceConstant * balanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+            xSpeed += ((rollROC * rollROCConstant) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+            previousRoll = swerveSubsystem.getRollDegrees();
+        }
+        
+        
+        
+        
+        
         // convert speeds to reference frames
         ChassisSpeeds chassisSpeeds;
         if (fieldOrientedFunction.get()){
@@ -162,6 +189,10 @@ public class SwerveJoystickCmd extends CommandBase {
         builder.addBooleanProperty("autoVisionFunction", () -> visionAdjustmentFunction.get(), null);
         builder.addDoubleProperty("kLimeLightTurning", () -> kLimelightTurning, (value) -> kLimelightTurning = value);
         builder.addDoubleProperty("targetHeading", () -> targetHeading, (value) -> targetHeading = value);
+        builder.addDoubleProperty("balanceConstant", () -> balanceConstant, (value) -> balanceConstant = value);
+        builder.addDoubleProperty("Roll Rate of Change", () -> rollROC, null);
+        builder.addDoubleProperty("Roll Rate of Change Constant", () -> rollROCConstant, (value) -> rollROCConstant = value);
+
     }
 
 }

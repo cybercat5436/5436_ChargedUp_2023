@@ -71,6 +71,7 @@ public class RobotContainer {
         () -> -xboxController.getRightX(),
         () -> !xboxController.getStartButtonPressed(),
         () -> xboxController.getLeftBumper(),
+        () -> xboxController.getYButton(),
         () -> xboxController.getRightBumper(),
         limeLight2));
 
