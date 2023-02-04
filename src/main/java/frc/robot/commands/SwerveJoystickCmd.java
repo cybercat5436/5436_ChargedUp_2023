@@ -30,11 +30,11 @@ public class SwerveJoystickCmd extends CommandBase {
     private double kLimelightForward = 1.3;
     private double kLimelightTurning =  0.1;
     private double targetHeading = 0;
-    private double balanceConstant = (.007);
+    private double balanceConstant = (.0033);
     private double feedForwardConstant = (.00034);
     private double previousRoll = 0;
     private double rollROC;
-    private double rollROCConstant = -3.61;
+    private double rollROCConstant = -4.16;
     private double errorMultiplier;
 
 
