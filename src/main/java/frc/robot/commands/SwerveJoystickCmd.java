@@ -20,7 +20,7 @@ import frc.robot.subsystems.LimeLight2;
 public class SwerveJoystickCmd extends CommandBase {
     private SwerveSubsystem swerveSubsystem;
     private LimeLight2 visionSubsystem;
-    private Supplier <Double> xSpdFunction, ySpdFunction, turningSpdFunction;
+    private Supplier <Double> xSpdFunction, ySpdFunction, turningSpdFunction, leftTrigger;
     private Supplier<Boolean> fieldOrientedFunction;
     private Supplier<Boolean> visionAdjustmentFunction;
     private Supplier<Boolean> halfSpeedFunction;
@@ -44,6 +44,7 @@ public class SwerveJoystickCmd extends CommandBase {
                 Supplier<Boolean> halfSpeedFunction,
                 Supplier<Boolean> chargePadFunction,
                 Supplier<Boolean> visionAdjustmentFunction, 
+                Supplier<Double> leftTrigger,
                 LimeLight2 limeLight2){
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
@@ -53,6 +54,7 @@ public class SwerveJoystickCmd extends CommandBase {
         this.halfSpeedFunction = halfSpeedFunction;
         this.addRequirements(swerveSubsystem);
         this.visionAdjustmentFunction = visionAdjustmentFunction;
+        this.leftTrigger = leftTrigger;
         visionSubsystem = limeLight2;
 
         // Register the sendable to LiveWindow and SmartDashboard
@@ -75,12 +77,14 @@ public class SwerveJoystickCmd extends CommandBase {
         //apply dead band 
         //xSpeed = Math.abs(xSpeed) > OIConstants.K_DEADBAND ? xSpeed : 0.0 *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         if (Math.abs(xSpeed) > OIConstants.K_DEADBAND) {
+            xSpeed = Math.pow(xSpeed, 2) * Math.signum(xSpeed);
             xSpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
         } else {
             xSpeed = 0.0;
         }
         //ySpeed = Math.abs(ySpeed) > OIConstants.K_DEADBAND ? ySpeed : 0.0 *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         if (Math.abs(ySpeed) > OIConstants.K_DEADBAND){
+            ySpeed = Math.pow(ySpeed, 2) * Math.signum(ySpeed);
             ySpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
         } else {
             ySpeed = 0.0;
@@ -109,12 +113,11 @@ public class SwerveJoystickCmd extends CommandBase {
             turningSpeed=(targetHeading - swerveSubsystem.getHeading())*kLimelightTurning;
         }
 
-        if(halfSpeed){
-            xSpeed *= .3;
-            ySpeed *= .3;
-            turningSpeed *= .3;
-        }
-
+        double superSlowMo = (1 - leftTrigger.get());
+        superSlowMo = Math.max(0.2, superSlowMo);
+        xSpeed *= superSlowMo;
+        ySpeed *= superSlowMo;
+        turningSpeed *= superSlowMo;
 
 
         rollROC = ((swerveSubsystem.getRollDegrees() - previousRoll)/20);

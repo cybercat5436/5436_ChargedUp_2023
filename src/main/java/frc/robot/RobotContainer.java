@@ -73,6 +73,7 @@ public class RobotContainer {
         () -> xboxController.getLeftBumper(),
         () -> xboxController.getYButton(),
         () -> xboxController.getRightBumper(),
+        () -> xboxController.getLeftTriggerAxis(),
         limeLight2));
 
       // Configure the button bindings
