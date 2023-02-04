@@ -26,6 +26,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AutonomousDriveCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualEncoderCalibration;
 import frc.robot.commands.SwerveJoystickCmd;
@@ -178,8 +179,9 @@ public class RobotContainer {
       swerveSubsystem.resetEncoders();
       //System.out.println("The xpidcontroller");
       // 4. Construct command to follow trajectory
+      AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 0.3, 0.3, 0.1, 2);
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-              trajectory3,
+              trajectory3.concatenate(trajectory4),
               swerveSubsystem::getPose,
               DriveConstants.kDriveKinematics,
               swerveSubsystem.getxController(),
@@ -213,8 +215,9 @@ public class RobotContainer {
       return new SequentialCommandGroup(
               //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
               new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
-              swerveControllerCommand, 
-              swerveControllerCommand1, 
+              //swerveControllerCommand, 
+              autonomousDriveCommand,
+             // swerveControllerCommand1, 
               new InstantCommand(() -> swerveSubsystem.stopModules()));
               // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
               
