@@ -56,7 +56,7 @@ public class RobotContainer {
     private final XboxController xboxController = new XboxController(1);
     
 
-    String trajectoryJSON = "paths/ForwardPath.wpilib.json";
+    String trajectoryJSON = "paths/ChargePad.wpilib.json";
     Trajectory trajectory3 = new Trajectory();
 
     String trajectoryJSON2 = "paths/ReversedPath.wpilib.json";
@@ -179,9 +179,9 @@ public class RobotContainer {
       swerveSubsystem.resetEncoders();
       //System.out.println("The xpidcontroller");
       // 4. Construct command to follow trajectory
-      AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 0.3, 0.3, 0.1, 2);
+      AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 3);
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-              trajectory3.concatenate(trajectory4),
+              trajectory3,
               swerveSubsystem::getPose,
               DriveConstants.kDriveKinematics,
               swerveSubsystem.getxController(),
@@ -215,8 +215,8 @@ public class RobotContainer {
       return new SequentialCommandGroup(
               //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
               new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
-              //swerveControllerCommand, 
-              autonomousDriveCommand,
+              swerveControllerCommand, 
+              //autonomousDriveCommand,
              // swerveControllerCommand1, 
               new InstantCommand(() -> swerveSubsystem.stopModules()));
               // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));

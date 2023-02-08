@@ -37,6 +37,14 @@ public class SwerveSubsystem extends SubsystemBase{
     
     private ArrayList<SwerveModuleState> moduleStates = new ArrayList<>();
     private ArrayList<SwerveModule> swerveModules = new ArrayList<>();
+    private double balanceConstant = (.0033);
+    private double feedForwardConstant = (.00034);
+    private double previousRoll = 0;
+    private double rollROC;
+    private double rollROCConstant = -4.16;
+    private double errorMultiplier;
+    private double xSpeed;
+
 
 
     private final SwerveModule frontLeft = new SwerveModule(
@@ -218,6 +226,30 @@ public void setModuleStates(SwerveModuleState[] desiredStates){
     backLeft.setDesiredState(desiredStates[2]);
     backRight.setDesiredState(desiredStates[3]);
 
+}
+
+public double autoBalance(){
+    rollROC = ((getRollDegrees() - previousRoll)/20);
+    double balanceError = 0 - getRollDegrees();
+    if (balanceError < 0) {
+        errorMultiplier = -1;
+    } else {
+        errorMultiplier = 1;
+    }
+    double sqrBalanceError = (Math.pow(balanceError, 2)) * errorMultiplier;
+    
+    //rollROC (rate of change) is in Degrees/Milisecond
+    double proportionalSpeed = (balanceConstant * balanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+    //deriv speed -4.16 proportional speed .0033
+    double derivSpeed = ((rollROC * rollROCConstant) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+    double feedForwardSpeed = ((feedForwardConstant * sqrBalanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+    //derivSpeed = Math.min(Math.abs(proportionalSpeed + feedForwardSpeed), Math.abs(derivSpeed)) * Math.signum(derivSpeed);
+    SmartDashboard.putNumber("proportional speed", proportionalSpeed);
+    SmartDashboard.putNumber("deriv Speed", derivSpeed);
+    SmartDashboard.putNumber("feed forward speed", feedForwardSpeed);
+    xSpeed = proportionalSpeed + derivSpeed + feedForwardSpeed;
+    previousRoll = getRollDegrees();
+    return xSpeed;
 }
 
 public void stopModules(){
