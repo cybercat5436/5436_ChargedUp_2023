@@ -36,11 +36,12 @@ public final class Constants {
         public static final int FRONT_LEFT_DRIVE = 1;
         public static final int FRONT_RIGHT_DRIVE = 2;
         public static final int BACK_LEFT_DRIVE = 3;
-        public static final int BACK_RIGHT_DRIVE = 42;
+        public static final int BACK_RIGHT_DRIVE = 4;
         public static final int FRONT_LEFT_TURN = 5;
         public static final int FRONT_RIGHT_TURN = 6;
         public static final int BACK_LEFT_TURN = 7;
         public static final int BACK_RIGHT_TURN = 8;
+        public static final int ORIENT_MOTOR = 42;
     
         public static final int ABSOLUTE_ENCODER_FRONT_LEFT = 0;
         public static final int ABSOLUTE_ENCODER_FRONT_RIGHT = 1;

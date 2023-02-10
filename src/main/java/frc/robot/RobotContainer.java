@@ -38,6 +38,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -55,11 +56,9 @@ public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     private final Orienter orienter = new Orienter(limeLight2);
     private final Joystick driverJoystick = new Joystick(0);
-    private final XboxController xboxController = new XboxController(1);
+    private final CommandXboxController xboxController = new CommandXboxController(1);
         
 
-    JoystickButton bButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
-    JoystickButton aButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
     String trajectoryJSON = "paths/ForwardPath.wpilib.json";
     Trajectory trajectory3 = new Trajectory();
 
@@ -74,16 +73,17 @@ public class RobotContainer {
         () -> -xboxController.getLeftY(),
         () -> -xboxController.getLeftX(),
         () -> -xboxController.getRightX(),
-        () -> !xboxController.getStartButtonPressed(),
-        () -> xboxController.getLeftBumper(),
-        () -> xboxController.getYButton(),
-        () -> xboxController.getRightBumper(),
+        () -> !xboxController.start().getAsBoolean(),
+        () -> xboxController.leftBumper().getAsBoolean(),
+        () -> xboxController.y().getAsBoolean(),
+        () -> xboxController.rightBumper().getAsBoolean(),
         limeLight2));
 
       // Configure the button bindings
       ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);        
-      bButton.whileActiveContinuous((new OrientCone(orienter)));
-      aButton.whileActiveContinuous(new InstantCommand(() -> orienter.stopMicrowave()));
+      xboxController.b()
+          .onTrue(manualEncoderCalibration)
+          .onFalse(new InstantCommand(() -> orienter.stopMicrowave()));
       SmartDashboard.putData(manualEncoderCalibration);
       configureButtonBindings();
       DataLogManager.logNetworkTables(true);
