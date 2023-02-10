@@ -29,6 +29,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutonomousDriveCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualEncoderCalibration;
+import frc.robot.commands.SetTo90;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LimeLight2;
@@ -179,7 +180,8 @@ public class RobotContainer {
       swerveSubsystem.resetEncoders();
       //System.out.println("The xpidcontroller");
       // 4. Construct command to follow trajectory
-      AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 3);
+      AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 5);
+      SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.5);
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
               trajectory3,
               swerveSubsystem::getPose,
@@ -216,8 +218,9 @@ public class RobotContainer {
               //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
               new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
               swerveControllerCommand, 
-              //autonomousDriveCommand,
-             // swerveControllerCommand1, 
+              autonomousDriveCommand,
+             // swerveControllerCommand1,
+             setTo90,
               new InstantCommand(() -> swerveSubsystem.stopModules()));
               // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
               

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
@@ -68,13 +69,19 @@ private double timeLimit;
   // }
     ChassisSpeeds chassisSpeeds;
     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
-    SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
     swerveSubsystem.setModuleStates(moduleStates);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    //SwerveModuleState[] moduleStates = new SwerveModuleState[4];
+    // for (int i = 0; i < moduleStates.length; i++) {
+    //   moduleStates[i].angle = Rotation2d.fromDegrees(90);
+    // }
+    // swerveSubsystem.setModuleStates(moduleStates);
+  }
 
   // Returns true when the command should end.
   @Override
