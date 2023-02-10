@@ -217,10 +217,6 @@ public class SwerveJoystickCmd extends CommandBase {
         builder.addBooleanProperty("autoVisionFunction", () -> visionAdjustmentFunction.get(), null);
         builder.addDoubleProperty("kLimeLightTurning", () -> kLimelightTurning, (value) -> kLimelightTurning = value);
         builder.addDoubleProperty("targetHeading", () -> targetHeading, (value) -> targetHeading = value);
-        builder.addDoubleProperty("balanceConstant", () -> balanceConstant, (value) -> balanceConstant = value);
-        builder.addDoubleProperty("Roll Rate of Change", () -> rollROC, null);
-        builder.addDoubleProperty("Roll Rate of Change Constant", () -> rollROCConstant, (value) -> rollROCConstant = value);
-        builder.addDoubleProperty("feed forward", () -> feedForwardConstant, (value) -> feedForwardConstant = value);
 
 
     }

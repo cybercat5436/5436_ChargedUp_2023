@@ -23,6 +23,7 @@ private double ySpeed;
 private double turningSpeed;
 private Timer timer;
 private double timeLimit;
+private int counter;
 
   public AutonomousDriveCommand(SwerveSubsystem swerveSubsystem, double timeLimit) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -32,6 +33,7 @@ private double timeLimit;
     this.turningSpeed = 0;
     timer = new Timer();
     this.timeLimit = timeLimit;
+    this.counter = 0;
   }
 
   // Called when the command is initially scheduled.
@@ -47,6 +49,14 @@ private double timeLimit;
 
     //SmartDashboard.putNumber(timer.get());
     this.xSpeed = swerveSubsystem.autoBalance();
+
+    if(swerveSubsystem.getRollDegrees() < 2.5 && swerveSubsystem.getRollDegrees() > -2.5){
+      counter++;
+    } else {
+      counter = 0;
+    }
+
+    SmartDashboard.putNumber("Counter", counter);
 
   //   if (Math.abs(xSpeed) > OIConstants.K_DEADBAND) {
   //     xSpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
@@ -88,6 +98,11 @@ private double timeLimit;
   public boolean isFinished() {
     //WRITE EXIT CONDITION BASED ON HOW MANY CYCLES IT'S BALANCED 
     //TIME BASED EXIT CONDITION
-    return timer.get() > timeLimit ? true : false;
+    if(counter == 5 || timer.get() > timeLimit){
+      return true;
+    } else {
+      return false;
+    }
+    
   }
 }

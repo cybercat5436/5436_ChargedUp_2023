@@ -57,11 +57,13 @@ public class RobotContainer {
     private final XboxController xboxController = new XboxController(1);
     
 
-    String trajectoryJSON = "paths/ChargePad.wpilib.json";
+    String trajectoryJSON = "paths/ChargePad1.wpilib.json";
     Trajectory trajectory3 = new Trajectory();
 
-    String trajectoryJSON2 = "paths/ReversedPath.wpilib.json";
+    String trajectoryJSON2 = "paths/ChargePad2.wpilib.json";
     Trajectory trajectory4 = new Trajectory();
+
+    Trajectory trajectory5 = new Trajectory();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -85,7 +87,8 @@ public class RobotContainer {
       DataLogManager.start();
       DataLogManager.log("Started the DataLogManager!!!");
       manualEncoderCalibration.execute();
-    
+      SmartDashboard.putData(new InstantCommand(() -> swerveSubsystem.zeroIntegrator()));
+
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
         trajectory3 = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
@@ -99,6 +102,9 @@ public class RobotContainer {
       } catch (IOException ex) {
         System.out.println("Unable to open trajectory");
       }
+
+      trajectory5 = trajectory3.concatenate(trajectory4);
+      SmartDashboard.putNumber("Time Elapsed", trajectory5.getTotalTimeSeconds());
 
 }
   
@@ -180,8 +186,8 @@ public class RobotContainer {
       swerveSubsystem.resetEncoders();
       //System.out.println("The xpidcontroller");
       // 4. Construct command to follow trajectory
-      AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 5);
-      SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.5);
+      AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 6);
+      SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
               trajectory3,
               swerveSubsystem::getPose,

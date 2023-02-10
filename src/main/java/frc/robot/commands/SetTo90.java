@@ -40,7 +40,7 @@ public class SetTo90 extends CommandBase {
   public void execute() {
     DataLogManager.log("execute");
     ChassisSpeeds chassisSpeeds;
-    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 1, 0, swerveSubsystem.getRotation2d());
+    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0.1, 0, swerveSubsystem.getRotation2d());
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
     for (int i = 0; i < moduleStates.length; i++) {
       moduleStates[i].angle = Rotation2d.fromDegrees(90);
