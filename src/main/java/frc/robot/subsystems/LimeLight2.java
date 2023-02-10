@@ -15,15 +15,15 @@ public class LimeLight2 extends SubsystemBase {
   public NetworkTableEntry tsLocal; //skew error
   public NetworkTableEntry tLongLocal;
 
-  public double horizontalError = 0.0;
-  public double verticalError = 0.0;
-  public double area = 0.0;
-  public double xOffset;
-  public double aim = -0.1;
-  public double distance = -0.1;
-  public double min_aim = -0.1;
-  public double visionSpeed;
-  public boolean targetInView = false;
+  private double horizontalError = 0.0;
+  private double verticalError = 0.0;
+  private double area = 0.0;
+  private double xOffset;
+  private double aim = -0.1;
+  private double distance = -0.1;
+  private double min_aim = -0.1;
+  private double visionSpeed;
+  private boolean targetInView = false;
 
   public LimeLight2() {
     tableLimelight = NetworkTableInstance.getDefault().getTable("limelight");
@@ -40,7 +40,7 @@ public class LimeLight2 extends SubsystemBase {
   public void periodic() {
     horizontalError = getVisionTargetHorizontalError();
     verticalError = getVisionTargetVerticalError();
-    area = getVisionTargetArea();
+    area = getVisionTargetAreaError();
     targetInView = getVisionTargetStatus();
     SmartDashboard.putBoolean("Valid Target Found", targetInView);
     SmartDashboard.putNumber("tx", getVisionTargetHorizontalError());
@@ -61,6 +61,11 @@ public class LimeLight2 extends SubsystemBase {
     double steering_adjust = 0;
     double distance_adjust = 0;
     
+    
+    double xSpeedAdjust = 0;
+    double ySpeedAdjust = 0;
+    double turningSpeedAdjust = 0;
+    
     //Meadow calibrated the limelight cross-hair at ideal distance for first zone to target we shoot from.
     //this meant ty = 0 at learned position at Blue zone.  Team did zones Target->Green->Blue->Yellow->Red
     //Meadow then recorded the different ty "offset" values at each of the other shooter positions.
@@ -68,6 +73,7 @@ public class LimeLight2 extends SubsystemBase {
 
     vertical_error = - (yError - yOffset);  //error goes to zero as we approach our offset positions and negative accounts for drivetrain
     
+
     //Calculating the speed at which to rotate based on tx
     /*if (targetFound == true){ //Valid Target Found
       //Clamp speeds to never go below minimum per constants file
@@ -132,11 +138,11 @@ public class LimeLight2 extends SubsystemBase {
   }
 
   public double getVisionTargetHorizontalError(){
-    return txLocal.getDouble(44.4);
+    return txLocal.getDouble(0);
   }
 
-  public double getVisionTargetArea(){
-    return taLocal.getDouble(0);
+  public double getVisionTargetAreaError(){
+    return 0.9-taLocal.getDouble(0);
   }
 
 public double getVisionTargetVerticalError(){
