@@ -59,7 +59,8 @@ public class RobotContainer {
     private final CommandXboxController xboxController = new CommandXboxController(1);
         
 
-    String trajectoryJSON = "paths/ForwardPath.wpilib.json";
+    String trajectoryJSON = "paths/ForwardPath.wpilib.json";    
+
     Trajectory trajectory3 = new Trajectory();
 
     String trajectoryJSON2 = "paths/ReversedPath.wpilib.json";
