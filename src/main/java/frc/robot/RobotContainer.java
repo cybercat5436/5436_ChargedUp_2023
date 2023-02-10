@@ -22,15 +22,18 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualEncoderCalibration;
+import frc.robot.commands.OrientCone;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LimeLight2;
+import frc.robot.subsystems.Orienter;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -46,13 +49,15 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    // The robot's subsystems and commands are defined here...
-    private final LimeLight2 limeLight2 = new LimeLight2();    
+        // The robot's subsystems and commands are defined here...
+        private final LimeLight2 limeLight2 = new LimeLight2();    
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-
+    private final Orienter orienter = new Orienter(limeLight2);
     private final Joystick driverJoystick = new Joystick(0);
     private final XboxController xboxController = new XboxController(1);
-
+    
+    JoystickButton bButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
+    JoystickButton aButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
     String trajectoryJSON = "paths/Unnamed.wpilib.json";
     Trajectory trajectory3 = new Trajectory();
 
@@ -66,7 +71,9 @@ public class RobotContainer {
         () -> -xboxController.getRightX(),
         () -> !xboxController.getStartButtonPressed()));
       // Configure the button bindings
-      ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);
+      ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);        
+      bButton.whileActiveContinuous((new OrientCone(orienter)));
+      aButton.whileActiveContinuous(new InstantCommand(() -> orienter.stopMicrowave()));
       SmartDashboard.putData(manualEncoderCalibration);
       configureButtonBindings();
       DataLogManager.logNetworkTables(true);

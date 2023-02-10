@@ -13,6 +13,7 @@ public class LimeLight2 extends SubsystemBase {
   public NetworkTableEntry taLocal; //area error
   public NetworkTableEntry tvLocal; //valid target found
   public NetworkTableEntry tsLocal; //skew error
+  public NetworkTableEntry tLongLocal;
 
   public double horizontalError = 0.0;
   public double verticalError = 0.0;
@@ -31,7 +32,7 @@ public class LimeLight2 extends SubsystemBase {
     taLocal = tableLimelight.getEntry("ta"); // communicates percentage of image the target takes up
     tvLocal = tableLimelight.getEntry("tv"); // communicates whether a valid target is acquired, 0 or 1
     tsLocal = tableLimelight.getEntry("ts"); // communicates skew offset from target
-  
+    tLongLocal = tableLimelight.getEntry("tlong");
   
 }
 
@@ -44,10 +45,14 @@ public class LimeLight2 extends SubsystemBase {
     SmartDashboard.putBoolean("Valid Target Found", targetInView);
     SmartDashboard.putNumber("tx", getVisionTargetHorizontalError());
     SmartDashboard.putNumber("ty", getVisionTargetVerticalError());
+    if (isOriented()) {
+      System.out.println("It is oriented!!!!");
+    }
+    System.out.println("This is Tlong:" + tLongLocal.getDouble(0));
   }
-
- public boolean alignToTarget(boolean targetFound, double xError, double yError, String zone){
-   
+  
+  public boolean alignToTarget(boolean targetFound, double xError, double yError, String zone){
+    
     double yOffset = 0;
     boolean targetAligned = false;
     boolean headingAligned = false;
@@ -95,7 +100,7 @@ public class LimeLight2 extends SubsystemBase {
         distanceAligned = false;
         drive.tankDrivePWM(distance_adjust, distance_adjust);
       }*/
-    
+      
     //Set Exit Flag only once both are aligned
     if (headingAligned && distanceAligned){
       targetAligned = true;
@@ -108,9 +113,17 @@ public class LimeLight2 extends SubsystemBase {
   }  //End of AlignToTargetMethod
 
 
+  public boolean isOriented(){
+    if (taLocal.getDouble(0) >= 3) {
+      return true;
+    } else{
+      return false;
+    }
+  }
+  
   public boolean getVisionTargetStatus(){
     boolean returnValue = false;
-
+    
     if (tvLocal.getDouble(0) == 1){
       returnValue = true;
     }
@@ -133,7 +146,6 @@ public double getVisionTargetVerticalError(){
 public double getVisionTargetSkew(){
   return tsLocal.getDouble(0);
 }
-
 
 
 }
