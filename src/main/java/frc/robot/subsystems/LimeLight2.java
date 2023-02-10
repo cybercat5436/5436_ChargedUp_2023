@@ -24,6 +24,7 @@ public class LimeLight2 extends SubsystemBase {
   private double min_aim = -0.1;
   private double visionSpeed;
   private boolean targetInView = false;
+  public double spinThreshold = 75;
 
   public LimeLight2() {
     tableLimelight = NetworkTableInstance.getDefault().getTable("limelight");
@@ -47,8 +48,11 @@ public class LimeLight2 extends SubsystemBase {
     SmartDashboard.putNumber("ty", getVisionTargetVerticalError());
     if (isOriented()) {
       System.out.println("It is oriented!!!!");
+    
     }
-    System.out.println("This is Tlong:" + tLongLocal.getDouble(0));
+    // System.out.println("This is Tlong:" + tLongLocal.getDouble(0));
+    SmartDashboard.putNumber("tLong", tLongLocal.getDouble(0));
+    SmartDashboard.putBoolean("Is oriented", isOriented());
   }
   
   public boolean alignToTarget(boolean targetFound, double xError, double yError, String zone){
@@ -120,8 +124,9 @@ public class LimeLight2 extends SubsystemBase {
 
 
   public boolean isOriented(){
-    if (taLocal.getDouble(0) >= 3) {
-      return true;
+    if (tLongLocal.getDouble(0) >= spinThreshold) {
+      //return true;
+      return false;
     } else{
       return false;
     }

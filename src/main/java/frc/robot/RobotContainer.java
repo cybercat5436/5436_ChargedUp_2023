@@ -83,27 +83,32 @@ public class RobotContainer {
       // Configure the button bindings
       ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);        
       xboxController.b()
-          .onTrue(manualEncoderCalibration)
-          .onFalse(new InstantCommand(() -> orienter.stopMicrowave()));
+          .whileActiveContinuous( new OrientCone(orienter))
+          .whileFalse(new InstantCommand(() -> orienter.stopMicrowave()));
+      // xboxController.a()
+      //   .whileTrue(new InstantCommand(() -> {
+      //     System.out.println("stopping microwave");
+      //     orienter.stopMicrowave();
+      //   }));
       SmartDashboard.putData(manualEncoderCalibration);
       configureButtonBindings();
-      DataLogManager.logNetworkTables(true);
-      DataLogManager.start();
-      DataLogManager.log("Started the DataLogManager!!!");
-      manualEncoderCalibration.execute();
+      // DataLogManager.logNetworkTables(true);
+      // DataLogManager.start();
+      // DataLogManager.log("Started the DataLogManager!!!");
+      // manualEncoderCalibration.execute();
     
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
         trajectory3 = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
       } catch (IOException ex) {
-        System.out.println("Unable to open trajectory");
+        //System.out.println("Unable to open trajectory");
       }
 
       try {
         Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
         trajectory4 = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
       } catch (IOException ex) {
-        System.out.println("Unable to open trajectory");
+        //System.out.println("Unable to open trajectory");
       }
 
 }

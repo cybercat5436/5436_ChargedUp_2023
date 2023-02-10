@@ -24,18 +24,19 @@ public class OrientCone extends CommandBase {
   @Override
   public void execute() {
     orienter.microwaveSpin();
+    System.out.println("executed");
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    orienter.stopMicrowave();
+    //orienter.stopMicrowave();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return orienter.limelight2.isOriented();
+    return true;
   
   }
 }
