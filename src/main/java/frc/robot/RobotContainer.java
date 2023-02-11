@@ -83,8 +83,9 @@ public class RobotContainer {
       // Configure the button bindings
       ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);        
       xboxController.b()
-          .whileActiveContinuous( new OrientCone(orienter))
-          .whileFalse(new InstantCommand(() -> orienter.stopMicrowave()));
+          //.whileActiveContinuous( new OrientCone(orienter))
+          .onTrue(new OrientCone(orienter, limeLight2));
+          //.whileFalse(new InstantCommand(() -> orienter.stopMicrowave()));
       // xboxController.a()
       //   .whileTrue(new InstantCommand(() -> {
       //     System.out.println("stopping microwave");

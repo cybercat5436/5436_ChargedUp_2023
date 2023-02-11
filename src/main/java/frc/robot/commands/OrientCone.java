@@ -5,13 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.LimeLight2;
 import frc.robot.subsystems.Orienter;
 
 public class OrientCone extends CommandBase {
   /** Creates a new OrientCone. */
   Orienter orienter;
-  public OrientCone(Orienter orienter) {
+  LimeLight2 limeLight2;
+  public OrientCone(Orienter orienter, LimeLight2 limeLight2) {
     this.orienter = orienter;
+    this.limeLight2 = limeLight2;
     
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -30,13 +33,13 @@ public class OrientCone extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //orienter.stopMicrowave();
+    orienter.stopMicrowave();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return limeLight2.isOriented();
   
   }
 }

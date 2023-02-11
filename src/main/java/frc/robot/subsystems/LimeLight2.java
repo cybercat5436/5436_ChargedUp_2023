@@ -125,8 +125,8 @@ public class LimeLight2 extends SubsystemBase {
 
   public boolean isOriented(){
     if (tLongLocal.getDouble(0) >= spinThreshold) {
-      //return true;
-      return false;
+      return true;
+      //return false;
     } else{
       return false;
     }

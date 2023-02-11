@@ -17,8 +17,8 @@ import frc.robot.Constants;
 public class Orienter extends SubsystemBase implements Sendable{
   private CANSparkMax orienterMotor = new CANSparkMax(Constants.RoboRioPortConfig.ORIENT_MOTOR, MotorType.kBrushless);
   public LimeLight2 limelight2;
-  private double spinKConstant = .01;
-  private double spinOtherValue = 85;
+  private double spinKConstant = .05;
+  private double spinOtherValue = 75;
 
 
 
