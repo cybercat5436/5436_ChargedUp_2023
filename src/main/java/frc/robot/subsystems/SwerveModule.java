@@ -43,7 +43,8 @@ public class SwerveModule implements Sendable{
   private final double absoluteEncoderOffsetRad;
 
   public final WheelPosition wheelPosition;
-
+  
+  
 
   /** Creates a new SwerveModule. */
   public SwerveModule(WheelPosition wheelPosition, int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed,
@@ -80,6 +81,8 @@ public class SwerveModule implements Sendable{
     turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
     turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
+    
+
     //NEED TO ADD CONVERSIONS HERE
 
     resetEncoders();
@@ -108,16 +111,16 @@ public class SwerveModule implements Sendable{
   }
   */
 
-  private void resetEncoders() {
+  public void resetEncoders() {
     driveEncoder.setPosition(0.0);
     
-    DataLogManager.log(String.format("About to reset encoders for position %s", this.wheelPosition.name()));
-    DataLogManager.log(String.format("turning Encoder %.2f", turningEncoder.getPosition()));
-    DataLogManager.log(String.format("absoluteEncoder %.2f", this.getAbsoluteEncoderRadians()));
+    // DataLogManager.log(String.format("About to reset encoders for position %s", this.wheelPosition.name()));
+    // DataLogManager.log(String.format("turning Encoder %.2f", turningEncoder.getPosition()));
+    // DataLogManager.log(String.format("absoluteEncoder %.2f", this.getAbsoluteEncoderRadians()));
     turningEncoder.setPosition(getAbsoluteEncoderRadians());
-    DataLogManager.log(String.format("After reset encoders for position %s", this.wheelPosition.name()));
-    DataLogManager.log(String.format("after zero turningEncoder %.2f", turningEncoder.getPosition()));
-    DataLogManager.log(String.format("after zero absoluteEncoder %.2f", this.getAbsoluteEncoderRadians()));
+    // DataLogManager.log(String.format("After reset encoders for position %s", this.wheelPosition.name()));
+    // DataLogManager.log(String.format("after zero turningEncoder %.2f", turningEncoder.getPosition()));
+    // DataLogManager.log(String.format("after zero absoluteEncoder %.2f", this.getAbsoluteEncoderRadians()));
   }
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition( driveEncoder.getPosition(), new Rotation2d(turningEncoder.getPosition()));
@@ -161,6 +164,7 @@ public class SwerveModule implements Sendable{
     }
 
     state = SwerveModuleState.optimize(state, getState().angle);
+
     double driveMotorPower = state.speedMetersPerSecond /DriveConstants.kPhysicalMaxSpeedMetersPerSecond;
     
     driveMotor.set(driveMotorPower);
@@ -208,6 +212,7 @@ public class SwerveModule implements Sendable{
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
     builder.addDoubleProperty("Power From Module", () -> this.getDriveVelocity(), null);
+    builder.addDoubleProperty("Physical Restraints", () -> DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond, null);
   }
 
 
