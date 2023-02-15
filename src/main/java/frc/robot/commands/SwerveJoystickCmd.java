@@ -172,7 +172,7 @@ public class SwerveJoystickCmd extends CommandBase {
         swerveSubsystem.setModuleStates(moduleStates);
         for(int i = 0; i< moduleStates.length; i++){
 
-            DataLogManager.log(String.format("module %d %f", i, moduleStates[i].speedMetersPerSecond));
+            // DataLogManager.log(String.format("module %d %f", i, moduleStates[i].speedMetersPerSecond));
 
         }
         

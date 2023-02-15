@@ -22,19 +22,23 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualEncoderCalibration;
+import frc.robot.commands.OrientCone;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LimeLight2;
+import frc.robot.subsystems.Orienter;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -50,12 +54,13 @@ public class RobotContainer {
     public boolean halfSpeed = false;
     private final LimeLight2 limeLight2 = new LimeLight2();    
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-
+    private final Orienter orienter = new Orienter(limeLight2);
     private final Joystick driverJoystick = new Joystick(0);
-    private final XboxController xboxController = new XboxController(1);
-    
+    private final CommandXboxController xboxController = new CommandXboxController(1);
+        
 
-    String trajectoryJSON = "paths/ForwardPath.wpilib.json";
+    String trajectoryJSON = "paths/ForwardPath.wpilib.json";    
+
     Trajectory trajectory3 = new Trajectory();
 
     String trajectoryJSON2 = "paths/ReversedPath.wpilib.json";
@@ -69,33 +74,42 @@ public class RobotContainer {
         () -> -xboxController.getLeftY(),
         () -> -xboxController.getLeftX(),
         () -> -xboxController.getRightX(),
-        () -> !xboxController.getStartButtonPressed(),
-        () -> xboxController.getLeftBumper(),
-        () -> xboxController.getYButton(),
-        () -> xboxController.getRightBumper(),
+        () -> !xboxController.start().getAsBoolean(),
+        () -> xboxController.leftBumper().getAsBoolean(),
+        () -> xboxController.y().getAsBoolean(),
+        () -> xboxController.rightBumper().getAsBoolean(),
         limeLight2));
 
       // Configure the button bindings
-      ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);
+      ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);        
+      xboxController.b()
+          //.whileActiveContinuous( new OrientCone(orienter))
+          .onTrue(new OrientCone(orienter, limeLight2));
+          //.whileFalse(new InstantCommand(() -> orienter.stopMicrowave()));
+      // xboxController.a()
+      //   .whileTrue(new InstantCommand(() -> {
+      //     System.out.println("stopping microwave");
+      //     orienter.stopMicrowave();
+      //   }));
       SmartDashboard.putData(manualEncoderCalibration);
       configureButtonBindings();
-      DataLogManager.logNetworkTables(true);
-      DataLogManager.start();
-      DataLogManager.log("Started the DataLogManager!!!");
-      manualEncoderCalibration.execute();
+      // DataLogManager.logNetworkTables(true);
+      // DataLogManager.start();
+      // DataLogManager.log("Started the DataLogManager!!!");
+      // manualEncoderCalibration.execute();
     
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
         trajectory3 = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
       } catch (IOException ex) {
-        System.out.println("Unable to open trajectory");
+        //System.out.println("Unable to open trajectory");
       }
 
       try {
         Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
         trajectory4 = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
       } catch (IOException ex) {
-        System.out.println("Unable to open trajectory");
+        //System.out.println("Unable to open trajectory");
       }
 
 }
