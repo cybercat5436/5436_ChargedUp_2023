@@ -87,6 +87,7 @@ public class RobotContainer {
         () -> primaryController.leftBumper().getAsBoolean(),
         () -> primaryController.y().getAsBoolean(),
         () -> primaryController.rightBumper().getAsBoolean(),
+        () -> primaryController.getLeftTriggerAxis(),
         limeLight2));
 
       // Configure the button bindings
