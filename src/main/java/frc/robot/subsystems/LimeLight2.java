@@ -7,12 +7,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LimeLight2 extends SubsystemBase {
-  private NetworkTable tableLimelight;
-  private NetworkTableEntry txLocal; //horizontal error
-  private NetworkTableEntry tyLocal; //vertical error
-  private NetworkTableEntry taLocal; //area error
-  private NetworkTableEntry tvLocal; //valid target found
-  private NetworkTableEntry tsLocal; //skew error
+  public NetworkTable tableLimelight;
+  public NetworkTableEntry txLocal; //horizontal error
+  public NetworkTableEntry tyLocal; //vertical error
+  public NetworkTableEntry taLocal; //area error
+  public NetworkTableEntry tvLocal; //valid target found
+  public NetworkTableEntry tsLocal; //skew error
+  public NetworkTableEntry tLongLocal;
 
   private double horizontalError = 0.0;
   private double verticalError = 0.0;
@@ -23,6 +24,7 @@ public class LimeLight2 extends SubsystemBase {
   private double min_aim = -0.1;
   private double visionSpeed;
   private boolean targetInView = false;
+  public double spinThreshold = 75;
 
   public LimeLight2() {
     tableLimelight = NetworkTableInstance.getDefault().getTable("limelight");
@@ -31,7 +33,7 @@ public class LimeLight2 extends SubsystemBase {
     taLocal = tableLimelight.getEntry("ta"); // communicates percentage of image the target takes up
     tvLocal = tableLimelight.getEntry("tv"); // communicates whether a valid target is acquired, 0 or 1
     tsLocal = tableLimelight.getEntry("ts"); // communicates skew offset from target
-  
+    tLongLocal = tableLimelight.getEntry("tlong");
   
 }
 
@@ -44,10 +46,17 @@ public class LimeLight2 extends SubsystemBase {
     SmartDashboard.putBoolean("Valid Target Found", targetInView);
     SmartDashboard.putNumber("tx", getVisionTargetHorizontalError());
     SmartDashboard.putNumber("ty", getVisionTargetVerticalError());
+    if (isOriented()) {
+      System.out.println("It is oriented!!!!");
+    
+    }
+    // System.out.println("This is Tlong:" + tLongLocal.getDouble(0));
+    SmartDashboard.putNumber("tLong", tLongLocal.getDouble(0));
+    SmartDashboard.putBoolean("Is oriented", isOriented());
   }
-
- public boolean alignToTarget(boolean targetFound, double xError, double yError, String zone){
-   
+  
+  public boolean alignToTarget(boolean targetFound, double xError, double yError, String zone){
+    
     double yOffset = 0;
     boolean targetAligned = false;
     boolean headingAligned = false;
@@ -101,7 +110,7 @@ public class LimeLight2 extends SubsystemBase {
         distanceAligned = false;
         drive.tankDrivePWM(distance_adjust, distance_adjust);
       }*/
-    
+      
     //Set Exit Flag only once both are aligned
     if (headingAligned && distanceAligned){
       targetAligned = true;
@@ -114,9 +123,18 @@ public class LimeLight2 extends SubsystemBase {
   }  //End of AlignToTargetMethod
 
 
+  public boolean isOriented(){
+    if (tLongLocal.getDouble(0) >= spinThreshold) {
+      return true;
+      //return false;
+    } else{
+      return false;
+    }
+  }
+  
   public boolean getVisionTargetStatus(){
     boolean returnValue = false;
-
+    
     if (tvLocal.getDouble(0) == 1){
       returnValue = true;
     }
@@ -139,7 +157,6 @@ public double getVisionTargetVerticalError(){
 public double getVisionTargetSkew(){
   return tsLocal.getDouble(0);
 }
-
 
 
 }

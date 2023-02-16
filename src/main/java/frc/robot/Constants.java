@@ -41,6 +41,11 @@ public final class Constants {
         public static final int FRONT_RIGHT_TURN = 6;
         public static final int BACK_LEFT_TURN = 7;
         public static final int BACK_RIGHT_TURN = 8;
+        public static final int INTAKE_MOTOR = 11;
+        public static final int ARM_MOTOR = 21;        
+        public static final int CLAW_MOTOR = 31;
+        public static final int ORIENT_MOTOR = 42;
+        public static final int EXTENDER_MOTOR = 51;
     
         public static final int ABSOLUTE_ENCODER_FRONT_LEFT = 0;
         public static final int ABSOLUTE_ENCODER_FRONT_RIGHT = 1;
@@ -59,10 +64,12 @@ public final class Constants {
         public static final double kTranslateDriveMaxSpeedMetersPerSecond = 5;
         public static final double kRotateDriveMaxSpeedMetersPerSecond = 10;
         public static final double kPhysicalMaxSpeedMetersPerSecond = 8;
-        public static final double kTrackWidth = Units.inchesToMeters(19);
+        //public static final double kTrackWidth = Units.inchesToMeters(19); //OLD
+        public static final double kTrackWidth = 0.55;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
-        // Distance between right and left wheels
-        public static final double kWheelBase = Units.inchesToMeters(23.5);
+        //kWheelBase: Distance between front and back of the robot
+        //public static final double kWheelBase = Units.inchesToMeters(23.5);
+        public static final double kWheelBase = 0.63;
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBase / 2, kTrackWidth / 2),
                 new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
