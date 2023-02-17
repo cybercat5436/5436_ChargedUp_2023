@@ -22,19 +22,28 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualEncoderCalibration;
+import frc.robot.commands.OrientCone;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Extender;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLight2;
+import frc.robot.subsystems.Orienter;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -50,12 +59,17 @@ public class RobotContainer {
     public boolean halfSpeed = false;
     private final LimeLight2 limeLight2 = new LimeLight2();    
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final Orienter orienter = new Orienter(limeLight2);
+    private final Claw claw = new Claw();
+    private final Arm arm = new Arm();
+    private final Intake intake = new Intake();
+    private final Extender extender = new Extender();
+    //private final Joystick driverJoystick = new Joystick(0); //old flightstick controller
+    private final CommandXboxController primaryController = new CommandXboxController(1);
+    private final CommandXboxController secondaryController = new CommandXboxController(0);
 
-    private final Joystick driverJoystick = new Joystick(0);
-    private final XboxController xboxController = new XboxController(1);
-    
+    String trajectoryJSON = "paths/ForwardPath.wpilib.json";    
 
-    String trajectoryJSON = "paths/ForwardPath.wpilib.json";
     Trajectory trajectory3 = new Trajectory();
 
     String trajectoryJSON2 = "paths/ReversedPath.wpilib.json";
@@ -66,36 +80,46 @@ public class RobotContainer {
         
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
         swerveSubsystem,
-        () -> -xboxController.getLeftY(),
-        () -> -xboxController.getLeftX(),
-        () -> -xboxController.getRightX(),
-        () -> !xboxController.getStartButtonPressed(),
-        () -> xboxController.getLeftBumper(),
-        () -> xboxController.getYButton(),
-        () -> xboxController.getRightBumper(),
+        () -> -primaryController.getLeftY(),
+        () -> -primaryController.getLeftX(),
+        () -> -primaryController.getRightX(),
+        () -> !primaryController.start().getAsBoolean(),
+        () -> primaryController.leftBumper().getAsBoolean(),
+        () -> primaryController.y().getAsBoolean(),
+        () -> primaryController.rightBumper().getAsBoolean(),
+        () -> primaryController.getLeftTriggerAxis(),
         limeLight2));
 
       // Configure the button bindings
-      ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);
+      ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);        
+      primaryController.b()
+          //.whileActiveContinuous( new OrientCone(orienter))
+          .onTrue(new OrientCone(orienter, limeLight2));
+          //.whileFalse(new InstantCommand(() -> orienter.stopMicrowave()));
+      // xboxController.a()
+      //   .whileTrue(new InstantCommand(() -> {
+      //     System.out.println("stopping microwave");
+      //     orienter.stopMicrowave();
+      //   }));
       SmartDashboard.putData(manualEncoderCalibration);
       configureButtonBindings();
-      DataLogManager.logNetworkTables(true);
-      DataLogManager.start();
-      DataLogManager.log("Started the DataLogManager!!!");
-      manualEncoderCalibration.execute();
+      // DataLogManager.logNetworkTables(true);
+      // DataLogManager.start();
+      // DataLogManager.log("Started the DataLogManager!!!");
+      // manualEncoderCalibration.execute();
     
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
         trajectory3 = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
       } catch (IOException ex) {
-        System.out.println("Unable to open trajectory");
+        //System.out.println("Unable to open trajectory");
       }
 
       try {
         Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
         trajectory4 = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
       } catch (IOException ex) {
-        System.out.println("Unable to open trajectory");
+        //System.out.println("Unable to open trajectory");
       }
 
 }
@@ -107,8 +131,31 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        
-      new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
+      //Arm Buttons
+      secondaryController.pov(0).whileTrue(new InstantCommand(()->arm.armUp()));
+      secondaryController.pov(45).whileTrue(new InstantCommand(()->arm.armUp()));
+      secondaryController.pov(315).whileTrue(new InstantCommand(()->arm.armUp()));
+      secondaryController.pov(-1).whileTrue(new InstantCommand(()->arm.stopArm()));
+      secondaryController.pov(225).whileTrue(new InstantCommand(()->arm.armDown()));
+      secondaryController.pov(180).whileTrue(new InstantCommand(()->arm.armDown()));
+      secondaryController.pov(135).whileTrue(new InstantCommand(()->arm.armDown()));
+      //Extender Buttons
+      secondaryController.b().onTrue(new InstantCommand(()->extender.extend()))
+        .onFalse(new InstantCommand(()->extender.stopExtend()));      
+      secondaryController.x().onTrue(new InstantCommand(()->extender.retract()))
+        .onFalse(new InstantCommand(()->extender.stopExtend()));
+      //Claw Buttons
+      secondaryController.rightBumper().onTrue(new InstantCommand(()->claw.clawGrab()))
+        .onFalse(new InstantCommand(()->claw.stopGrab()));
+      secondaryController.leftBumper().onTrue(new InstantCommand(()->claw.clawRelease()))
+        .onFalse(new InstantCommand(()->claw.stopGrab()));
+      //Intake Buttons
+      secondaryController.y().onTrue(new InstantCommand(()->intake.intakeFeedIn()))
+        .onFalse(new InstantCommand(()->intake.stopIntake()));
+      secondaryController.a().onTrue(new InstantCommand(()->intake.intakeFeedOut()))
+        .onFalse(new InstantCommand(()->intake.stopIntake()));
+      
+      //new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
     }
   
     /**

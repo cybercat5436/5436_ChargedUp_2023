@@ -20,7 +20,7 @@ import frc.robot.subsystems.LimeLight2;
 public class SwerveJoystickCmd extends CommandBase {
     private SwerveSubsystem swerveSubsystem;
     private LimeLight2 visionSubsystem;
-    private Supplier <Double> xSpdFunction, ySpdFunction, turningSpdFunction;
+    private Supplier <Double> xSpdFunction, ySpdFunction, turningSpdFunction, leftTrigger;
     private Supplier<Boolean> fieldOrientedFunction;
     private Supplier<Boolean> visionAdjustmentFunction;
     private Supplier<Boolean> halfSpeedFunction;
@@ -30,11 +30,11 @@ public class SwerveJoystickCmd extends CommandBase {
     private double kLimelightForward = 1.3;
     private double kLimelightTurning =  0.1;
     private double targetHeading = 0;
-    private double balanceConstant = (.007);
+    private double balanceConstant = (.0033);
     private double feedForwardConstant = (.00034);
     private double previousRoll = 0;
     private double rollROC;
-    private double rollROCConstant = -3.61;
+    private double rollROCConstant = -4.16;
     private double errorMultiplier;
 
 
@@ -46,6 +46,7 @@ public class SwerveJoystickCmd extends CommandBase {
                 Supplier<Boolean> halfSpeedFunction,
                 Supplier<Boolean> chargePadFunction,
                 Supplier<Boolean> visionAdjustmentFunction, 
+                Supplier<Double> leftTrigger,
                 LimeLight2 limeLight2){
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
@@ -55,6 +56,7 @@ public class SwerveJoystickCmd extends CommandBase {
         this.halfSpeedFunction = halfSpeedFunction;
         this.addRequirements(swerveSubsystem);
         this.visionAdjustmentFunction = visionAdjustmentFunction;
+        this.leftTrigger = leftTrigger;
         visionSubsystem = limeLight2;
 
         // Register the sendable to LiveWindow and SmartDashboard
@@ -74,27 +76,35 @@ public class SwerveJoystickCmd extends CommandBase {
         boolean autoVisionFunction = visionAdjustmentFunction.get();
                 boolean halfSpeed = halfSpeedFunction.get();
 
-        //apply dead band 
-        //xSpeed = Math.abs(xSpeed) > OIConstants.K_DEADBAND ? xSpeed : 0.0 *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+        // Read in the robot xSpeed from controller
         if (Math.abs(xSpeed) > OIConstants.K_DEADBAND) {
+            xSpeed = Math.pow(xSpeed, 2) * Math.signum(xSpeed);
             xSpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
         } else {
             xSpeed = 0.0;
         }
-        //ySpeed = Math.abs(ySpeed) > OIConstants.K_DEADBAND ? ySpeed : 0.0 *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+
+        // Read in robot ySpeed from controller
         if (Math.abs(ySpeed) > OIConstants.K_DEADBAND){
+            ySpeed = Math.pow(ySpeed, 2) * Math.signum(ySpeed);
             ySpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
         } else {
             ySpeed = 0.0;
         }
 
-        //turningSpeed = Math.abs(turningSpeed) > OIConstants.K_DEADBAND ? turningSpeed : 0.0;
-
+        // Read in robot turningSpeed from controller
         if (Math.abs(turningSpeed) > OIConstants.K_DEADBAND){
             turningSpeed *= DriveConstants.kRotateDriveMaxSpeedMetersPerSecond;
         } else {
             turningSpeed = 0.0;
         }
+
+        // Apply speed reduction if commanded
+        double superSlowMo = (1 - leftTrigger.get());
+        superSlowMo = Math.max(0.2, superSlowMo);
+        xSpeed *= superSlowMo;
+        ySpeed *= superSlowMo;
+        turningSpeed *= superSlowMo;
 
         // make driving smoother
         // xSpeed = slewRateLimiter.calculate(xSpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
@@ -110,13 +120,6 @@ public class SwerveJoystickCmd extends CommandBase {
         if(autoVisionFunction){
             turningSpeed=(targetHeading - swerveSubsystem.getHeading())*kLimelightTurning;
         }
-
-        if(halfSpeed){
-            xSpeed *= .3;
-            ySpeed *= .3;
-            turningSpeed *= .3;
-        }
-
 
 
         rollROC = ((swerveSubsystem.getRollDegrees() - previousRoll)/20);
@@ -153,9 +156,6 @@ public class SwerveJoystickCmd extends CommandBase {
         } */
         
         
-        
-        
-        
         // convert speeds to reference frames
         ChassisSpeeds chassisSpeeds;
         if (fieldOrientedFunction.get()){
@@ -172,7 +172,7 @@ public class SwerveJoystickCmd extends CommandBase {
         swerveSubsystem.setModuleStates(moduleStates);
         for(int i = 0; i< moduleStates.length; i++){
 
-            DataLogManager.log(String.format("module %d %f", i, moduleStates[i].speedMetersPerSecond));
+            // DataLogManager.log(String.format("module %d %f", i, moduleStates[i].speedMetersPerSecond));
 
         }
         

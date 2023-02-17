@@ -178,17 +178,17 @@ public Pose2d getPose(){
 }
 
 public PIDController getxController(){
-    DataLogManager.log(String.format("X conroller %.2f", kPXController));
+    // DataLogManager.log(String.format("X conroller %.2f", kPXController));
     return xController = new PIDController(kPXController, 0, 0);
 }
 
 public PIDController getyController(){
-    DataLogManager.log(String.format("Y controller %.2f", kPYController));
+    // DataLogManager.log(String.format("Y controller %.2f", kPYController));
     return yController = new PIDController(kPYController, 0, 0);
 }
 
 public ProfiledPIDController getThetaController(){
-    DataLogManager.log(String.format("Theta controller %.2f", kThetaController));
+    // DataLogManager.log(String.format("Theta controller %.2f", kThetaController));
     return thetaController = new ProfiledPIDController(kThetaController, 0, 0,AutoConstants.kThetaControllerConstraints);
 }
 
@@ -282,6 +282,7 @@ public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("kPXController", () -> kPXController, (value) -> kPXController = value);
     builder.addDoubleProperty("kPYController", () -> kPYController, (value) -> kPYController = value);
     builder.addDoubleProperty("kThetaController", () -> kThetaController, (value) -> kThetaController = value);
+
 
 
 }
