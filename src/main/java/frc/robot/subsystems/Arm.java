@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 
@@ -16,12 +17,19 @@ import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
   private TalonFX armMotor = new TalonFX(Constants.RoboRioPortConfig.ARM_MOTOR);
-  private double speed = 0.5;
+  private double speed = 0.2;
+  private final double HIGH_POS = -49500;
+  private final double MID_POS = -39000;
+  private double kP = 0.25;
  
   /** Creates a new Arm. */
   public Arm() {
     armMotor.configFactoryDefault();
     armMotor.clearStickyFaults();
+    armMotor.setNeutralMode(NeutralMode.Brake);
+    resetArmEncoder();
+    armMotor.config_kP(0, kP);
+    armMotor.configClosedLoopPeakOutput(0, 0.2);
     SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
     SmartDashboard.putData(this);  
   }
@@ -46,12 +54,24 @@ public class Arm extends SubsystemBase {
   public void resetArmEncoder(){
     armMotor.setSelectedSensorPosition(0);
   }
-
+  public void armMidGoal(){
+    armMotor.set(ControlMode.Position, MID_POS);
+  }
+  public void armHighGoal(){
+    armMotor.set(ControlMode.Position, HIGH_POS);
+  } 
+  public void armMoveToZeroPosition(){
+    armMotor.set(ControlMode.Position, 0);
+  }
   @Override
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
     super.initSendable(builder);
     builder.addDoubleProperty("Arm Speed", () -> speed, (value) -> speed = value);
     builder.addDoubleProperty("Arm Position", () -> getArmPosition(), null);
+    builder.addDoubleProperty("Arm kP", () -> kP, (value) -> {
+      kP = value;
+      armMotor.config_kP(0, kP);
+    });
   }
 }

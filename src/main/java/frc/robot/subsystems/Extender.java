@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -17,12 +19,20 @@ import frc.robot.Constants;
 public class Extender extends SubsystemBase {
   private CANSparkMax extenderMotor = new CANSparkMax(Constants.RoboRioPortConfig.EXTENDER_MOTOR, MotorType.kBrushless);
   private RelativeEncoder extenderEncoder = extenderMotor.getEncoder();
-  private double speed = 0.5;
-  
+  private double speed = 0.6;
+  private SparkMaxPIDController extenderPID = extenderMotor.getPIDController();
+  private double kP = 0.1;
+  private double desiredMidGoal = 50;
+  private double desiredHighGoal = 55; 
+
   /** Creates a new Extender. */
   public Extender() {
     extenderMotor.restoreFactoryDefaults();
     extenderMotor.clearFaults();
+    extenderMotor.setIdleMode(IdleMode.kBrake);
+    extenderPID.setP(kP);
+    extenderPID.setOutputRange(-0.6, 0.6);
+    resetExtenderEncoder();
     SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
     SmartDashboard.putData(this);
   }
@@ -47,12 +57,26 @@ public class Extender extends SubsystemBase {
   public void resetExtenderEncoder(){
     extenderEncoder.setPosition(0);
   }
-
+  public void gotoDefaultPos(){
+    extenderPID.setReference(0, CANSparkMax.ControlType.kPosition);
+  }
+  public void extendMidGoal(){
+    extenderPID.setReference(desiredMidGoal, CANSparkMax.ControlType.kPosition);
+  }
+  public void extendHighGoal(){
+    extenderPID.setReference(desiredHighGoal, CANSparkMax.ControlType.kPosition);
+  }
   @Override
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
     super.initSendable(builder);
     builder.addDoubleProperty("Extender Speed", () -> speed, (value) -> speed = value);
     builder.addDoubleProperty("Extender Position", () -> getExtenderPosition(), null);
+    builder.addDoubleProperty("Extender kP", () -> kP, (value) ->{
+      kP = value;
+      extenderPID.setP(kP);
+    });
+    builder.addDoubleProperty("Midgoal Desired Rotations", () -> desiredMidGoal, (value)->desiredMidGoal=value);
+    builder.addDoubleProperty("Highgoal Desired Rotations", () -> desiredHighGoal, (value)->desiredHighGoal=value);
   }
 }
