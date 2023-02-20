@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 
@@ -18,8 +19,9 @@ import frc.robot.Constants;
 public class Arm extends SubsystemBase {
   private TalonFX armMotor = new TalonFX(Constants.RoboRioPortConfig.ARM_MOTOR);
   private double speed = 0.2;
-  private final double HIGH_POS = -49500;
-  private final double MID_POS = -39000;
+  private final double HIGH_POS = -58500;
+  private final double MID_POS = -50000;
+  private final double CHASSIS_EXIT_POS = -36000;
   private double kP = 0.25;
  
   /** Creates a new Arm. */
@@ -30,6 +32,10 @@ public class Arm extends SubsystemBase {
     resetArmEncoder();
     armMotor.config_kP(0, kP);
     armMotor.configClosedLoopPeakOutput(0, 0.2);
+    
+    armMotor.configStatorCurrentLimit(
+      new StatorCurrentLimitConfiguration(true, 30, 45, 0.050));
+
     SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
     SmartDashboard.putData(this);  
   }
@@ -62,6 +68,15 @@ public class Arm extends SubsystemBase {
   } 
   public void armMoveToZeroPosition(){
     armMotor.set(ControlMode.Position, 0);
+  }
+  public boolean isAtMidGoal(){
+    return getArmPosition()<=MID_POS+500;
+  }
+  public boolean isAtHighGoal(){
+    return getArmPosition()<=HIGH_POS+500;
+  }
+  public boolean hasExitedChassis(){
+    return getArmPosition()<=CHASSIS_EXIT_POS;
   }
   @Override
   public void initSendable(SendableBuilder builder) {

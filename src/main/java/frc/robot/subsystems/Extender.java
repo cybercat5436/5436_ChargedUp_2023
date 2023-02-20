@@ -22,16 +22,17 @@ public class Extender extends SubsystemBase {
   private double speed = 0.6;
   private SparkMaxPIDController extenderPID = extenderMotor.getPIDController();
   private double kP = 0.1;
-  private double desiredMidGoal = 50;
-  private double desiredHighGoal = 55; 
+  private double desiredMidGoal = 170;
+  private double desiredHighGoal = 447; 
 
   /** Creates a new Extender. */
   public Extender() {
     extenderMotor.restoreFactoryDefaults();
     extenderMotor.clearFaults();
     extenderMotor.setIdleMode(IdleMode.kBrake);
+    extenderMotor.setInverted(true);
     extenderPID.setP(kP);
-    extenderPID.setOutputRange(-0.6, 0.6);
+    extenderPID.setOutputRange(-1, 1);
     resetExtenderEncoder();
     SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
     SmartDashboard.putData(this);
@@ -65,6 +66,9 @@ public class Extender extends SubsystemBase {
   }
   public void extendHighGoal(){
     extenderPID.setReference(desiredHighGoal, CANSparkMax.ControlType.kPosition);
+  }
+  public boolean isRetracted(){
+    return extenderEncoder.getPosition()<10;
   }
   @Override
   public void initSendable(SendableBuilder builder) {

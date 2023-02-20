@@ -28,14 +28,14 @@ public class Claw extends SubsystemBase {
   private RelativeEncoder clawEncoder = clawMotor.getEncoder();
   private double kP = 0.1;
   private double cubeDesiredPos = 15;
-  private double coneDesiredPos = 20;
+  private double coneDesiredPos = 117;
 
   public Claw() {
     clawMotor.restoreFactoryDefaults();
     clawMotor.clearFaults();
     clawMotor.setIdleMode(IdleMode.kBrake);
     clawPID.setP(kP);
-    clawPID.setOutputRange(-0.5, 0.5);
+    clawPID.setOutputRange(-1, 1);
     resetClawEncoder();
     SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
     SmartDashboard.putData(this); 
@@ -70,6 +70,9 @@ public class Claw extends SubsystemBase {
   }
   public void gotoDefaultPos(){
     clawPID.setReference(0, CANSparkMax.ControlType.kPosition);
+  }
+  public boolean isConeGrabbed(){
+    return clawEncoder.getPosition()>=coneDesiredPos-4;
   }
 
   @Override

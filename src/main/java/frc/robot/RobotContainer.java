@@ -28,7 +28,12 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ArmGoToHigh;
+import frc.robot.commands.ArmGoToMid;
+import frc.robot.commands.ClawGrabCone;
+import frc.robot.commands.ClawReset;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ExtenderRetractToZero;
 import frc.robot.commands.ManualEncoderCalibration;
 import frc.robot.commands.OrientCone;
 import frc.robot.commands.SwerveJoystickCmd;
@@ -146,8 +151,8 @@ public class RobotContainer {
         .whileFalse(new InstantCommand(()->arm.stopArm()));
       secondaryController.start().onTrue(new InstantCommand(()->arm.armHighGoal()))
         .onFalse(new InstantCommand(()->arm.stopArm()));
-      secondaryController.back().onTrue(new InstantCommand(()->arm.armMoveToZeroPosition()))
-        .onFalse(new InstantCommand(()->arm.stopArm()));
+      // secondaryController.back().onTrue(new InstantCommand(()->arm.armMoveToZeroPosition()))
+      //   .onFalse(new InstantCommand(()->arm.stopArm()));
       //Extender Buttons
       secondaryController.b().onTrue(new InstantCommand(()->extender.extend()))
         .onFalse(new InstantCommand(()->extender.stopExtend()));      
@@ -168,18 +173,32 @@ public class RobotContainer {
         .whileFalse(new InstantCommand(()->orienter.stopMicrowave()));
       
 
-      secondaryController.leftStick().onTrue(Commands.parallel(
-        new InstantCommand(()->claw.gotoDefaultPos()),
-        new InstantCommand(()->extender.gotoDefaultPos())
-        //new InstantCommand(()->arm.armMoveToZeroPosition())
-        ));
-      secondaryController.rightStick().onTrue(Commands.parallel(
-        new InstantCommand(()->claw.gotoDefaultPos()),
+      // secondaryController.leftStick().onTrue(Commands.parallel(
+      //   new InstantCommand(()->claw.gotoDefaultPos()),
+      //   new InstantCommand(()->extender.gotoDefaultPos())
+      //   //new InstantCommand(()->arm.armMoveToZeroPosition())
+      //   ));
+      secondaryController.leftStick().onTrue(new SequentialCommandGroup(
+          new ClawGrabCone(claw),
+          new ArmGoToMid(arm),
+          new InstantCommand(()->extender.extendMidGoal())
+      ));
+      secondaryController.back().onTrue(new SequentialCommandGroup(
+        new ClawGrabCone(claw),
+        new ArmGoToHigh(arm),
+        new InstantCommand(()->extender.extendHighGoal())
+      ));
+      secondaryController.rightStick().onTrue(
+        // Commands.parallel(
+        // new InstantCommand(()->claw.gotoDefaultPos()),
         new SequentialCommandGroup(
-          new InstantCommand(()->extender.gotoDefaultPos()),
-          new InstantCommand(()->arm.armMoveToZeroPosition())   
+          new ClawReset(claw),
+          new ExtenderRetractToZero(extender),
+          new InstantCommand(()->arm.armMoveToZeroPosition()  
         )
       ));
+
+
       //new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
     }
   
