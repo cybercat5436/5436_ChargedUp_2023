@@ -33,8 +33,10 @@ import frc.robot.commands.AutonArmUpCommand;
 import frc.robot.commands.AutonGrabCommand;
 import frc.robot.commands.AutonIntakeCommand;
 import frc.robot.commands.AutonReleaseCommand;
+import frc.robot.commands.AutonomousDriveCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualEncoderCalibration;
+import frc.robot.commands.SetTo90;
 import frc.robot.commands.OrientCone;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.Arm;
@@ -75,11 +77,11 @@ public class RobotContainer {
     private final CommandXboxController primaryController = new CommandXboxController(1);
     private final CommandXboxController secondaryController = new CommandXboxController(0);
 
-    String trajectoryJSON = "paths/ForwardPath.wpilib.json";    
+    String trajectoryJSON = "paths/ChargePad1.wpilib.json";    
 
     Trajectory trajectory3 = new Trajectory();
 
-    String trajectoryJSON2 = "paths/ReversedPath.wpilib.json";
+    String trajectoryJSON2 = "paths/ChargePad2.wpilib.json";
     Trajectory trajectory4 = new Trajectory();
 
     private final SendableChooser<Command> autonChooser = new SendableChooser<>();
@@ -116,7 +118,8 @@ public class RobotContainer {
       // DataLogManager.start();
       // DataLogManager.log("Started the DataLogManager!!!");
       // manualEncoderCalibration.execute();
-    
+      SmartDashboard.putData(new InstantCommand(() -> swerveSubsystem.zeroIntegrator()));
+
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
         trajectory3 = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
@@ -255,6 +258,16 @@ public class RobotContainer {
 
       return autonChooser.getSelected();
 
+      return new SequentialCommandGroup(
+              //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
+              new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
+              swerveControllerCommand, 
+              autonomousDriveCommand,
+             // swerveControllerCommand1,
+             setTo90,
+              new InstantCommand(() -> swerveSubsystem.stopModules()));
+              // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
+              
   }
 
   }

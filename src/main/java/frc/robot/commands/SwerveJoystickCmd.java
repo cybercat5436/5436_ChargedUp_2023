@@ -122,27 +122,28 @@ public class SwerveJoystickCmd extends CommandBase {
         }
 
 
-        rollROC = ((swerveSubsystem.getRollDegrees() - previousRoll)/20);
+        //rollROC = ((swerveSubsystem.getRollDegrees() - previousRoll)/20);
         if (chargePadFunction.get()) {
-            double balanceError = 0 - swerveSubsystem.getRollDegrees();
-            if (balanceError < 0) {
-                errorMultiplier = -1;
-            } else {
-                errorMultiplier = 1;
-            }
-            double sqrBalanceError = (Math.pow(balanceError, 2)) * errorMultiplier;
+            xSpeed = swerveSubsystem.autoBalance();
+        //    double balanceError = 0 - swerveSubsystem.getRollDegrees();
+        //     if (balanceError < 0) {
+        //         errorMultiplier = -1;
+        //     } else {
+        //         errorMultiplier = 1;
+        //     }
+        //     double sqrBalanceError = (Math.pow(balanceError, 2)) * errorMultiplier;
             
-            //rollROC (rate of change) is in Degrees/Milisecond
-            double proportionalSpeed = (balanceConstant * balanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
-            //deriv speed -4.16 proportional speed .0033
-            double derivSpeed = ((rollROC * rollROCConstant) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
-            double feedForwardSpeed = ((feedForwardConstant * sqrBalanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
-            //derivSpeed = Math.min(Math.abs(proportionalSpeed + feedForwardSpeed), Math.abs(derivSpeed)) * Math.signum(derivSpeed);
-            SmartDashboard.putNumber("proportional speed", proportionalSpeed);
-            SmartDashboard.putNumber("deriv Speed", derivSpeed);
-            SmartDashboard.putNumber("feed forward speed", feedForwardSpeed);
-            xSpeed = proportionalSpeed + derivSpeed + feedForwardSpeed;
-            previousRoll = swerveSubsystem.getRollDegrees();
+        //     //rollROC (rate of change) is in Degrees/Milisecond
+        //     double proportionalSpeed = (balanceConstant * balanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+        //     //deriv speed -4.16 proportional speed .0033
+        //     double derivSpeed = ((rollROC * rollROCConstant) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+        //     double feedForwardSpeed = ((feedForwardConstant * sqrBalanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+        //     //derivSpeed = Math.min(Math.abs(proportionalSpeed + feedForwardSpeed), Math.abs(derivSpeed)) * Math.signum(derivSpeed);
+        //     SmartDashboard.putNumber("proportional speed", proportionalSpeed);
+        //     SmartDashboard.putNumber("deriv Speed", derivSpeed);
+        //     SmartDashboard.putNumber("feed forward speed", feedForwardSpeed);
+        //     xSpeed = proportionalSpeed + derivSpeed + feedForwardSpeed;
+        //     previousRoll = swerveSubsystem.getRollDegrees();
     
         }
 
@@ -216,10 +217,6 @@ public class SwerveJoystickCmd extends CommandBase {
         builder.addBooleanProperty("autoVisionFunction", () -> visionAdjustmentFunction.get(), null);
         builder.addDoubleProperty("kLimeLightTurning", () -> kLimelightTurning, (value) -> kLimelightTurning = value);
         builder.addDoubleProperty("targetHeading", () -> targetHeading, (value) -> targetHeading = value);
-        builder.addDoubleProperty("balanceConstant", () -> balanceConstant, (value) -> balanceConstant = value);
-        builder.addDoubleProperty("Roll Rate of Change", () -> rollROC, null);
-        builder.addDoubleProperty("Roll Rate of Change Constant", () -> rollROCConstant, (value) -> rollROCConstant = value);
-        builder.addDoubleProperty("feed forward", () -> feedForwardConstant, (value) -> feedForwardConstant = value);
 
 
     }

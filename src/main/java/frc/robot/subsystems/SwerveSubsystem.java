@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.IntegerEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -37,6 +38,16 @@ public class SwerveSubsystem extends SubsystemBase{
     
     private ArrayList<SwerveModuleState> moduleStates = new ArrayList<>();
     private ArrayList<SwerveModule> swerveModules = new ArrayList<>();
+    private double balanceConstant = (.0033);
+    private double feedForwardConstant = (.00034);
+    private double previousRoll = 0;
+    private double rollROC;
+    private double rollROCConstant = -4.16;
+    private double errorMultiplier;
+    private double xSpeed;
+    private double integratorSum;
+    private double integratorConstant = 0.0000;
+
 
 
     private final SwerveModule frontLeft = new SwerveModule(
@@ -207,6 +218,10 @@ public void zeroHeading(){
     gyro.reset();
 }
 
+public void zeroIntegrator(){
+    integratorSum = 0;
+}
+
 public void setModuleStates(SwerveModuleState[] desiredStates){
     moduleStates.clear();
     for(int i = 0; i < 4; i++){
@@ -218,6 +233,40 @@ public void setModuleStates(SwerveModuleState[] desiredStates){
     backLeft.setDesiredState(desiredStates[2]);
     backRight.setDesiredState(desiredStates[3]);
 
+}
+
+public double autoBalance(){
+    rollROC = ((getRollDegrees() - previousRoll)/20);
+
+    double balanceError = 0 - getRollDegrees();
+
+    if(balanceError > -7.5 && balanceError < 7.5){
+        integratorSum += balanceError * 20;
+    }
+
+    if (balanceError < 0) {
+        errorMultiplier = -1;
+    } else {
+        errorMultiplier = 1;
+    }
+    double sqrBalanceError = (Math.pow(balanceError, 2)) * errorMultiplier;
+    
+    //rollROC (rate of change) is in Degrees/Milisecond
+    double proportionalSpeed = (balanceConstant * balanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+    //deriv speed -4.16 proportional speed .0033
+    double derivSpeed = ((rollROC * rollROCConstant) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+    double feedForwardSpeed = ((feedForwardConstant * sqrBalanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+    double integratorSpeed = ((integratorConstant * integratorSum) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+    //derivSpeed = Math.min(Math.abs(proportionalSpeed + feedForwardSpeed), Math.abs(derivSpeed)) * Math.signum(derivSpeed);
+    SmartDashboard.putNumber("proportional speed", proportionalSpeed);
+    SmartDashboard.putNumber("deriv Speed", derivSpeed);
+    SmartDashboard.putNumber("feed forward speed", feedForwardSpeed);
+    SmartDashboard.putNumber("integrator speed", integratorSpeed);
+
+
+    xSpeed = proportionalSpeed + derivSpeed + feedForwardSpeed + integratorSpeed;
+    previousRoll = getRollDegrees();
+    return xSpeed;
 }
 
 public void stopModules(){
@@ -269,6 +318,8 @@ public void periodic() {
     // DataLogManager.log(String.format("Front right Angle %f", frontRight.getAbsoluteEncoderRadians()));
 
     // DataLogManager.log(String.format("Voltage %f", RobotController.getCurrent5V()));
+
+    SmartDashboard.putNumber("Integrator Sum", integratorSum);
 }
 
 @Override
@@ -282,6 +333,13 @@ public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("kPXController", () -> kPXController, (value) -> kPXController = value);
     builder.addDoubleProperty("kPYController", () -> kPYController, (value) -> kPYController = value);
     builder.addDoubleProperty("kThetaController", () -> kThetaController, (value) -> kThetaController = value);
+
+    builder.addDoubleProperty("balanceConstant", () -> balanceConstant, (value) -> balanceConstant = value);
+    builder.addDoubleProperty("Roll Rate of Change", () -> rollROC, null);
+    builder.addDoubleProperty("Roll Rate of Change Constant", () -> rollROCConstant, (value) -> rollROCConstant = value);
+    builder.addDoubleProperty("feed forward", () -> feedForwardConstant, (value) -> feedForwardConstant = value);
+
+    builder.addDoubleProperty("Integrator Constant", () -> integratorConstant, (value) -> integratorConstant = value);
 
 
 
