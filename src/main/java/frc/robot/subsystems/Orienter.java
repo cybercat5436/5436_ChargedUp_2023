@@ -38,6 +38,9 @@ public class Orienter extends SubsystemBase implements Sendable{
       orienterMotor.set(0);
     }
   }
+  public void microwaveManualSpin(){
+    orienterMotor.set(0.65);
+  }
   public void stopMicrowave() {
     orienterMotor.set(0);
   }

@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.List;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Instant;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -34,7 +35,12 @@ import frc.robot.commands.AutonGrabCommand;
 import frc.robot.commands.AutonIntakeCommand;
 import frc.robot.commands.AutonReleaseCommand;
 import frc.robot.commands.AutonomousDriveCommand;
+import frc.robot.commands.ArmGoToHigh;
+import frc.robot.commands.ArmGoToMid;
+import frc.robot.commands.ClawGrabCone;
+import frc.robot.commands.ClawReset;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ExtenderRetractToZero;
 import frc.robot.commands.ManualEncoderCalibration;
 import frc.robot.commands.SetTo90;
 import frc.robot.commands.OrientCone;
@@ -49,7 +55,9 @@ import frc.robot.subsystems.Orienter;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -207,6 +215,12 @@ public class RobotContainer {
       secondaryController.pov(225).whileTrue(new InstantCommand(()->arm.armDown()));
       secondaryController.pov(180).whileTrue(new InstantCommand(()->arm.armDown()));
       secondaryController.pov(135).whileTrue(new InstantCommand(()->arm.armDown()));
+      secondaryController.rightTrigger().whileTrue(new InstantCommand(()->arm.armMidGoal()))
+        .whileFalse(new InstantCommand(()->arm.stopArm()));
+      secondaryController.start().onTrue(new InstantCommand(()->arm.armHighGoal()))
+        .onFalse(new InstantCommand(()->arm.stopArm()));
+      // secondaryController.back().onTrue(new InstantCommand(()->arm.armMoveToZeroPosition()))
+      //   .onFalse(new InstantCommand(()->arm.stopArm()));
       //Extender Buttons
       secondaryController.b().onTrue(new InstantCommand(()->extender.extend()))
         .onFalse(new InstantCommand(()->extender.stopExtend()));      
@@ -222,7 +236,37 @@ public class RobotContainer {
         .onFalse(new InstantCommand(()->intake.stopIntake()));
       secondaryController.a().onTrue(new InstantCommand(()->intake.intakeFeedOut()))
         .onFalse(new InstantCommand(()->intake.stopIntake()));
+      //Manual Orienter Button
+      secondaryController.leftTrigger().whileTrue(new InstantCommand(() -> orienter.microwaveManualSpin()))
+        .whileFalse(new InstantCommand(()->orienter.stopMicrowave()));
       
+
+      // secondaryController.leftStick().onTrue(Commands.parallel(
+      //   new InstantCommand(()->claw.gotoDefaultPos()),
+      //   new InstantCommand(()->extender.gotoDefaultPos())
+      //   //new InstantCommand(()->arm.armMoveToZeroPosition())
+      //   ));
+      secondaryController.leftStick().onTrue(new SequentialCommandGroup(
+          new ClawGrabCone(claw),
+          new ArmGoToMid(arm),
+          new InstantCommand(()->extender.extendMidGoal())
+      ));
+      secondaryController.back().onTrue(new SequentialCommandGroup(
+        new ClawGrabCone(claw),
+        new ArmGoToHigh(arm),
+        new InstantCommand(()->extender.extendHighGoal())
+      ));
+      secondaryController.rightStick().onTrue(
+        // Commands.parallel(
+        // new InstantCommand(()->claw.gotoDefaultPos()),
+        new SequentialCommandGroup(
+          new ClawReset(claw),
+          new ExtenderRetractToZero(extender),
+          new InstantCommand(()->arm.armMoveToZeroPosition()  
+        )
+      ));
+
+
       //new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
     }
 

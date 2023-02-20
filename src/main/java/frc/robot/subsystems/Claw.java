@@ -8,6 +8,8 @@ import javax.lang.model.element.ModuleElement.DirectiveVisitor;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -21,13 +23,20 @@ public class Claw extends SubsystemBase {
   /** Creates a new ConeIntake. */
   //Instantiate Motors
   private CANSparkMax clawMotor = new CANSparkMax(Constants.RoboRioPortConfig.CLAW_MOTOR, MotorType.kBrushless);
+  private SparkMaxPIDController clawPID = clawMotor.getPIDController();
   private double speed = 0.5;
   private RelativeEncoder clawEncoder = clawMotor.getEncoder();
-
+  private double kP = 0.1;
+  private double cubeDesiredPos = 15;
+  private double coneDesiredPos = 117;
 
   public Claw() {
     clawMotor.restoreFactoryDefaults();
     clawMotor.clearFaults();
+    clawMotor.setIdleMode(IdleMode.kBrake);
+    clawPID.setP(kP);
+    clawPID.setOutputRange(-1, 1);
+    resetClawEncoder();
     SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
     SmartDashboard.putData(this); 
   }
@@ -53,6 +62,18 @@ public class Claw extends SubsystemBase {
   public void resetClawEncoder(){
     clawEncoder.setPosition(0);
   }
+  public void grabCone(){
+    clawPID.setReference(coneDesiredPos, CANSparkMax.ControlType.kPosition);
+  }
+  public void grabCube(){
+    clawPID.setReference(cubeDesiredPos, CANSparkMax.ControlType.kPosition);
+  }
+  public void gotoDefaultPos(){
+    clawPID.setReference(0, CANSparkMax.ControlType.kPosition);
+  }
+  public boolean isConeGrabbed(){
+    return clawEncoder.getPosition()>=coneDesiredPos-4;
+  }
 
   @Override
   public void initSendable(SendableBuilder builder) {
@@ -60,5 +81,11 @@ public class Claw extends SubsystemBase {
     super.initSendable(builder);
     builder.addDoubleProperty("Claw Speed", () -> speed, (value) -> speed = value);
     builder.addDoubleProperty("Claw Position", () -> getClawPosition(), null);
+    builder.addDoubleProperty("Claw kP", () -> kP, (value) ->{
+      kP = value;
+      clawPID.setP(kP);
+    });
+    builder.addDoubleProperty("Cube Desired Rotations", () -> cubeDesiredPos, (value)->cubeDesiredPos=value);
+    builder.addDoubleProperty("Cone Desired Rotations", () -> coneDesiredPos, (value)->coneDesiredPos=value);
   }
 }

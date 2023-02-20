@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -15,7 +16,8 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   private CANSparkMax intakeMotor = new CANSparkMax(Constants.RoboRioPortConfig.INTAKE_MOTOR, MotorType.kBrushless);
-  private double speed = 0.5;
+  private double speed = 1.0;
+  private RelativeEncoder intakeEncoder = intakeMotor.getEncoder();
 
   /** Creates a new Intake. */
   public Intake() {
@@ -34,7 +36,7 @@ public class Intake extends SubsystemBase {
     // TODO Auto-generated method stub
     super.initSendable(builder);
     builder.addDoubleProperty("Intake Speed", () -> speed, (value) -> speed = value);
-
+    builder.addDoubleProperty("Intake Position", () -> getIntakePosition(), null);
   }
 
   public void stopIntake(){
@@ -45,5 +47,11 @@ public class Intake extends SubsystemBase {
   }
   public void intakeFeedOut(){
     intakeMotor.set(speed*-1);
+  }
+  public double getIntakePosition(){
+    return intakeEncoder.getPosition();
+  }
+  public void resetIntakeEncoder(){
+    intakeEncoder.setPosition(0);
   }
 }
