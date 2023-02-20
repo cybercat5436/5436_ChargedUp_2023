@@ -254,19 +254,20 @@ public class RobotContainer {
   //             new InstantCommand(() -> swerveSubsystem.stopModules()));
   //             // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
      
-  
+     AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 6);
+     SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
 
       return autonChooser.getSelected();
 
-      return new SequentialCommandGroup(
-              //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
-              new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
-              swerveControllerCommand, 
-              autonomousDriveCommand,
-             // swerveControllerCommand1,
-             setTo90,
-              new InstantCommand(() -> swerveSubsystem.stopModules()));
-              // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
+  //     return new SequentialCommandGroup(
+  //             //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
+  //             new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
+  //             swerveControllerCommand, 
+  //             autonomousDriveCommand,
+  //            // swerveControllerCommand1,
+  //            setTo90,
+  //             new InstantCommand(() -> swerveSubsystem.stopModules()));
+  //             // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
               
   }
 
