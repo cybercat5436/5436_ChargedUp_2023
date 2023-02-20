@@ -59,6 +59,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -85,7 +86,7 @@ public class RobotContainer {
     private final CommandXboxController primaryController = new CommandXboxController(1);
     private final CommandXboxController secondaryController = new CommandXboxController(0);
 
-    String trajectoryJSON = "paths/ChargePad1.wpilib.json";    
+    String trajectoryJSON = "paths/ForwardPath.wpilib.json";    
 
     Trajectory trajectory3 = new Trajectory();
 
@@ -93,6 +94,18 @@ public class RobotContainer {
     Trajectory trajectory4 = new Trajectory();
 
     private final SendableChooser<Command> autonChooser = new SendableChooser<>();
+
+    private SequentialCommandGroup scoreHighGoal = new SequentialCommandGroup(
+      new ClawGrabCone(claw),
+      new ArmGoToHigh(arm),
+      new InstantCommand(()->extender.extendHighGoal())
+      );
+
+    private SequentialCommandGroup retractArm = new SequentialCommandGroup(
+      new ClawReset(claw),
+      new ExtenderRetractToZero(extender),
+      new InstantCommand(()->arm.armMoveToZeroPosition() ) 
+    );
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -186,16 +199,20 @@ public class RobotContainer {
                   new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
                   swerveControllerCommand1, 
                   new InstantCommand(() -> swerveSubsystem.stopModules()));
+
+              
     
-      final SequentialCommandGroup autonDeliverRoutine = new SequentialCommandGroup(new AutonGrabCommand(claw, 0, 0), 
-      new AutonArmUpCommand(arm, 0, 0), new AutonReleaseCommand(claw, 0, 0),
-      new AutonArmDownCommand(arm, 0, 0));
+      final SequentialCommandGroup autonDeliverRoutine = scoreHighGoal;
 
       final SequentialCommandGroup autonPickUpRoutine = new SequentialCommandGroup(new AutonIntakeCommand(intake, 0));
       
-      autonChooser.setDefaultOption("Right Path", autonDeliverRoutine.andThen(Commands.parallel(autonForwardPath, autonPickUpRoutine)).andThen(autonBackwardPath));
-      autonChooser.addOption("Left Path", autonDeliverRoutine.andThen(Commands.parallel(autonForwardPath, autonPickUpRoutine)).andThen(autonBackwardPath));
+      //autonChooser.setDefaultOption("Right Path", autonDeliverRoutine.andThen(Commands.parallel(autonForwardPath, autonPickUpRoutine)).andThen(autonBackwardPath));
+      //autonChooser.addOption("Left Path", autonDeliverRoutine.andThen(Commands.parallel(autonForwardPath, autonPickUpRoutine)).andThen(autonBackwardPath));
+      autonChooser.setDefaultOption("Test", scoreHighGoal.andThen(new WaitCommand(3)).andThen(retractArm).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, trajectory3.getTotalTimeSeconds()))));
       //autonChooser.addOption("Charge Pad Path", autonWallRoutine);
+
+      //autonChooser.setDefaultOption("Test", Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, trajectory3.getTotalTimeSeconds())));
+
       SmartDashboard.putData(autonChooser);
 
 }
@@ -251,20 +268,8 @@ public class RobotContainer {
           new ArmGoToMid(arm),
           new InstantCommand(()->extender.extendMidGoal())
       ));
-      secondaryController.back().onTrue(new SequentialCommandGroup(
-        new ClawGrabCone(claw),
-        new ArmGoToHigh(arm),
-        new InstantCommand(()->extender.extendHighGoal())
-      ));
-      secondaryController.rightStick().onTrue(
-        // Commands.parallel(
-        // new InstantCommand(()->claw.gotoDefaultPos()),
-        new SequentialCommandGroup(
-          new ClawReset(claw),
-          new ExtenderRetractToZero(extender),
-          new InstantCommand(()->arm.armMoveToZeroPosition()  
-        )
-      ));
+      secondaryController.back().onTrue(scoreHighGoal);
+      secondaryController.rightStick().onTrue(retractArm);
 
 
       //new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());

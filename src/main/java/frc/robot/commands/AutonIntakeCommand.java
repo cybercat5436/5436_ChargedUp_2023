@@ -19,6 +19,7 @@ public class AutonIntakeCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     timeLimit = time;
+    timer = new Timer();
 
   }
 
@@ -33,7 +34,7 @@ public class AutonIntakeCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.intakeFeedIn();
+    intake.intakeFeedOut();
   }
 
   // Called once the command ends or is interrupted.

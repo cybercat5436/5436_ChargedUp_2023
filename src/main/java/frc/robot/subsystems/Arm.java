@@ -19,7 +19,7 @@ import frc.robot.Constants;
 public class Arm extends SubsystemBase {
   private TalonFX armMotor = new TalonFX(Constants.RoboRioPortConfig.ARM_MOTOR);
   private double speed = 0.2;
-  private final double HIGH_POS = -58500;
+  private final double HIGH_POS = -57000;
   private final double MID_POS = -50000;
   private final double CHASSIS_EXIT_POS = -36000;
   private double kP = 0.25;

@@ -23,7 +23,7 @@ public class Extender extends SubsystemBase {
   private SparkMaxPIDController extenderPID = extenderMotor.getPIDController();
   private double kP = 0.1;
   private double desiredMidGoal = 170;
-  private double desiredHighGoal = 447; 
+  private double desiredHighGoal = 460; 
 
   /** Creates a new Extender. */
   public Extender() {
