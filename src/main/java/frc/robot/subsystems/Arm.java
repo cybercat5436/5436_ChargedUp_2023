@@ -19,9 +19,9 @@ import frc.robot.Constants;
 public class Arm extends SubsystemBase {
   private TalonFX armMotor = new TalonFX(Constants.RoboRioPortConfig.ARM_MOTOR);
   private double speed = 0.2;
-  private final double HIGH_POS = -57000;
-  private final double MID_POS = -50000;
-  private final double CHASSIS_EXIT_POS = -36000;
+  private final double HIGH_POS = -165000;
+  private final double MID_POS = -140000;
+  private final double CHASSIS_EXIT_POS = -130000;
   private double kP = 0.25;
  
   /** Creates a new Arm. */
@@ -31,7 +31,7 @@ public class Arm extends SubsystemBase {
     armMotor.setNeutralMode(NeutralMode.Brake);
     resetArmEncoder();
     armMotor.config_kP(0, kP);
-    armMotor.configClosedLoopPeakOutput(0, 0.2);
+    armMotor.configClosedLoopPeakOutput(0, 0.5);
     
     armMotor.configStatorCurrentLimit(
       new StatorCurrentLimitConfiguration(true, 30, 45, 0.050));
@@ -46,10 +46,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void armUp(){
-    armMotor.set(ControlMode.PercentOutput, speed);
+    armMotor.set(ControlMode.PercentOutput, -speed);
   }
   public void armDown(){
-    armMotor.set(ControlMode.PercentOutput, speed*-1);
+    armMotor.set(ControlMode.PercentOutput, speed);
   }
   public void stopArm(){
     armMotor.set(ControlMode.PercentOutput, 0);
@@ -76,7 +76,7 @@ public class Arm extends SubsystemBase {
     return getArmPosition()<=HIGH_POS+500;
   }
   public boolean hasExitedChassis(){
-    return getArmPosition()<=CHASSIS_EXIT_POS;
+    return getArmPosition()<= CHASSIS_EXIT_POS;
   }
   @Override
   public void initSendable(SendableBuilder builder) {

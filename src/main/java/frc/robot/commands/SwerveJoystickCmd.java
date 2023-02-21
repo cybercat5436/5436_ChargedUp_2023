@@ -16,10 +16,11 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.LimeLight2;
+import frc.robot.subsystems.LimeLightGrid;
 
 public class SwerveJoystickCmd extends CommandBase {
     private SwerveSubsystem swerveSubsystem;
-    private LimeLight2 visionSubsystem;
+    private LimeLightGrid limeLightGrid;
     private Supplier <Double> xSpdFunction, ySpdFunction, turningSpdFunction, leftTrigger;
     private Supplier<Boolean> fieldOrientedFunction;
     private Supplier<Boolean> visionAdjustmentFunction;
@@ -47,7 +48,7 @@ public class SwerveJoystickCmd extends CommandBase {
                 Supplier<Boolean> chargePadFunction,
                 Supplier<Boolean> visionAdjustmentFunction, 
                 Supplier<Double> leftTrigger,
-                LimeLight2 limeLight2){
+                LimeLightGrid limeLight2){
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
@@ -57,7 +58,7 @@ public class SwerveJoystickCmd extends CommandBase {
         this.addRequirements(swerveSubsystem);
         this.visionAdjustmentFunction = visionAdjustmentFunction;
         this.leftTrigger = leftTrigger;
-        visionSubsystem = limeLight2;
+        limeLightGrid = limeLight2;
 
         // Register the sendable to LiveWindow and SmartDashboard
         SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
@@ -72,7 +73,7 @@ public class SwerveJoystickCmd extends CommandBase {
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
         double turningSpeed = turningSpdFunction.get();
-        boolean targetInView = visionSubsystem.getVisionTargetStatus();
+        boolean targetInView = limeLightGrid.getVisionTargetStatus();
         boolean autoVisionFunction = visionAdjustmentFunction.get();
                 boolean halfSpeed = halfSpeedFunction.get();
 
@@ -112,8 +113,8 @@ public class SwerveJoystickCmd extends CommandBase {
         // turningSpeed = slewRateLimiter.calculate(turningSpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         if(targetInView && autoVisionFunction){
             fieldOrientedFunction = () -> false;
-            xSpeed = visionSubsystem.getVisionTargetAreaError() * kLimelightForward;
-            ySpeed = -visionSubsystem.getVisionTargetHorizontalError() * kLimelightHorizontal;
+            xSpeed = limeLightGrid.getVisionTargetAreaError() * kLimelightForward;
+            ySpeed = -limeLightGrid.getVisionTargetHorizontalError() * kLimelightHorizontal;
         }else{
             fieldOrientedFunction = () -> true;
         }
@@ -121,7 +122,7 @@ public class SwerveJoystickCmd extends CommandBase {
             turningSpeed=(targetHeading - swerveSubsystem.getHeading())*kLimelightTurning;
         }
 
-
+ 
         //rollROC = ((swerveSubsystem.getRollDegrees() - previousRoll)/20);
         if (chargePadFunction.get()) {
             xSpeed = swerveSubsystem.autoBalance();
@@ -186,7 +187,7 @@ public class SwerveJoystickCmd extends CommandBase {
         SmartDashboard.putNumber("vySpeed", chassisSpeeds.vyMetersPerSecond);
         SmartDashboard.putNumber("kLimelightHorizontal", kLimelightHorizontal);
         SmartDashboard.putNumber("kLimelightForward", kLimelightForward);
-        SmartDashboard.putBoolean("targetInView", visionSubsystem.getVisionTargetStatus());
+        SmartDashboard.putBoolean("targetInView", limeLightGrid.getVisionTargetStatus());
         SmartDashboard.putBoolean("autoVisionFunction", visionAdjustmentFunction.get());
         SmartDashboard.putNumber("xSpeed", xSpeed);
         SmartDashboard.putNumber("ySpeed", ySpeed);
@@ -213,7 +214,7 @@ public class SwerveJoystickCmd extends CommandBase {
         super.initSendable(builder);
         builder.addDoubleProperty("kLimeLightHorizontal", () -> kLimelightHorizontal, (value) -> kLimelightHorizontal = value);
         builder.addDoubleProperty("kLimeLightForward", () -> kLimelightForward, (value) -> kLimelightForward = value);
-        builder.addBooleanProperty("targetInView", () -> visionSubsystem.getVisionTargetStatus(), null);
+        builder.addBooleanProperty("targetInView", () -> limeLightGrid.getVisionTargetStatus(), null);
         builder.addBooleanProperty("autoVisionFunction", () -> visionAdjustmentFunction.get(), null);
         builder.addDoubleProperty("kLimeLightTurning", () -> kLimelightTurning, (value) -> kLimelightTurning = value);
         builder.addDoubleProperty("targetHeading", () -> targetHeading, (value) -> targetHeading = value);

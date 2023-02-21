@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.Sendable;
@@ -25,6 +26,9 @@ public class Orienter extends SubsystemBase implements Sendable{
 
   /** Creates a new Orienter. */
   public Orienter(LimeLight2 limeLight2) {
+    orienterMotor.clearFaults();
+    orienterMotor.restoreFactoryDefaults();
+    orienterMotor.setIdleMode(IdleMode.kBrake);
     this.limelight2 = limeLight2;
     SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
         SmartDashboard.putData(this);
@@ -39,7 +43,7 @@ public class Orienter extends SubsystemBase implements Sendable{
     }
   }
   public void microwaveManualSpin(){
-    orienterMotor.set(0.65);
+    orienterMotor.set(0.25);
   }
   public void stopMicrowave() {
     orienterMotor.set(0);

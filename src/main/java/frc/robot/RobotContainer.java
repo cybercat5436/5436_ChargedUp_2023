@@ -51,6 +51,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Extender;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLight2;
+import frc.robot.subsystems.LimeLightGrid;
 import frc.robot.subsystems.Orienter;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -75,14 +76,14 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     public boolean halfSpeed = false;
-    private final LimeLight2 limeLight2 = new LimeLight2();    
+    private final LimeLightGrid limeLight2 = new LimeLightGrid();
+    private final LimeLight2 limeLight = new LimeLight2();
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-    private final Orienter orienter = new Orienter(limeLight2);
+    private final Orienter orienter = new Orienter(limeLight);
     private final Claw claw = new Claw();
     private final Arm arm = new Arm();
     private final Intake intake = new Intake();
     private final Extender extender = new Extender();
-    //private final Joystick driverJoystick = new Joystick(0); //old flightstick controller
     private final CommandXboxController primaryController = new CommandXboxController(1);
     private final CommandXboxController secondaryController = new CommandXboxController(0);
 
@@ -90,8 +91,13 @@ public class RobotContainer {
 
     Trajectory trajectory3 = new Trajectory();
 
-    String trajectoryJSON2 = "paths/ChargePad2.wpilib.json";
-    Trajectory trajectory4 = new Trajectory();
+    String chargePad2Json = "paths/ChargePad2.wpilib.json";
+    Trajectory chargePad2Trajectory = new Trajectory();
+
+    String chargePad1JSON = "paths/ChargePad1.wpilib.json";
+    Trajectory chargePadTragectory = new Trajectory();
+
+  
 
     private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
@@ -101,11 +107,25 @@ public class RobotContainer {
       new InstantCommand(()->extender.extendHighGoal())
       );
 
+      private SequentialCommandGroup scoreHighGoalAuton = new SequentialCommandGroup(
+        new ClawGrabCone(claw),
+        new ArmGoToHigh(arm),
+        new InstantCommand(()->extender.extendHighGoal())
+        );
+
     private SequentialCommandGroup retractArm = new SequentialCommandGroup(
       new ClawReset(claw),
       new ExtenderRetractToZero(extender),
       new InstantCommand(()->arm.armMoveToZeroPosition() ) 
     );
+
+    private SequentialCommandGroup retractArmAuton = new SequentialCommandGroup(
+      new ClawReset(claw),
+      new ExtenderRetractToZero(extender),
+      new InstantCommand(()->arm.armMoveToZeroPosition() ) 
+    );
+
+
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -125,48 +145,44 @@ public class RobotContainer {
       // Configure the button bindings
       ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);        
       primaryController.b()
-          //.whileActiveContinuous( new OrientCone(orienter))
-          .onTrue(new OrientCone(orienter, limeLight2));
-          //.whileFalse(new InstantCommand(() -> orienter.stopMicrowave()));
-      // xboxController.a()
-      //   .whileTrue(new InstantCommand(() -> {
-      //     System.out.println("stopping microwave");
-      //     orienter.stopMicrowave();
-      //   }));
+
+          .onTrue(new OrientCone(orienter, limeLight));
+
       SmartDashboard.putData(manualEncoderCalibration);
       configureButtonBindings();
-      // DataLogManager.logNetworkTables(true);
-      // DataLogManager.start();
-      // DataLogManager.log("Started the DataLogManager!!!");
-      // manualEncoderCalibration.execute();
+
       SmartDashboard.putData(new InstantCommand(() -> swerveSubsystem.zeroIntegrator()));
 
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
         trajectory3 = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
       } catch (IOException ex) {
-        //System.out.println("Unable to open trajectory");
+        System.out.println("Unable to open trajectory" + ex);
       }
 
       try {
-        Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
-        trajectory4 = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
+        Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(chargePad2Json);
+        chargePad2Trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
       } catch (IOException ex) {
-        //System.out.println("Unable to open trajectory");
+        System.out.println("Unable to open chargePad2 trajectory " + ex);
+      }
+
+      try {
+        Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(chargePad1JSON);
+        chargePadTragectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
+      } catch (IOException ex) {
+        System.out.print("unable to open charge pad 1" + ex);
       }
 
       //create auton commands
 
-      // 3. Define PID controllers for tracking trajectory
-      //PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-      //PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
       ProfiledPIDController thetaController = swerveSubsystem.getThetaController();
       thetaController.enableContinuousInput(-Math.PI, Math.PI);
       //Set the odometry to initial pose of the trajectory
       swerveSubsystem.resetOdometry(trajectory3.getInitialPose());
       //Reset all the drive motors of the swervemodules to 0
       swerveSubsystem.resetEncoders();
-      //System.out.println("The xpidcontroller");
+
       // 4. Construct command to follow trajectory
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
               trajectory3,
@@ -177,41 +193,31 @@ public class RobotContainer {
               thetaController,
               swerveSubsystem::setModuleStates,
               swerveSubsystem);
+   
 
-        SwerveControllerCommand swerveControllerCommand1 = new SwerveControllerCommand(
-                trajectory4,
-                swerveSubsystem::getPose,
-                DriveConstants.kDriveKinematics,
-                swerveSubsystem.getxController(),
-                swerveSubsystem.getyController(),
-                thetaController,
-                swerveSubsystem::setModuleStates,
-                swerveSubsystem);    
+        SwerveControllerCommand driveToChargePadCommand = new SwerveControllerCommand(
+          chargePadTragectory.concatenate(chargePad2Trajectory),
+          swerveSubsystem::getPose,
+          DriveConstants.kDriveKinematics,
+          swerveSubsystem.getxController(),
+          swerveSubsystem.getyController(),
+          thetaController,
+          swerveSubsystem::setModuleStates,
+          swerveSubsystem); 
                 
         SequentialCommandGroup autonForwardPath = new SequentialCommandGroup(
                   //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
                   new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
                   swerveControllerCommand,  
-                  new InstantCommand(() -> swerveSubsystem.stopModules()));
+                  new InstantCommand(() -> swerveSubsystem.stopModules()));     
 
-        SequentialCommandGroup autonBackwardPath = new SequentialCommandGroup(
-                  //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
-                  new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
-                  swerveControllerCommand1, 
-                  new InstantCommand(() -> swerveSubsystem.stopModules()));
-
-              
-    
-      final SequentialCommandGroup autonDeliverRoutine = scoreHighGoal;
-
-      final SequentialCommandGroup autonPickUpRoutine = new SequentialCommandGroup(new AutonIntakeCommand(intake, 0));
+      AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 6);
+      SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
       
-      //autonChooser.setDefaultOption("Right Path", autonDeliverRoutine.andThen(Commands.parallel(autonForwardPath, autonPickUpRoutine)).andThen(autonBackwardPath));
-      //autonChooser.addOption("Left Path", autonDeliverRoutine.andThen(Commands.parallel(autonForwardPath, autonPickUpRoutine)).andThen(autonBackwardPath));
-      autonChooser.setDefaultOption("Test", scoreHighGoal.andThen(new WaitCommand(3)).andThen(retractArm).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, trajectory3.getTotalTimeSeconds()))));
-      //autonChooser.addOption("Charge Pad Path", autonWallRoutine);
-
-      //autonChooser.setDefaultOption("Test", Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, trajectory3.getTotalTimeSeconds())));
+      //right or left
+      autonChooser.setDefaultOption("Right or Left", scoreHighGoalAuton.andThen(new WaitCommand(2)).andThen(retractArmAuton).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6))));
+      //auton Balance
+      autonChooser.addOption("Auton Balance", driveToChargePadCommand.andThen(autonomousDriveCommand).andThen(setTo90));
 
       SmartDashboard.putData(autonChooser);
 
@@ -244,11 +250,15 @@ public class RobotContainer {
       secondaryController.x().onTrue(new InstantCommand(()->extender.retract()))
         .onFalse(new InstantCommand(()->extender.stopExtend()));
       //Claw Buttons
+
+      //
       secondaryController.rightBumper().onTrue(new InstantCommand(()->claw.clawGrab()))
         .onFalse(new InstantCommand(()->claw.stopGrab()));
       secondaryController.leftBumper().onTrue(new InstantCommand(()->claw.clawRelease()))
         .onFalse(new InstantCommand(()->claw.stopGrab()));
       //Intake Buttons
+      //button y: feed in 
+      //button a: feed out
       secondaryController.y().onTrue(new InstantCommand(()->intake.intakeFeedIn()))
         .onFalse(new InstantCommand(()->intake.stopIntake()));
       secondaryController.a().onTrue(new InstantCommand(()->intake.intakeFeedOut()))
@@ -257,17 +267,15 @@ public class RobotContainer {
       secondaryController.leftTrigger().whileTrue(new InstantCommand(() -> orienter.microwaveManualSpin()))
         .whileFalse(new InstantCommand(()->orienter.stopMicrowave()));
       
-
-      // secondaryController.leftStick().onTrue(Commands.parallel(
-      //   new InstantCommand(()->claw.gotoDefaultPos()),
-      //   new InstantCommand(()->extender.gotoDefaultPos())
-      //   //new InstantCommand(()->arm.armMoveToZeroPosition())
-      //   ));
       secondaryController.leftStick().onTrue(new SequentialCommandGroup(
           new ClawGrabCone(claw),
           new ArmGoToMid(arm),
-          new InstantCommand(()->extender.extendMidGoal())
+          new InstantCommand(()-> 
+          {
+            System.out.print("EXTENDER MID GOAL!@#@!@#$$%^");
+            extender.extendMidGoal();})
       ));
+
       secondaryController.back().onTrue(scoreHighGoal);
       secondaryController.rightStick().onTrue(retractArm);
 
@@ -275,7 +283,6 @@ public class RobotContainer {
       //new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
     }
 
-  
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
@@ -283,40 +290,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
 
-      // 1. Create trajectory settings
-      TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-              AutoConstants.kMaxSpeedMetersPerSecond,
-              AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                      .setKinematics(DriveConstants.kDriveKinematics);
-
-      
-
-       
-     
-
-      // 5. Add some init and wrap-up, and return everything
-  //     return new SequentialCommandGroup(
-  //             //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
-  //             new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
-  //             swerveControllerCommand, 
-  //             swerveControllerCommand1, 
-  //             new InstantCommand(() -> swerveSubsystem.stopModules()));
-  //             // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
-     
-     AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 6);
-     SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
-
       return autonChooser.getSelected();
-
-  //     return new SequentialCommandGroup(
-  //             //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
-  //             new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
-  //             swerveControllerCommand, 
-  //             autonomousDriveCommand,
-  //            // swerveControllerCommand1,
-  //            setTo90,
-  //             new InstantCommand(() -> swerveSubsystem.stopModules()));
-  //             // new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,new InstantCommand(() -> swerveSubsystem.stopModules()));
               
   }
 

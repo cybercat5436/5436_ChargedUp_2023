@@ -22,8 +22,9 @@ public class Extender extends SubsystemBase {
   private double speed = 0.6;
   private SparkMaxPIDController extenderPID = extenderMotor.getPIDController();
   private double kP = 0.1;
-  private double desiredMidGoal = 170;
-  private double desiredHighGoal = 460; 
+  private double desiredMidGoal = 94.44;
+  private double desiredHighGoal = 255.56; 
+  private double retractLimit = 5.56;
 
   /** Creates a new Extender. */
   public Extender() {
@@ -68,7 +69,7 @@ public class Extender extends SubsystemBase {
     extenderPID.setReference(desiredHighGoal, CANSparkMax.ControlType.kPosition);
   }
   public boolean isRetracted(){
-    return extenderEncoder.getPosition()<10;
+    return extenderEncoder.getPosition()< retractLimit;
   }
   @Override
   public void initSendable(SendableBuilder builder) {

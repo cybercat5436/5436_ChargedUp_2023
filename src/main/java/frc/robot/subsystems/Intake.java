@@ -23,6 +23,7 @@ public class Intake extends SubsystemBase {
   public Intake() {
     intakeMotor.restoreFactoryDefaults();
     intakeMotor.clearFaults();
+    intakeMotor.setInverted(true);
     SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
     SmartDashboard.putData(this);
   }
