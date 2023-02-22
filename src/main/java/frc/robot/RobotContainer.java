@@ -50,8 +50,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Extender;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LimeLight2;
-import frc.robot.subsystems.LimeLightGrid;
+import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Orienter;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -76,10 +75,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     public boolean halfSpeed = false;
-    private final LimeLightGrid limeLight2 = new LimeLightGrid();
-    private final LimeLight2 limeLight = new LimeLight2();
+    private final LimeLight limeLightGrid = new LimeLight("limelight");
+    private final LimeLight limeLightOrient = new LimeLight("limelight-orient");
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-    private final Orienter orienter = new Orienter(limeLight);
+    private final Orienter orienter = new Orienter(limeLightOrient);
     private final Claw claw = new Claw();
     private final Arm arm = new Arm();
     private final Intake intake = new Intake();
@@ -140,13 +139,13 @@ public class RobotContainer {
         () -> primaryController.y().getAsBoolean(),
         () -> primaryController.rightBumper().getAsBoolean(),
         () -> primaryController.getLeftTriggerAxis(),
-        limeLight2));
+        limeLightGrid));
 
       // Configure the button bindings
       ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);        
       primaryController.b()
 
-          .onTrue(new OrientCone(orienter, limeLight));
+          .onTrue(new OrientCone(orienter, limeLightGrid));
 
       SmartDashboard.putData(manualEncoderCalibration);
       configureButtonBindings();

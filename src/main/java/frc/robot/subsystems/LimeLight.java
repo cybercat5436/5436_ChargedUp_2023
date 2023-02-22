@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -10,7 +6,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class LimeLightGrid extends SubsystemBase {
+public class LimeLight extends SubsystemBase {
   public NetworkTable tableLimelight;
   public NetworkTableEntry txLocal; //horizontal error
   public NetworkTableEntry tyLocal; //vertical error
@@ -29,20 +25,19 @@ public class LimeLightGrid extends SubsystemBase {
   private double visionSpeed;
   private boolean targetInView = false;
   public double spinThreshold = 75;
-  
-  /** Creates a new LimeLightGrid. */
-  public LimeLightGrid() {
-    tableLimelight = NetworkTableInstance.getDefault().getTable("limelight");
+
+  public LimeLight(String networkTableName) {
+    tableLimelight = NetworkTableInstance.getDefault().getTable(networkTableName);
     txLocal = tableLimelight.getEntry("tx"); // communicates horizontal degree offset from target
     tyLocal = tableLimelight.getEntry("ty"); // communicates verticle degree offset from target
     taLocal = tableLimelight.getEntry("ta"); // communicates percentage of image the target takes up
     tvLocal = tableLimelight.getEntry("tv"); // communicates whether a valid target is acquired, 0 or 1
     tsLocal = tableLimelight.getEntry("ts"); // communicates skew offset from target
     tLongLocal = tableLimelight.getEntry("tlong");
+  
+}
 
-  }
-
-  @Override
+@Override
   public void periodic() {
     horizontalError = getVisionTargetHorizontalError();
     verticalError = getVisionTargetVerticalError();
@@ -51,9 +46,17 @@ public class LimeLightGrid extends SubsystemBase {
     SmartDashboard.putBoolean("Valid Target Found", targetInView);
     SmartDashboard.putNumber("tx", getVisionTargetHorizontalError());
     SmartDashboard.putNumber("ty", getVisionTargetVerticalError());
-    // This method will be called once per scheduler run
+    if (isOriented()) {
+      System.out.println("It is oriented!!!!");
+    
+    }
+    // System.out.println("This is Tlong:" + tLongLocal.getDouble(0));
+    SmartDashboard.putNumber("tLong", tLongLocal.getDouble(0));
+    SmartDashboard.putBoolean("Is oriented", isOriented());
   }
+  
 
+  // This was refactored into SwerveJoystickCommand
   public boolean alignToTarget(boolean targetFound, double xError, double yError, String zone){
     
     double yOffset = 0;
@@ -122,6 +125,17 @@ public class LimeLightGrid extends SubsystemBase {
   }  //End of AlignToTargetMethod
 
 
+  // Checks for cone orientation
+  public boolean isOriented(){
+    if (tLongLocal.getDouble(0) >= spinThreshold) {
+      return true;
+      //return false;
+    } else{
+      return false;
+    }
+  }
+  
+  // responds true if target is identified in field of view
   public boolean getVisionTargetStatus(){
     boolean returnValue = false;
     
@@ -131,6 +145,7 @@ public class LimeLightGrid extends SubsystemBase {
 
     return returnValue;
   }
+
 
   public double getVisionTargetHorizontalError(){
     return txLocal.getDouble(0);
@@ -148,5 +163,5 @@ public double getVisionTargetSkew(){
   return tsLocal.getDouble(0);
 }
 
-  
+
 }

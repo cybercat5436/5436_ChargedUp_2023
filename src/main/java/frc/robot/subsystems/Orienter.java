@@ -17,7 +17,7 @@ import frc.robot.Constants;
 
 public class Orienter extends SubsystemBase implements Sendable{
   private CANSparkMax orienterMotor = new CANSparkMax(Constants.RoboRioPortConfig.ORIENT_MOTOR, MotorType.kBrushless);
-  public LimeLight2 limelight2;
+  public LimeLight limelightOrient;
   private double spinKConstant = .05;
   private double spinOtherValue = 75;
 
@@ -25,18 +25,18 @@ public class Orienter extends SubsystemBase implements Sendable{
 
 
   /** Creates a new Orienter. */
-  public Orienter(LimeLight2 limeLight2) {
+  public Orienter(LimeLight limeLight) {
     orienterMotor.clearFaults();
     orienterMotor.restoreFactoryDefaults();
     orienterMotor.setIdleMode(IdleMode.kBrake);
-    this.limelight2 = limeLight2;
+    this.limelightOrient = limeLight;
     SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
         SmartDashboard.putData(this);
   }
 
   public void microwaveSpin() {
-    if(!limelight2.isOriented()) {
-      orienterMotor.set(.1* spinKConstant * (spinOtherValue - limelight2.tLongLocal.getDouble(spinKConstant)));
+    if(!limelightOrient.isOriented()) {
+      orienterMotor.set(.1* spinKConstant * (spinOtherValue - limelightOrient.tLongLocal.getDouble(spinKConstant)));
 
     } else{
       orienterMotor.set(0);
@@ -57,7 +57,7 @@ public class Orienter extends SubsystemBase implements Sendable{
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
     super.initSendable(builder);
-    builder.addDoubleProperty("spinThreshold", () -> limelight2.spinThreshold, (value) -> limelight2.spinThreshold = value);
+    builder.addDoubleProperty("spinThreshold", () -> limelightOrient.spinThreshold, (value) -> limelightOrient.spinThreshold = value);
     builder.addDoubleProperty("spinKConstant", () -> spinKConstant, (value) -> spinKConstant = value);
     builder.addDoubleProperty("OtherValue", () -> spinOtherValue, (value) -> spinOtherValue = value);
 
