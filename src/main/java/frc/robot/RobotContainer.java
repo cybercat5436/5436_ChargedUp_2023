@@ -36,6 +36,7 @@ import frc.robot.commands.AutonIntakeCommand;
 import frc.robot.commands.AutonReleaseCommand;
 import frc.robot.commands.AutonomousDriveCommand;
 import frc.robot.commands.ArmGoToHigh;
+import frc.robot.commands.ArmGoToHigh2;
 import frc.robot.commands.ArmGoToMid;
 import frc.robot.commands.ClawGrabCone;
 import frc.robot.commands.ClawReset;
@@ -215,8 +216,10 @@ public class RobotContainer {
       SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
       
       //right or left
-      autonChooser.setDefaultOption("Right or Left", scoreHighGoalAuton.andThen(new WaitCommand(2)).andThen(retractArmAuton).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6))));
+      //autonChooser.setDefaultOption("Right or Left", scoreHighGoalAuton.andThen(new WaitCommand(2)).andThen(new ArmGoToHigh2(arm)).andThen(retractArmAuton).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6))));
       //auton Balance
+      autonChooser.setDefaultOption("Right or Left", (Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6))));
+
       autonChooser.addOption("Auton Balance", driveToChargePadCommand.andThen(autonomousDriveCommand).andThen(setTo90));
 
       SmartDashboard.putData(autonChooser);
@@ -270,7 +273,7 @@ public class RobotContainer {
       secondaryController.leftStick().onTrue(new SequentialCommandGroup(
           new ClawGrabCone(claw),
           new ArmGoToMid(arm),
-          new InstantCommand(()-> 
+          new InstantCommand(()->  
           {
             System.out.print("EXTENDER MID GOAL!@#@!@#$$%^");
             extender.extendMidGoal();})

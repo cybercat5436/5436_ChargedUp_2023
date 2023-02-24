@@ -19,7 +19,8 @@ import frc.robot.Constants;
 public class Arm extends SubsystemBase {
   private TalonFX armMotor = new TalonFX(Constants.RoboRioPortConfig.ARM_MOTOR);
   private double speed = 0.2;
-  private final double HIGH_POS = -165000;
+  private final double HIGH_POS = -165900;
+  private final double HIGH_POS2 = -165000;
   private final double MID_POS = -140000;
   private final double CHASSIS_EXIT_POS = -130000;
   private double kP = 0.25;
@@ -66,6 +67,9 @@ public class Arm extends SubsystemBase {
   public void armHighGoal(){
     armMotor.set(ControlMode.Position, HIGH_POS);
   } 
+  public void armHighGoal2(){
+    armMotor.set(ControlMode.Position, HIGH_POS2);
+  }
   public void armMoveToZeroPosition(){
     armMotor.set(ControlMode.Position, 0);
   }
@@ -77,6 +81,9 @@ public class Arm extends SubsystemBase {
   }
   public boolean hasExitedChassis(){
     return getArmPosition()<= CHASSIS_EXIT_POS;
+  }
+  public boolean isAtHighGoal2(){
+    return getArmPosition() >= HIGH_POS2-150;
   }
   @Override
   public void initSendable(SendableBuilder builder) {
