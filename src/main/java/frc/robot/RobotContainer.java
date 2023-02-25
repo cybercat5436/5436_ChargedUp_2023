@@ -241,8 +241,8 @@ public class RobotContainer {
       secondaryController.pov(225).whileTrue(new InstantCommand(()->arm.armDown()));
       secondaryController.pov(180).whileTrue(new InstantCommand(()->arm.armDown()));
       secondaryController.pov(135).whileTrue(new InstantCommand(()->arm.armDown()));
-      secondaryController.rightTrigger().whileTrue(new InstantCommand(()->arm.armMidGoal()))
-        .whileFalse(new InstantCommand(()->arm.stopArm()));
+      // secondaryController.rightTrigger().whileTrue(new InstantCommand(()->arm.armMidGoal()))
+      //   .whileFalse(new InstantCommand(()->arm.stopArm()));
       secondaryController.start().onTrue(new InstantCommand(()->arm.armHighGoal()))
         .onFalse(new InstantCommand(()->arm.stopArm()));
       // secondaryController.back().onTrue(new InstantCommand(()->arm.armMoveToZeroPosition()))
@@ -268,6 +268,8 @@ public class RobotContainer {
         .onFalse(new InstantCommand(()->intake.stopIntake()));
       //Manual Orienter Button
       secondaryController.leftTrigger().whileTrue(new InstantCommand(() -> orienter.microwaveManualSpin()))
+        .whileFalse(new InstantCommand(()->orienter.stopMicrowave()));
+      secondaryController.rightTrigger().whileTrue(new InstantCommand(() -> orienter.microwaveReverseManualSpin()))
         .whileFalse(new InstantCommand(()->orienter.stopMicrowave()));
       
       secondaryController.leftStick().onTrue(new SequentialCommandGroup(
