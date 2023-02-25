@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.LimeLight2;
+import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Orienter;
 
 public class OrientCone extends CommandBase {
   /** Creates a new OrientCone. */
   Orienter orienter;
-  LimeLight2 limeLight2;
-  public OrientCone(Orienter orienter, LimeLight2 limeLight2) {
+  LimeLight limeLight2;
+  public OrientCone(Orienter orienter, LimeLight limeLight2) {
     this.orienter = orienter;
     this.limeLight2 = limeLight2;
     

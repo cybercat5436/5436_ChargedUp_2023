@@ -15,12 +15,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.LimeLight2;
-import frc.robot.subsystems.LimeLightGrid;
+import frc.robot.subsystems.LimeLight;
 
 public class SwerveJoystickCmd extends CommandBase {
     private SwerveSubsystem swerveSubsystem;
-    private LimeLightGrid limeLightGrid;
+    private LimeLight limeLightGrid;
     private Supplier <Double> xSpdFunction, ySpdFunction, turningSpdFunction, leftTrigger;
     private Supplier<Boolean> fieldOrientedFunction;
     private Supplier<Boolean> visionAdjustmentFunction;
@@ -48,7 +47,7 @@ public class SwerveJoystickCmd extends CommandBase {
                 Supplier<Boolean> chargePadFunction,
                 Supplier<Boolean> visionAdjustmentFunction, 
                 Supplier<Double> leftTrigger,
-                LimeLightGrid limeLight2){
+                LimeLight limeLight){
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
@@ -58,7 +57,7 @@ public class SwerveJoystickCmd extends CommandBase {
         this.addRequirements(swerveSubsystem);
         this.visionAdjustmentFunction = visionAdjustmentFunction;
         this.leftTrigger = leftTrigger;
-        limeLightGrid = limeLight2;
+        this.limeLightGrid = limeLight;
 
         // Register the sendable to LiveWindow and SmartDashboard
         SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
