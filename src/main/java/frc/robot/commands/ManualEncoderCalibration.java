@@ -24,6 +24,7 @@ public class ManualEncoderCalibration extends CommandBase {
   @Override
   public void execute() {
     swerveSubsystem.zeroTurningEncoders();
+    swerveSubsystem.zeroHeading();
   }
 
   // Called once the command ends or is interrupted.

@@ -33,6 +33,7 @@ public class Claw extends SubsystemBase {
   public Claw() {
     clawMotor.restoreFactoryDefaults();
     clawMotor.clearFaults();
+    clawMotor.setSmartCurrentLimit(30, 30);
     clawMotor.setIdleMode(IdleMode.kBrake);
     clawMotor.setInverted(true);
     clawPID.setP(kP);

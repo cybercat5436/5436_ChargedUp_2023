@@ -41,6 +41,7 @@ import frc.robot.commands.ArmGoToMid;
 import frc.robot.commands.ClawGrabCone;
 import frc.robot.commands.ClawReset;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ExtendHighGoal;
 import frc.robot.commands.ExtenderRetractToZero;
 import frc.robot.commands.ManualEncoderCalibration;
 import frc.robot.commands.SetTo90;
@@ -64,6 +65,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 
@@ -105,24 +107,24 @@ public class RobotContainer {
       new ClawGrabCone(claw),
       new ArmGoToHigh(arm),
       new InstantCommand(()->extender.extendHighGoal())
-      );
+    );
 
-      private SequentialCommandGroup scoreHighGoalAuton = new SequentialCommandGroup(
-        new ClawGrabCone(claw),
-        new ArmGoToHigh(arm),
-        new InstantCommand(()->extender.extendHighGoal())
-        );
+    private SequentialCommandGroup scoreHighGoalAuton = new SequentialCommandGroup(
+      new ClawGrabCone(claw),
+      new ArmGoToHigh(arm),
+      new ExtendHighGoal(extender, 2.0)
+    );
 
     private SequentialCommandGroup retractArm = new SequentialCommandGroup(
       new ClawReset(claw),
       new ExtenderRetractToZero(extender),
-      new InstantCommand(()->arm.armMoveToZeroPosition() ) 
+      new InstantCommand(()->arm.armMoveToZeroPosition()) 
     );
 
     private SequentialCommandGroup retractArmAuton = new SequentialCommandGroup(
       new ClawReset(claw),
       new ExtenderRetractToZero(extender),
-      new InstantCommand(()->arm.armMoveToZeroPosition() ) 
+      new InstantCommand(()->arm.armMoveToZeroPosition()) 
     );
 
 
@@ -136,9 +138,11 @@ public class RobotContainer {
         () -> -primaryController.getLeftX(),
         () -> -primaryController.getRightX(),
         () -> !primaryController.start().getAsBoolean(),
-        () -> primaryController.leftBumper().getAsBoolean(),
+        // () -> primaryController.leftBumper().getAsBoolean(),
+        () -> primaryController.rightTrigger().getAsBoolean(),
         () -> primaryController.y().getAsBoolean(),
-        () -> primaryController.rightBumper().getAsBoolean(),
+        //() -> primaryController.rightBumper().getAsBoolean(),
+        () -> primaryController.x().getAsBoolean(),
         () -> primaryController.getLeftTriggerAxis(),
         limeLightGrid));
 
@@ -207,7 +211,7 @@ public class RobotContainer {
                 
         SequentialCommandGroup autonForwardPath = new SequentialCommandGroup(
                   //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
-                  new InstantCommand(() -> swerveSubsystem.zeroTurningEncoders()),
+                  new ManualEncoderCalibration(swerveSubsystem),
                   swerveControllerCommand,  
                   new InstantCommand(() -> swerveSubsystem.stopModules()));     
 
@@ -215,11 +219,16 @@ public class RobotContainer {
       SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
       
       //right or left
-      //autonChooser.setDefaultOption("Right or Left", scoreHighGoalAuton.andThen(new WaitCommand(2)).andThen(new ArmGoToHigh2(arm)).andThen(retractArmAuton).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6))));
+      autonChooser.setDefaultOption("Right or Left", scoreHighGoalAuton
+        .andThen(new ArmGoToHigh2(arm))
+        .andThen(retractArmAuton)
+        .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6))));
       //auton Balance
-      autonChooser.setDefaultOption("Right or Left", (new InstantCommand(()-> swerveSubsystem.resetOdometry(trajectory3.getInitialPose())).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6)))));
+      // autonChooser.setDefaultOption("Right or Left", (new InstantCommand(()-> swerveSubsystem.resetOdometry(trajectory3.getInitialPose()))
+      //   .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6)))));
 
-      autonChooser.addOption("Auton Balance", driveToChargePadCommand.andThen(autonomousDriveCommand).andThen(setTo90));
+      autonChooser.addOption("Auton Balance", driveToChargePadCommand
+        .andThen(autonomousDriveCommand).andThen(setTo90));
 
       SmartDashboard.putData(autonChooser);
 
@@ -234,51 +243,87 @@ public class RobotContainer {
     private void configureButtonBindings() {
       //Arm Buttons
       secondaryController.pov(0).whileTrue(new InstantCommand(()->arm.armUp()));
-      secondaryController.pov(45).whileTrue(new InstantCommand(()->arm.armUp()));
-      secondaryController.pov(315).whileTrue(new InstantCommand(()->arm.armUp()));
       secondaryController.pov(-1).whileTrue(new InstantCommand(()->arm.stopArm()));
-      secondaryController.pov(225).whileTrue(new InstantCommand(()->arm.armDown()));
       secondaryController.pov(180).whileTrue(new InstantCommand(()->arm.armDown()));
-      secondaryController.pov(135).whileTrue(new InstantCommand(()->arm.armDown()));
+      // secondaryController.pov(270).onTrue(new InstantCommand(()->arm.armHighGoal()))
+      //   .onFalse(new InstantCommand(()->arm.stopArm()));
+      // secondaryController.pov(90).onTrue(new InstantCommand(()->arm.armMidGoal()))
+      //   .onFalse(new InstantCommand(()->arm.stopArm()));
+
+      // secondaryController.pov(45).whileTrue(new InstantCommand(()->arm.armUp()));
+      // secondaryController.pov(315).whileTrue(new InstantCommand(()->arm.armUp()));
+      // secondaryController.pov(225).whileTrue(new InstantCommand(()->arm.armDown()));
+      // secondaryController.pov(135).whileTrue(new InstantCommand(()->arm.armDown()));
       // secondaryController.rightTrigger().whileTrue(new InstantCommand(()->arm.armMidGoal()))
       //   .whileFalse(new InstantCommand(()->arm.stopArm()));
-      secondaryController.start().onTrue(new InstantCommand(()->arm.armHighGoal()))
-        .onFalse(new InstantCommand(()->arm.stopArm()));
-      // secondaryController.back().onTrue(new InstantCommand(()->arm.armMoveToZeroPosition()))
+      
+      secondaryController.start().onTrue(new InstantCommand(()->arm.armMoveToZeroPosition()));
       //   .onFalse(new InstantCommand(()->arm.stopArm()));
+
+
       //Extender Buttons
       secondaryController.b().onTrue(new InstantCommand(()->extender.extend()))
         .onFalse(new InstantCommand(()->extender.stopExtend()));      
       secondaryController.x().onTrue(new InstantCommand(()->extender.retract()))
         .onFalse(new InstantCommand(()->extender.stopExtend()));
-      //Claw Buttons
 
-      //
-      secondaryController.rightBumper().onTrue(new InstantCommand(()->claw.clawGrab()))
-        .onFalse(new InstantCommand(()->claw.stopGrab()));
-      secondaryController.leftBumper().onTrue(new InstantCommand(()->claw.clawRelease()))
-        .onFalse(new InstantCommand(()->claw.stopGrab()));
-      //Intake Buttons
-      //button y: feed in 
-      //button a: feed out
-      secondaryController.y().onTrue(new InstantCommand(()->intake.intakeFeedIn()))
-        .onFalse(new InstantCommand(()->intake.stopIntake()));
-      secondaryController.a().onTrue(new InstantCommand(()->intake.intakeFeedOut()))
-        .onFalse(new InstantCommand(()->intake.stopIntake()));
-      //Manual Orienter Button
-      secondaryController.leftTrigger().whileTrue(new InstantCommand(() -> orienter.microwaveManualSpin()))
-        .whileFalse(new InstantCommand(()->orienter.stopMicrowave()));
-      secondaryController.rightTrigger().whileTrue(new InstantCommand(() -> orienter.microwaveReverseManualSpin()))
-        .whileFalse(new InstantCommand(()->orienter.stopMicrowave()));
       
-      secondaryController.leftStick().onTrue(new SequentialCommandGroup(
-          new ClawGrabCone(claw),
-          new ArmGoToMid(arm),
-          new InstantCommand(()->  
-          {
-            System.out.print("EXTENDER MID GOAL!@#@!@#$$%^");
-            extender.extendMidGoal();})
+
+      //Claw Buttons
+      secondaryController.rightBumper().onTrue(new InstantCommand(()->claw.clawRelease()))
+        .onFalse(new InstantCommand(()->claw.stopGrab()));
+      secondaryController.rightTrigger().onTrue(new InstantCommand(()->claw.clawGrab()))
+        .onFalse(new InstantCommand(()->claw.stopGrab()));
+      
+      
+      //Intake Buttons
+      primaryController.leftBumper().onTrue(new InstantCommand(()->intake.intakeFeedIn()))
+        .onFalse(new InstantCommand(()->intake.stopIntake()));
+      primaryController.rightBumper().onTrue(new InstantCommand(()->intake.intakeFeedOut()))
+        .onFalse(new InstantCommand(()->intake.stopIntake()));
+      
+      
+
+      //Manual Orienter Button
+      Trigger orienterTrigger = new Trigger(()->secondaryController.getRightX()<-0.15);
+      orienterTrigger.onTrue(new InstantCommand(()->orienter.microwaveManualSpin()))
+        .onFalse(new InstantCommand(()->orienter.stopMicrowave()));
+      Trigger orienterTrigger2 = new Trigger(()->secondaryController.getRightX()>0.15);
+      orienterTrigger2.onTrue(new InstantCommand(()->orienter.microwaveReverseManualSpin()))
+        .onFalse(new InstantCommand(()->orienter.stopMicrowave()));
+      // if(secondaryController.getRightX()<-0.15){
+      //   new InstantCommand(()->orienter.microwaveManualSpin());
+      // }else if(secondaryController.getRightX()>0.15){
+      //   new InstantCommand(()->orienter.microwaveReverseManualSpin());
+      // }else{
+      //   new InstantCommand(()->orienter.stopMicrowave());
+      // }
+      // secondaryController.leftTrigger().whileTrue(new InstantCommand(() -> orienter.microwaveManualSpin()))
+      //   .whileFalse(new InstantCommand(()->orienter.stopMicrowave()));
+      // secondaryController.rightTrigger().whileTrue(new InstantCommand(() -> orienter.microwaveReverseManualSpin()))
+      //   .whileFalse(new InstantCommand(()->orienter.stopMicrowave()));
+      
+
+      //Auto command groups
+      secondaryController.pov(90).onTrue(new SequentialCommandGroup(
+        new InstantCommand(()->extender.gotoDefaultPos()),
+        new ClawGrabCone(claw),
+        new ArmGoToMid(arm),
+        new InstantCommand(()->  
+        {
+          System.out.print("EXTENDER MID GOAL!@#@!@#$$%^");
+          extender.extendMidGoal();})
       ));
+      secondaryController.pov(270).onTrue(new SequentialCommandGroup(
+        new InstantCommand(()->extender.gotoDefaultPos()),
+        new ClawGrabCone(claw),
+        new ArmGoToHigh(arm),
+        new InstantCommand(()->
+        {
+          System.out.println("Extender High Goal");
+          extender.extendHighGoal();})
+      ));
+
 
       secondaryController.back().onTrue(scoreHighGoal);
       secondaryController.rightStick().onTrue(retractArm);

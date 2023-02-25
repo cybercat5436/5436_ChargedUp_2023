@@ -52,6 +52,9 @@ public final class Constants {
         public static final int ABSOLUTE_ENCODER_BACK_LEFT = 2;
         public static final int ABSOLUTE_ENCODER_BACK_RIGHT = 3;
 
+        public static final int EXTENDER_ZERO_LIMIT_SWITCH = 0;
+        public static final int EXTENDER_MAX_LIMIT_SWITCH = 1;
+
         public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 3.57;
         public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 1.03;
         public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 2.68;
@@ -80,7 +83,7 @@ public final class Constants {
     }
 
     public static class OIConstants{
-        public static final double K_DEADBAND = .20;
+        public static final double K_DEADBAND = .10;
     }
 
     public static final class AutoConstants {

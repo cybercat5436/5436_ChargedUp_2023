@@ -28,6 +28,7 @@ public class Orienter extends SubsystemBase implements Sendable{
   public Orienter(LimeLight limeLight) {
     orienterMotor.clearFaults();
     orienterMotor.restoreFactoryDefaults();
+    orienterMotor.setSmartCurrentLimit(30, 30);
     orienterMotor.setIdleMode(IdleMode.kBrake);
     this.limelightOrient = limeLight;
     SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
