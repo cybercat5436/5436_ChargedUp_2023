@@ -218,7 +218,7 @@ public class RobotContainer {
       //right or left
       //autonChooser.setDefaultOption("Right or Left", scoreHighGoalAuton.andThen(new WaitCommand(2)).andThen(new ArmGoToHigh2(arm)).andThen(retractArmAuton).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6))));
       //auton Balance
-      autonChooser.setDefaultOption("Right or Left", (Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6))));
+      autonChooser.setDefaultOption("Right or Left", (new InstantCommand(()-> swerveSubsystem.resetOdometry(trajectory3.getInitialPose())).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6)))));
 
       autonChooser.addOption("Auton Balance", driveToChargePadCommand.andThen(autonomousDriveCommand).andThen(setTo90));
 
