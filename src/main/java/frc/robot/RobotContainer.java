@@ -47,6 +47,7 @@ import frc.robot.commands.ManualEncoderCalibration;
 import frc.robot.commands.SetTo90;
 import frc.robot.commands.OrientCone;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.commands.ZeroExtender;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -99,7 +100,7 @@ public class RobotContainer {
     String chargePad1JSON = "paths/ChargePad1.wpilib.json";
     Trajectory chargePadTragectory = new Trajectory();
 
-  
+    private final ZeroExtender zeroExtender = new ZeroExtender(extender);
 
     private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
@@ -110,12 +111,15 @@ public class RobotContainer {
     );
 
     private SequentialCommandGroup scoreHighGoalAuton = new SequentialCommandGroup(
+      new ZeroExtender(extender),
       new ClawGrabCone(claw),
       new ArmGoToHigh(arm),
       new ExtendHighGoal(extender, 2.0)
     );
 
     private SequentialCommandGroup retractArm = new SequentialCommandGroup(
+      new ArmGoToHigh2(arm),
+      new WaitCommand(0.5),
       new ClawReset(claw),
       new ExtenderRetractToZero(extender),
       new InstantCommand(()->arm.armMoveToZeroPosition()) 
@@ -156,6 +160,8 @@ public class RobotContainer {
       configureButtonBindings();
 
       SmartDashboard.putData(new InstantCommand(() -> swerveSubsystem.zeroIntegrator()));
+
+      SmartDashboard.putData(zeroExtender);
 
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
@@ -269,11 +275,26 @@ public class RobotContainer {
 
       
 
+
+
+
+      //Manual Orienter Button
+      Trigger orienterTrigger = new Trigger(()->secondaryController.getRawAxis(3)<-0.15);
+      orienterTrigger.onTrue(new InstantCommand(()->orienter.microwaveManualSpin()))
+        .onFalse(new InstantCommand(()->orienter.stopMicrowave()));
+      Trigger orienterTrigger2 = new Trigger(()->secondaryController.getRawAxis(3)>0.15);
+      orienterTrigger2.onTrue(new InstantCommand(()->orienter.microwaveReverseManualSpin()))
+        .onFalse(new InstantCommand(()->orienter.stopMicrowave()));
+        
       //Claw Buttons
       secondaryController.rightBumper().onTrue(new InstantCommand(()->claw.clawRelease()))
         .onFalse(new InstantCommand(()->claw.stopGrab()));
-      secondaryController.rightTrigger().onTrue(new InstantCommand(()->claw.clawGrab()))
+      Trigger clawTrigger = new Trigger(()->secondaryController.getRawAxis(2)<-0.15);
+      clawTrigger.onTrue(new InstantCommand(()->claw.clawGrab()))
         .onFalse(new InstantCommand(()->claw.stopGrab()));
+      // .onFalse(new InstantCommand(()->claw.stopGrab()));
+      // secondaryController.rightTrigger().whileTrue(new InstantCommand(()->claw.clawGrab()))
+        // .onFalse(new InstantCommand(()->claw.stopGrab()));
       
       
       //Intake Buttons
@@ -283,14 +304,6 @@ public class RobotContainer {
         .onFalse(new InstantCommand(()->intake.stopIntake()));
       
       
-
-      //Manual Orienter Button
-      Trigger orienterTrigger = new Trigger(()->secondaryController.getRightX()<-0.15);
-      orienterTrigger.onTrue(new InstantCommand(()->orienter.microwaveManualSpin()))
-        .onFalse(new InstantCommand(()->orienter.stopMicrowave()));
-      Trigger orienterTrigger2 = new Trigger(()->secondaryController.getRightX()>0.15);
-      orienterTrigger2.onTrue(new InstantCommand(()->orienter.microwaveReverseManualSpin()))
-        .onFalse(new InstantCommand(()->orienter.stopMicrowave()));
       // if(secondaryController.getRightX()<-0.15){
       //   new InstantCommand(()->orienter.microwaveManualSpin());
       // }else if(secondaryController.getRightX()>0.15){
@@ -318,11 +331,13 @@ public class RobotContainer {
         new InstantCommand(()->extender.gotoDefaultPos()),
         new ClawGrabCone(claw),
         new ArmGoToHigh(arm),
-        new InstantCommand(()->
-        {
-          System.out.println("Extender High Goal");
-          extender.extendHighGoal();})
+        new ExtendHighGoal(extender, 2)
+        // new InstantCommand(()->
+        // {
+        //   System.out.println("Extender High Goal");
+        //   extender.extendHighGoal();})
       ));
+
 
 
       secondaryController.back().onTrue(scoreHighGoal);

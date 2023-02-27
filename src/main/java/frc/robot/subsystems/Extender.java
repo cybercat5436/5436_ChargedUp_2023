@@ -23,11 +23,11 @@ public class Extender extends SubsystemBase {
   private double speed = 0.6;
   private SparkMaxPIDController extenderPID = extenderMotor.getPIDController();
   private double kP = 0.1;
-  private double desiredMidGoal = 96.17;
+  private double desiredMidGoal = 103;
   private DigitalInput zeroLimitSwitch = new DigitalInput(Constants.RoboRioPortConfig.EXTENDER_ZERO_LIMIT_SWITCH);
   private DigitalInput maxLimitSwitch = new DigitalInput(Constants.RoboRioPortConfig.EXTENDER_MAX_LIMIT_SWITCH);
   //changed
-  private double desiredHighGoal = 244.6; // NOT TESTED
+  private double desiredHighGoal = 244; // NOT TESTED
   private double retractLimit = 5.56;
 
   /** Creates a new Extender. */
@@ -91,6 +91,9 @@ public class Extender extends SubsystemBase {
   }
   public boolean isAtHighGoal(){
     return extenderEncoder.getPosition()>=desiredHighGoal-50;
+  }
+  public void retract(double speed1){
+    extenderMotor.set(-1*speed1);
   }
   @Override
   public void initSendable(SendableBuilder builder) {

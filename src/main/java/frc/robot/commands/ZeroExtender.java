@@ -4,21 +4,27 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Extender;
 
-public class ArmGoToHigh2 extends CommandBase {
-  private Arm arm;
-  /** Creates a new ArmGoToHigh. */
-  public ArmGoToHigh2(Arm arm) {
+public class ZeroExtender extends CommandBase {
+  private Extender extender;
+  private Timer timer = new Timer();
+
+
+  /** Creates a new ZeroExtender. */
+  public ZeroExtender(Extender extender) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.arm = arm;
+    this.extender = extender;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    arm.armHighGoal2();
+    timer.reset();
+    timer.start();
+    extender.retract(0.1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -28,13 +34,13 @@ public class ArmGoToHigh2 extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    extender.stopExtend();
+    extender.resetExtenderEncoder();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return arm.isAtHighGoal();
-    return arm.isAtHighGoal2();
+    return timer.get()>0.3;
   }
 }

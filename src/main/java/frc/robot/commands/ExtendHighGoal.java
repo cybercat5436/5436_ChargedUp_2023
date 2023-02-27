@@ -39,7 +39,14 @@ public class ExtendHighGoal extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(timer.get()>=timeLimit||extender.isAtHighGoal()||!extender.maxLimitSwitch()){
+    if(timer.get()>=timeLimit){
+      System.out.println("Extender timeout");
+      return true;
+    }else if(extender.isAtHighGoal()){
+      System.out.println("Extender reached desired encoder clicks");
+      return true;
+    }else if(!extender.maxLimitSwitch()){
+      System.out.println("Extender reached limit switch");
       return true;
     }else{
       return false;
