@@ -89,17 +89,16 @@ public class RobotContainer {
     private final CommandXboxController primaryController = new CommandXboxController(1);
     private final CommandXboxController secondaryController = new CommandXboxController(0);
 
-    String trajectoryJSON = "paths/ForwardPath.wpilib.json";    
+    String trajectoryJSON = "paths/ForwardPathRight.wpilib.json";    
+    Trajectory trajectory = new Trajectory();
 
-    Trajectory trajectory3 = new Trajectory();
+    String trajectoryJSON2 = "paths/ForwardPathRight1.wpilib.json";
+    Trajectory trajectory2 = new Trajectory();
 
-    String chargePad2Json = "paths/ChargePad2.wpilib.json";
-    Trajectory chargePad2Trajectory = new Trajectory();
 
     String chargePad1JSON = "paths/ChargePad1.wpilib.json";
     Trajectory chargePadTragectory = new Trajectory();
 
-  
 
     private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
@@ -159,14 +158,14 @@ public class RobotContainer {
 
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-        trajectory3 = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
       } catch (IOException ex) {
         System.out.println("Unable to open trajectory" + ex);
       }
 
       try {
-        Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(chargePad2Json);
-        chargePad2Trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
+        Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
+        trajectory2 = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
       } catch (IOException ex) {
         System.out.println("Unable to open chargePad2 trajectory " + ex);
       }
@@ -183,13 +182,13 @@ public class RobotContainer {
       ProfiledPIDController thetaController = swerveSubsystem.getThetaController();
       thetaController.enableContinuousInput(-Math.PI, Math.PI);
       //Set the odometry to initial pose of the trajectory
-      swerveSubsystem.resetOdometry(trajectory3.getInitialPose());
+      swerveSubsystem.resetOdometry(trajectory.getInitialPose());
       //Reset all the drive motors of the swervemodules to 0
       swerveSubsystem.resetEncoders();
 
       // 4. Construct command to follow trajectory
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-              trajectory3,
+              trajectory,
               swerveSubsystem::getPose,
               DriveConstants.kDriveKinematics,
               swerveSubsystem.getxController(),
@@ -199,8 +198,8 @@ public class RobotContainer {
               swerveSubsystem);
    
 
-        SwerveControllerCommand driveToChargePadCommand = new SwerveControllerCommand(
-          chargePadTragectory.concatenate(chargePad2Trajectory),
+        SwerveControllerCommand rightRoutineCommand = new SwerveControllerCommand(
+          trajectory.concatenate(trajectory2),
           swerveSubsystem::getPose,
           DriveConstants.kDriveKinematics,
           swerveSubsystem.getxController(),
@@ -212,22 +211,28 @@ public class RobotContainer {
         SequentialCommandGroup autonForwardPath = new SequentialCommandGroup(
                   //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
                   new ManualEncoderCalibration(swerveSubsystem),
-                  swerveControllerCommand,  
+                  rightRoutineCommand,  
                   new InstantCommand(() -> swerveSubsystem.stopModules()));     
 
-      AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 6);
-      SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
+        AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 6);
+                  SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
+
+        
       
       //right or left
-      autonChooser.setDefaultOption("Right or Left", scoreHighGoalAuton
-        .andThen(new ArmGoToHigh2(arm))
-        .andThen(retractArmAuton)
-        .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6))));
+
+      // autonChooser.setDefaultOption("Right or Left", scoreHighGoalAuton
+      //   .andThen(new ArmGoToHigh2(arm))
+      //   .andThen(retractArmAuton)
+      //   .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6))));
+
       //auton Balance
       // autonChooser.setDefaultOption("Right or Left", (new InstantCommand(()-> swerveSubsystem.resetOdometry(trajectory3.getInitialPose()))
       //   .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6)))));
 
-      autonChooser.addOption("Auton Balance", driveToChargePadCommand
+      autonChooser.setDefaultOption("Right Forward Path", autonForwardPath);
+
+      autonChooser.addOption("Auton Balance", autonForwardPath
         .andThen(autonomousDriveCommand).andThen(setTo90));
 
       SmartDashboard.putData(autonChooser);
