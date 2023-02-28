@@ -5,8 +5,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 
@@ -24,15 +26,45 @@ public class Arm extends SubsystemBase {
   private final double MID_POS = -140000;
   private final double CHASSIS_EXIT_POS = -130000;
   private double kP = 0.25;
+  private static final int TIMEOUT = 30;
+  private static final int SLOTIDX = 0;
+  private static final int PIDLoopIdx = 0;
+
+  private double cruiseVelocity = 1500;
+  private double acceleration = 1500;
+  private double closedLoopSpeed = 0.5;
+
  
   /** Creates a new Arm. */
   public Arm() {
     armMotor.configFactoryDefault();
     armMotor.clearStickyFaults();
     armMotor.setNeutralMode(NeutralMode.Brake);
+    armMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, SLOTIDX, TIMEOUT);
+    armMotor.configNeutralDeadband(0.001, TIMEOUT);
     resetArmEncoder();
-    armMotor.config_kP(0, kP);
-    armMotor.configClosedLoopPeakOutput(0, 0.5);
+
+    /* Set relevant frame periods to be at least as fast as periodic rate */
+		armMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, TIMEOUT);
+		armMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, TIMEOUT);
+
+
+    /* Set the peak and nominal outputs */
+		armMotor.configNominalOutputForward(0, TIMEOUT);
+		armMotor.configNominalOutputReverse(0, TIMEOUT);
+		armMotor.configPeakOutputForward(1, TIMEOUT);
+		armMotor.configPeakOutputReverse(-1, TIMEOUT);
+
+    armMotor.selectProfileSlot(SLOTIDX, PIDLoopIdx);
+    armMotor.config_kP(0, kP, TIMEOUT);
+    armMotor.config_kI(0,0, TIMEOUT);
+    armMotor.config_kD(0,0, TIMEOUT);
+    armMotor.config_kF(0,0, TIMEOUT);
+
+
+    armMotor.configMotionCruiseVelocity(cruiseVelocity, TIMEOUT);
+    armMotor.configMotionAcceleration(acceleration, TIMEOUT);
+    armMotor.configClosedLoopPeakOutput(SLOTIDX, closedLoopSpeed);
     
     armMotor.configStatorCurrentLimit(
       new StatorCurrentLimitConfiguration(true, 30, 45, 0.050));
@@ -67,6 +99,11 @@ public class Arm extends SubsystemBase {
   public void armHighGoal(){
     armMotor.set(ControlMode.Position, HIGH_POS);
   } 
+
+  public void armHighGoalMotionMagic(){
+    armMotor.set(ControlMode.MotionMagic, HIGH_POS);
+  }
+
   public void armHighGoal2(){
     armMotor.set(ControlMode.Position, HIGH_POS2);
   }
@@ -89,8 +126,23 @@ public class Arm extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
     super.initSendable(builder);
-    builder.addDoubleProperty("Arm Speed", () -> speed, (value) -> speed = value);
-    builder.addDoubleProperty("Arm Position", () -> getArmPosition(), null);
+    builder.addDoubleProperty("Speed (manual)", () -> speed, (value) -> this.speed = value);
+    
+    builder.addDoubleProperty("Speed (Closed Loop)", () -> closedLoopSpeed, (value) -> {
+      this.closedLoopSpeed = value;
+      armMotor.configClosedLoopPeakOutput(SLOTIDX, closedLoopSpeed);
+    });
+
+    builder.addDoubleProperty("Cruise Velocity", () -> cruiseVelocity, (value) -> {
+      this.cruiseVelocity = value;
+      armMotor.configMotionCruiseVelocity(cruiseVelocity, TIMEOUT);
+    });
+    
+    builder.addDoubleProperty("Acceleration", () -> acceleration, (value) -> {
+      this.acceleration = value;
+      armMotor.configMotionAcceleration(acceleration, TIMEOUT);
+    });
+    
     builder.addDoubleProperty("Arm kP", () -> kP, (value) -> {
       kP = value;
       armMotor.config_kP(0, kP);

@@ -35,7 +35,7 @@ import frc.robot.commands.AutonGrabCommand;
 import frc.robot.commands.AutonIntakeCommand;
 import frc.robot.commands.AutonReleaseCommand;
 import frc.robot.commands.AutonomousDriveCommand;
-import frc.robot.commands.ArmGoToHigh;
+import frc.robot.commands.ArmGoToHighMotionMagic;
 import frc.robot.commands.ArmGoToHigh2;
 import frc.robot.commands.ArmGoToMid;
 import frc.robot.commands.ClawGrabCone;
@@ -106,14 +106,14 @@ public class RobotContainer {
 
     private SequentialCommandGroup scoreHighGoal = new SequentialCommandGroup(
       new ClawGrabCone(claw),
-      new ArmGoToHigh(arm),
+      new ArmGoToHighMotionMagic(arm),
       new InstantCommand(()->extender.extendHighGoal())
     );
 
     private SequentialCommandGroup scoreHighGoalAuton = new SequentialCommandGroup(
       new ZeroExtender(extender),
       new ClawGrabCone(claw),
-      new ArmGoToHigh(arm),
+      new ArmGoToHighMotionMagic(arm),
       new ExtendHighGoal(extender, 2.0)
     );
 
@@ -162,6 +162,7 @@ public class RobotContainer {
       SmartDashboard.putData(new InstantCommand(() -> swerveSubsystem.zeroIntegrator()));
 
       SmartDashboard.putData(zeroExtender);
+      SmartDashboard.putData(new ArmGoToHighMotionMagic(arm));
 
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
@@ -336,7 +337,7 @@ public class RobotContainer {
       secondaryController.pov(270).onTrue(new SequentialCommandGroup(
         new InstantCommand(()->extender.gotoDefaultPos()),
         new ClawGrabCone(claw),
-        new ArmGoToHigh(arm),
+        new ArmGoToHighMotionMagic(arm),
         new ExtendHighGoal(extender, 2)
         // new InstantCommand(()->
         // {
