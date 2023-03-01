@@ -289,19 +289,27 @@ public class RobotContainer {
 
 
       //Manual Orienter Button
-      Trigger orienterTrigger = new Trigger(()->secondaryController.getRawAxis(3)<-0.15);
-      orienterTrigger.onTrue(new InstantCommand(()->orienter.microwaveManualSpin()))
+      // Trigger orienterTrigger = new Trigger(()->secondaryController.getRawAxis(3)<-0.15);
+      // orienterTrigger.onTrue(new InstantCommand(()->orienter.microwaveManualSpin()));
+      // orienterTrigger.onFalse(new InstantCommand(()->orienter.stopMicrowave()));
+      // Trigger orienterTrigger2 = new Trigger(()->secondaryController.getRawAxis(3)>0.15);
+      // orienterTrigger2.onTrue(new InstantCommand(()->orienter.microwaveReverseManualSpin()));
+      // orienterTrigger2.onFalse(new InstantCommand(()->orienter.stopMicrowave()));
+      secondaryController.pov(90).onTrue(new InstantCommand(()->orienter.microwaveManualSpin()))
         .onFalse(new InstantCommand(()->orienter.stopMicrowave()));
-      Trigger orienterTrigger2 = new Trigger(()->secondaryController.getRawAxis(3)>0.15);
-      orienterTrigger2.onTrue(new InstantCommand(()->orienter.microwaveReverseManualSpin()))
+      secondaryController.pov(270).onTrue(new InstantCommand(()->orienter.microwaveReverseManualSpin()))
         .onFalse(new InstantCommand(()->orienter.stopMicrowave()));
-        
+      
+
       //Claw Buttons
       secondaryController.rightBumper().onTrue(new InstantCommand(()->claw.clawRelease()))
         .onFalse(new InstantCommand(()->claw.stopGrab()));
-      Trigger clawTrigger = new Trigger(()->secondaryController.getRawAxis(2)<-0.15);
-      clawTrigger.onTrue(new InstantCommand(()->claw.clawGrab()))
+      secondaryController.leftBumper().onTrue(new InstantCommand(()->claw.clawGrab()))
         .onFalse(new InstantCommand(()->claw.stopGrab()));
+        // Trigger clawTrigger = new Trigger(()->secondaryController.getRawAxis(2)<-0.15);
+      // clawTrigger.onTrue(new InstantCommand(()->claw.clawGrab()));
+      // clawTrigger.onFalse(new InstantCommand(()->claw.stopGrab()));
+
       // .onFalse(new InstantCommand(()->claw.stopGrab()));
       // secondaryController.rightTrigger().whileTrue(new InstantCommand(()->claw.clawGrab()))
         // .onFalse(new InstantCommand(()->claw.stopGrab()));
@@ -328,25 +336,25 @@ public class RobotContainer {
       
 
       //Auto command groups
-      secondaryController.pov(90).onTrue(new SequentialCommandGroup(
-        new InstantCommand(()->extender.gotoDefaultPos()),
-        new ClawGrabCone(claw),
-        new ArmGoToMid(arm),
-        new InstantCommand(()->  
-        {
-          System.out.print("EXTENDER MID GOAL!@#@!@#$$%^");
-          extender.extendMidGoal();})
-      ));
-      secondaryController.pov(270).onTrue(new SequentialCommandGroup(
-        new InstantCommand(()->extender.gotoDefaultPos()),
-        new ClawGrabCone(claw),
-        new ArmGoToHighMotionMagic(arm),
-        new ExtendHighGoal(extender, 2)
-        // new InstantCommand(()->
-        // {
-        //   System.out.println("Extender High Goal");
-        //   extender.extendHighGoal();})
-      ));
+      // secondaryController.pov(90).onTrue(new SequentialCommandGroup(
+      //   new InstantCommand(()->extender.gotoDefaultPos()),
+      //   new ClawGrabCone(claw),
+      //   new ArmGoToMid(arm),
+      //   new InstantCommand(()->  
+      //   {
+      //     System.out.print("EXTENDER MID GOAL!@#@!@#$$%^");
+      //     extender.extendMidGoal();})
+      // ));
+      // secondaryController.pov(270).onTrue(new SequentialCommandGroup(
+      //   new InstantCommand(()->extender.gotoDefaultPos()),
+      //   new ClawGrabCone(claw),
+      //   new ArmGoToHigh(arm),
+      //   new ExtendHighGoal(extender, 2)
+      //   // new InstantCommand(()->
+      //   // {
+      //   //   System.out.println("Extender High Goal");
+      //   //   extender.extendHighGoal();})
+      // ));
 
 
 
