@@ -30,8 +30,8 @@ public class Arm extends SubsystemBase {
   private static final int SLOTIDX = 0;
   private static final int PIDLoopIdx = 0;
 
-  private double cruiseVelocity = 1500;
-  private double acceleration = 1500;
+  private double cruiseVelocity = 12000;
+  private double acceleration = 6000;
   private double closedLoopSpeed = 0.5;
 
  
@@ -94,10 +94,10 @@ public class Arm extends SubsystemBase {
     armMotor.setSelectedSensorPosition(0);
   }
   public void armMidGoal(){
-    armMotor.set(ControlMode.Position, MID_POS);
+    armMotor.set(ControlMode.MotionMagic, MID_POS);
   }
   public void armHighGoal(){
-    armMotor.set(ControlMode.Position, HIGH_POS);
+    armMotor.set(ControlMode.MotionMagic, HIGH_POS);
   } 
 
   public void armHighGoalMotionMagic(){
@@ -105,10 +105,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void armHighGoal2(){
-    armMotor.set(ControlMode.Position, HIGH_POS2);
+    armMotor.set(ControlMode.MotionMagic, HIGH_POS2);
   }
   public void armMoveToZeroPosition(){
-    armMotor.set(ControlMode.Position, 0);
+    armMotor.set(ControlMode.MotionMagic, 0);
   }
   public boolean isAtMidGoal(){
     return getArmPosition()<=MID_POS+500;
