@@ -97,8 +97,8 @@ public class RobotContainer {
     Trajectory trajectory2 = new Trajectory();
 
 
-    String chargePad1JSON = "paths/ChargePad1.wpilib.json";
-    Trajectory chargePadTragectory = new Trajectory();
+    // String chargePad1JSON = "paths/ChargePad1.wpilib.json";
+    // Trajectory chargePadTragectory = new Trajectory();
 
     private final ZeroExtender zeroExtender = new ZeroExtender(extender);
 
@@ -111,6 +111,7 @@ public class RobotContainer {
     );
 
     private SequentialCommandGroup scoreHighGoalAuton = new SequentialCommandGroup(
+      new InstantCommand(()->arm.resetArmEncoder()),
       new ZeroExtender(extender),
       new ClawGrabCone(claw),
       new ArmGoToHighMotionMagic(arm),
@@ -119,13 +120,15 @@ public class RobotContainer {
 
     private SequentialCommandGroup retractArm = new SequentialCommandGroup(
       new ArmGoToHigh2(arm),
-      new WaitCommand(0.5),
+      new WaitCommand(1),
       new ClawReset(claw),
       new ExtenderRetractToZero(extender),
       new InstantCommand(()->arm.armMoveToZeroPosition()) 
     );
 
     private SequentialCommandGroup retractArmAuton = new SequentialCommandGroup(
+      new ArmGoToHigh2(arm),
+      new WaitCommand(0.5),
       new ClawReset(claw),
       new ExtenderRetractToZero(extender),
       new InstantCommand(()->arm.armMoveToZeroPosition()) 
@@ -175,15 +178,15 @@ public class RobotContainer {
         Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
         trajectory2 = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
       } catch (IOException ex) {
-        System.out.println("Unable to open chargePad2 trajectory " + ex);
+        System.out.println("Unable to open ForwardPathRight1 trajectory " + ex);
       }
 
-      try {
-        Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(chargePad1JSON);
-        chargePadTragectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
-      } catch (IOException ex) {
-        System.out.print("unable to open charge pad 1" + ex);
-      }
+      // try {
+      //   Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(chargePad1JSON);
+      //   chargePadTragectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
+      // } catch (IOException ex) {
+      //   System.out.print("unable to open charge pad 1" + ex);
+      //}
 
       //create auton commands
 
@@ -238,10 +241,10 @@ public class RobotContainer {
       // autonChooser.setDefaultOption("Right or Left", (new InstantCommand(()-> swerveSubsystem.resetOdometry(trajectory3.getInitialPose()))
       //   .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6)))));
 
-      autonChooser.setDefaultOption("Right Forward Path", autonForwardPath);
+      autonChooser.setDefaultOption("Right Forward Path", scoreHighGoalAuton.andThen(retractArmAuton).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
 
-      autonChooser.addOption("Auton Balance", autonForwardPath
-        .andThen(autonomousDriveCommand).andThen(setTo90));
+      // autonChooser.addOption("Auton Balance", autonForwardPath
+      //   .andThen(autonomousDriveCommand).andThen(setTo90));
 
       SmartDashboard.putData(autonChooser);
 

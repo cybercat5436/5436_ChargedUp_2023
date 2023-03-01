@@ -18,6 +18,7 @@ public class ArmGoToHigh2 extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    arm.slowMaxSpeed();
     arm.armHighGoal2();
   }
 
@@ -28,7 +29,7 @@ public class ArmGoToHigh2 extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    arm.restoreMaxSpeed();
   }
 
   // Returns true when the command should end.
