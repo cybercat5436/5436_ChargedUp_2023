@@ -85,6 +85,12 @@ public class Arm extends SubsystemBase {
   public boolean isAtHighGoal2(){
     return getArmPosition() >= HIGH_POS2-150;
   }
+  public void slowMaxSpeed(){
+    armMotor.configClosedLoopPeakOutput(0, 0.3);
+  }
+  public void restoreMaxSpeed(){
+    armMotor.configClosedLoopPeakOutput(0, 0.5);
+  }
   @Override
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub

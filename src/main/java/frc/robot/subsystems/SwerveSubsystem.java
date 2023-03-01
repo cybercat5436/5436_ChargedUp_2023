@@ -41,8 +41,11 @@ public class SwerveSubsystem extends SubsystemBase{
     private double balanceConstant = (.0033);
     private double feedForwardConstant = (.00034);
     private double previousRoll = 0;
+    private double previousPitch = 0;
     private double rollROC;
-    private double rollROCConstant = -4.16;
+    private double pitchROC;
+    private double rollROCConstant = 0;
+    private double pitchROCConstant = 0;
     private double errorMultiplier;
     private double xSpeed;
     private double integratorSum;
@@ -170,6 +173,10 @@ public class SwerveSubsystem extends SubsystemBase{
 public double getRollDegrees(){
     return gyro.getRoll();
 }
+
+public double getPitchDegrees(){
+    return gyro.getPitch();
+}
 public double getHeading(){
     return Math.IEEEremainder(-(gyro.getAngle()), 360);
 }
@@ -236,9 +243,14 @@ public void setModuleStates(SwerveModuleState[] desiredStates){
 }
 
 public double autoBalance(){
-    rollROC = ((getRollDegrees() - previousRoll)/20);
+    //rollROC = ((getRollDegrees() - previousRoll)/20);
 
-    double balanceError = 0 - getRollDegrees();
+    pitchROC = ((getPitchDegrees() - previousPitch)/ 20);
+
+    //double balanceError = 0 - getRollDegrees();
+    double balanceError = 0 - getPitchDegrees();
+
+
 
     if(balanceError > -7.5 && balanceError < 7.5){
         integratorSum += balanceError * 20;
@@ -254,7 +266,8 @@ public double autoBalance(){
     //rollROC (rate of change) is in Degrees/Milisecond
     double proportionalSpeed = (balanceConstant * balanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
     //deriv speed -4.16 proportional speed .0033
-    double derivSpeed = ((rollROC * rollROCConstant) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+    //double derivSpeed = ((rollROC * rollROCConstant) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+    double derivSpeed = ((pitchROC * pitchROCConstant) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
     double feedForwardSpeed = ((feedForwardConstant * sqrBalanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
     double integratorSpeed = ((integratorConstant * integratorSum) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
     //derivSpeed = Math.min(Math.abs(proportionalSpeed + feedForwardSpeed), Math.abs(derivSpeed)) * Math.signum(derivSpeed);
@@ -265,7 +278,9 @@ public double autoBalance(){
 
 
     xSpeed = proportionalSpeed + derivSpeed + feedForwardSpeed + integratorSpeed;
-    previousRoll = getRollDegrees();
+    //previousRoll = getRollDegrees();
+    previousPitch = getPitchDegrees();
+
     return xSpeed;
 }
 
@@ -336,7 +351,9 @@ public void initSendable(SendableBuilder builder) {
 
     builder.addDoubleProperty("balanceConstant", () -> balanceConstant, (value) -> balanceConstant = value);
     builder.addDoubleProperty("Roll Rate of Change", () -> rollROC, null);
-    builder.addDoubleProperty("Roll Rate of Change Constant", () -> rollROCConstant, (value) -> rollROCConstant = value);
+   // builder.addDoubleProperty("Roll Rate of Change Constant", () -> rollROCConstant, (value) -> rollROCConstant = value);
+   builder.addDoubleProperty("Roll Rate of Change Constant", () -> pitchROCConstant, (value) -> pitchROCConstant = value);
+
     builder.addDoubleProperty("feed forward", () -> feedForwardConstant, (value) -> feedForwardConstant = value);
 
     builder.addDoubleProperty("Integrator Constant", () -> integratorConstant, (value) -> integratorConstant = value);
