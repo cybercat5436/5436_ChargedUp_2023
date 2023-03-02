@@ -124,9 +124,9 @@
               1
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SendableChooser[0]/active",
-              "_title": "/SmartDashboard/SendableChooser[0]/active",
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[0]",
+              "_title": "SmartDashboard/SendableChooser[0]",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -136,9 +136,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -5.599999904632568,
-    "y": 0.800000011920929,
-    "width": 1547.199951171875,
-    "height": 828.7999877929688
+    "x": -6.0,
+    "y": 1.0,
+    "width": 1548.0,
+    "height": 829.0
   }
 }
