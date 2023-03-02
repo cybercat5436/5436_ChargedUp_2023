@@ -96,8 +96,8 @@ public class RobotContainer {
     String trajectoryJSON2 = "paths/ForwardPathRight1.wpilib.json";
     Trajectory trajectory2 = new Trajectory();
 
-    // String trajectoryLeftPathJSON = "path/ForwardPathLeft.wpilib.json";
-    // Trajectory trajectoryLeft = new Trajectory();
+    String trajectoryLeftPathJSON = "paths/ForwardPathLeft.wpilib.json";
+    Trajectory trajectoryLeft = new Trajectory();
 
 
     // String chargePad1JSON = "paths/ChargePad1.wpilib.json";
@@ -120,6 +120,14 @@ public class RobotContainer {
       new ArmGoToHighMotionMagic(arm),
       new ExtendHighGoal(extender, 2.0)
     );
+    
+    private SequentialCommandGroup scoreHighGoalDeliverAuton = new SequentialCommandGroup(
+      new InstantCommand(()->arm.resetArmEncoder()),
+      new ZeroExtender(extender),
+      new ClawGrabCone(claw),
+      new ArmGoToHighMotionMagic(arm),
+      new ExtendHighGoal(extender, 2.0)
+    );
 
     private SequentialCommandGroup retractArm = new SequentialCommandGroup(
       new ArmGoToHigh2(arm),
@@ -130,6 +138,14 @@ public class RobotContainer {
     );
 
     private SequentialCommandGroup retractArmAuton = new SequentialCommandGroup(
+      new ArmGoToHigh2(arm),
+      new WaitCommand(0.5),
+      new ClawReset(claw),
+      new ExtenderRetractToZero(extender),
+      new InstantCommand(()->arm.armMoveToZeroPosition()) 
+    );
+
+    private SequentialCommandGroup retractArmDeliverAuton = new SequentialCommandGroup(
       new ArmGoToHigh2(arm),
       new WaitCommand(0.5),
       new ClawReset(claw),
@@ -186,12 +202,12 @@ public class RobotContainer {
       }
 
 
-      // try {
-      //   Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryLeftPathJSON);
-      //   trajectoryLeft = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
-      // } catch (IOException ex) {
-      //   System.out.println("Unable to open ForwardPathRight1 trajectory " + ex);
-      // }
+      try {
+        Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryLeftPathJSON);
+        trajectoryLeft = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
+      } catch (IOException ex) {
+        System.out.println("Unable to open ForwardLeftPath trajectory " + ex);
+      }
 
       // try {
       //   Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(chargePad1JSON);
@@ -209,16 +225,16 @@ public class RobotContainer {
       //Reset all the drive motors of the swervemodules to 0
       swerveSubsystem.resetEncoders();
 
-      // 4. Construct command to follow trajectory
-      SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-              trajectory,
-              swerveSubsystem::getPose,
-              DriveConstants.kDriveKinematics,
-              swerveSubsystem.getxController(),
-              swerveSubsystem.getyController(),
-              thetaController,
-              swerveSubsystem::setModuleStates,
-              swerveSubsystem);
+      // // 4. Construct command to follow trajectory
+      // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+      //         trajectory,
+      //         swerveSubsystem::getPose,
+      //         DriveConstants.kDriveKinematics,
+      //         swerveSubsystem.getxController(),
+      //         swerveSubsystem.getyController(),
+      //         thetaController,
+      //         swerveSubsystem::setModuleStates,
+      //         swerveSubsystem);
    
 
         SwerveControllerCommand rightRoutineCommand = new SwerveControllerCommand(
@@ -238,25 +254,40 @@ public class RobotContainer {
                   new InstantCommand(() -> swerveSubsystem.stopModules()));   
                   
                   
-
-        // SwerveControllerCommand leftRoutineCommand = new SwerveControllerCommand(
-        //             trajectoryLeft,
-        //             swerveSubsystem::getPose,
-        //             DriveConstants.kDriveKinematics,
-        //             swerveSubsystem.getxController(),
-        //             swerveSubsystem.getyController(),
-        //             thetaController,
-        //             swerveSubsystem::setModuleStates,
-        //             swerveSubsystem); 
+        SwerveControllerCommand leftRoutineCommand = new SwerveControllerCommand(
+                    trajectoryLeft,
+                    swerveSubsystem::getPose,
+                    DriveConstants.kDriveKinematics,
+                    swerveSubsystem.getxController(),
+                    swerveSubsystem.getyController(),
+                    thetaController,
+                    swerveSubsystem::setModuleStates,
+                    swerveSubsystem);
+        
+        SwerveControllerCommand leftDriveAndDeliverCommand = new SwerveControllerCommand(
+                      trajectoryLeft,
+                      swerveSubsystem::getPose,
+                      DriveConstants.kDriveKinematics,
+                      swerveSubsystem.getxController(),
+                      swerveSubsystem.getyController(),
+                      thetaController,
+                      swerveSubsystem::setModuleStates,
+                      swerveSubsystem); 
                           
-        // SequentialCommandGroup autonForwardLeftPath = new SequentialCommandGroup(
-        //                     //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
-        //                     new ManualEncoderCalibration(swerveSubsystem),
-        //                     leftRoutineCommand,  
-        //                     new InstantCommand(() -> swerveSubsystem.stopModules()));   
+        SequentialCommandGroup autonForwardLeftPath = new SequentialCommandGroup(
+                            new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectoryLeft.getInitialPose())), 
+                            new ManualEncoderCalibration(swerveSubsystem),
+                            leftRoutineCommand,  
+                            new InstantCommand(() -> swerveSubsystem.stopModules()));
+        
+        SequentialCommandGroup autonLeftDriveAndDeliver = new SequentialCommandGroup(
+                              new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectoryLeft.getInitialPose())), 
+                              new ManualEncoderCalibration(swerveSubsystem),
+                              leftDriveAndDeliverCommand,  
+                              new InstantCommand(() -> swerveSubsystem.stopModules()));
 
-        AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 6);
-                  SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
+        // AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 6);
+        //           SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
 
         
       
@@ -271,10 +302,27 @@ public class RobotContainer {
       // autonChooser.setDefaultOption("Right or Left", (new InstantCommand(()-> swerveSubsystem.resetOdometry(trajectory3.getInitialPose()))
       //   .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 6)))));
 
-      autonChooser.setDefaultOption("Right Forward Path", scoreHighGoalAuton.andThen(retractArmAuton).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
-      //autonChooser.setDefaultOption("Left Forward Path", scoreHighGoalAuton.andThen(retractArmAuton).andThen(Commands.parallel(autonForwardLeftPath, new AutonIntakeCommand(intake, 8))));
+      //Right path, delivers and drives out of community(Tested)
+      autonChooser.setDefaultOption("Right Drive And Deliver", scoreHighGoalAuton.andThen(retractArmAuton).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
+      //Left path, Deliver and drive out of community(Not Tested)
+      autonChooser.addOption("Left Drive and Deliver", new InstantCommand(()->arm.resetArmEncoder())
+      .andThen(new ZeroExtender(extender))
+      .andThen(new ClawGrabCone(claw))
+      .andThen(new ArmGoToHighMotionMagic(arm))
+      .andThen(new ExtendHighGoal(extender, 2.0))
+      .andThen(new ArmGoToHigh2(arm))
+      .andThen(new WaitCommand(0.5))
+      .andThen(new ClawReset(claw))
+      .andThen(new ExtenderRetractToZero(extender))
+      .andThen(new InstantCommand(()->arm.armMoveToZeroPosition()))
+      .andThen(Commands.parallel(autonLeftDriveAndDeliver, new AutonIntakeCommand(intake, 8))));
+      //autonChooser.addOption("Left Forward Path", scoreHighGoalAuton.andThen(retractArmAuton).andThen(Commands.parallel(autonForwardLeftPath, new AutonIntakeCommand(intake, 8))));
       //autonChooser.setDefaultOption("Right Forward Path", scoreHighGoalAuton.andThen(retractArmAuton));
-      //autonChooser.setDefaultOption("Left Forward Path", Commands.parallel(autonForwardLeftPath, new AutonIntakeCommand(intake, 8)));
+      
+      //Left path, only drives(Not Tested)
+      autonChooser.addOption("Left Drive Path", Commands.parallel(autonForwardLeftPath, new AutonIntakeCommand(intake, 8)));
+      //Delivers the cone alone(NOT Tested)
+      autonChooser.addOption("Deliver Routine", scoreHighGoalDeliverAuton.andThen(retractArmDeliverAuton));
       
 
       // autonChooser.addOption("Auton Balance", autonForwardPath
