@@ -102,6 +102,9 @@ public class RobotContainer {
     String chargePad1JSON = "paths/ChargePad2mts.wpilib.json";
     Trajectory chargePad1Trajectory = new Trajectory();
 
+    String chargePad2JSON = "paths/ChargePad2.4mts.wpilib.json";
+    Trajectory chargePad2Trajectory = new Trajectory();
+
 
     // String chargePad1JSON = "paths/ChargePad1.wpilib.json";
     // Trajectory chargePad1Trajectory = new Trajectory();
@@ -222,12 +225,12 @@ public class RobotContainer {
         System.out.print("unable to open charge pad 1" + ex);
       }
 
-      // try {
-      //   Path chargePadTrajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(chargePad2JSON);
-      //   chargePad2Trajectory = TrajectoryUtil.fromPathweaverJson(chargePadTrajectoryPath2);
-      // } catch (IOException ex) {
-      //   System.out.print("unable to open charge pad 1" + ex);
-      // }
+      try {
+        Path chargePadTrajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(chargePad2JSON);
+        chargePad2Trajectory = TrajectoryUtil.fromPathweaverJson(chargePadTrajectoryPath2);
+      } catch (IOException ex) {
+        System.out.print("unable to open charge pad 1" + ex);
+      }
 
       //create auton commands
 
@@ -247,12 +250,29 @@ public class RobotContainer {
           thetaController,
           swerveSubsystem::setModuleStates,
           swerveSubsystem); 
+
+      SwerveControllerCommand autoBalanceTrajectoryTwoPointFourCommand = new SwerveControllerCommand(
+            chargePad2Trajectory,
+            swerveSubsystem::getPose,
+            DriveConstants.kDriveKinematics,
+            swerveSubsystem.getxController(),
+            swerveSubsystem.getyController(),
+            thetaController,
+            swerveSubsystem::setModuleStates,
+            swerveSubsystem); 
       
       //Trajectory to Drive to Pad
       SequentialCommandGroup autonDriveToPad = new SequentialCommandGroup(
                     new InstantCommand(() -> swerveSubsystem.resetOdometry(chargePad1Trajectory.getInitialPose())), 
                     new ManualEncoderCalibration(swerveSubsystem),
                     autoBalanceTrajectoryCommand,  
+                    new InstantCommand(() -> swerveSubsystem.stopModules()));
+      
+      //Trajectory to Drive to Pad
+      SequentialCommandGroup autonDriveToPadTwoPointFour = new SequentialCommandGroup(
+                    new InstantCommand(() -> swerveSubsystem.resetOdometry(chargePad2Trajectory.getInitialPose())), 
+                    new ManualEncoderCalibration(swerveSubsystem),
+                    autoBalanceTrajectoryTwoPointFourCommand,  
                     new InstantCommand(() -> swerveSubsystem.stopModules()));
    
 
@@ -347,6 +367,7 @@ public class RobotContainer {
 
 
       autonChooser.addOption("AutoBalance Routine", autonDriveToPad.andThen(autonAutoBalance).andThen(setTo90));
+      autonChooser.addOption("AB Drive 2.4", autonDriveToPadTwoPointFour.andThen(new AutonomousDriveCommand(swerveSubsystem, 6)).andThen(new SetTo90(swerveSubsystem, 0.25)));
       
 
       // autonChooser.addOption("Auton Balance", autonForwardPath
