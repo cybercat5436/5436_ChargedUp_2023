@@ -98,13 +98,16 @@ public class RobotContainer {
 
     String trajectoryLeftPathJSON = "paths/ForwardPathLeft.wpilib.json";
     Trajectory trajectoryLeft = new Trajectory();
-
-
-    String chargePad1JSON = "paths/ChargePad1.wpilib.json";
+    
+    String chargePad1JSON = "paths/ChargePad2mts.wpilib.json";
     Trajectory chargePad1Trajectory = new Trajectory();
 
-    String chargePad2JSON = "paths/ChargePad2.wpilib.json";
-    Trajectory chargePad2Trajectory = new Trajectory();
+
+    // String chargePad1JSON = "paths/ChargePad1.wpilib.json";
+    // Trajectory chargePad1Trajectory = new Trajectory();
+
+    // String chargePad2JSON = "paths/ChargePad2.wpilib.json";
+    // Trajectory chargePad2Trajectory = new Trajectory();
 
     private final ZeroExtender zeroExtender = new ZeroExtender(extender);
 
@@ -219,12 +222,12 @@ public class RobotContainer {
         System.out.print("unable to open charge pad 1" + ex);
       }
 
-      try {
-        Path chargePadTrajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(chargePad2JSON);
-        chargePad2Trajectory = TrajectoryUtil.fromPathweaverJson(chargePadTrajectoryPath2);
-      } catch (IOException ex) {
-        System.out.print("unable to open charge pad 1" + ex);
-      }
+      // try {
+      //   Path chargePadTrajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(chargePad2JSON);
+      //   chargePad2Trajectory = TrajectoryUtil.fromPathweaverJson(chargePadTrajectoryPath2);
+      // } catch (IOException ex) {
+      //   System.out.print("unable to open charge pad 1" + ex);
+      // }
 
       //create auton commands
 
@@ -236,7 +239,7 @@ public class RobotContainer {
       swerveSubsystem.resetEncoders();
 
       SwerveControllerCommand autoBalanceTrajectoryCommand = new SwerveControllerCommand(
-        chargePad1Trajectory.concatenate(chargePad2Trajectory),
+          chargePad1Trajectory,
           swerveSubsystem::getPose,
           DriveConstants.kDriveKinematics,
           swerveSubsystem.getxController(),
