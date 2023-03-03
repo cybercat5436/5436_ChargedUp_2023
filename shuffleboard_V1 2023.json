@@ -133,12 +133,116 @@
           }
         }
       }
+    },
+    {
+      "title": "Tommy\u0027s tab",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "7,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///SmartDashboard/SwerveSubsystem/feed forward",
+              "_title": "SmartDashboard/SwerveSubsystem/feed forward",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": 0.0,
+              "Slider Settings/Max": 0.0,
+              "Slider Settings/Block increment": 0.0025,
+              "Visuals/Display value": true
+            }
+          },
+          "7,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///SmartDashboard/SwerveSubsystem/Roll Rate of Change Constant",
+              "_title": "SmartDashboard/SwerveSubsystem/Roll Rate of Change Constant",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": -5.0,
+              "Slider Settings/Max": 0.0,
+              "Slider Settings/Block increment": 0.0025,
+              "Visuals/Display value": true
+            }
+          },
+          "5,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveSubsystem/balanceConstant",
+              "_title": "SmartDashboard/SwerveSubsystem/balanceConstant",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveSubsystem/feed forward",
+              "_title": "SmartDashboard/SwerveSubsystem/feed forward",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveSubsystem/Roll Rate of Change Constant",
+              "_title": "SmartDashboard/SwerveSubsystem/Roll Rate of Change Constant",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///SmartDashboard/SwerveSubsystem/balanceConstant",
+              "_title": "SmartDashboard/SwerveSubsystem/balanceConstant",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": 0.0,
+              "Slider Settings/Max": 0.1,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true
+            }
+          }
+        }
+      }
     }
   ],
   "windowGeometry": {
-    "x": -6.0,
-    "y": 1.0,
-    "width": 1548.0,
-    "height": 829.0
+    "x": -7.199999809265137,
+    "y": -7.199999809265137,
+    "width": 1550.4000244140625,
+    "height": 838.4000244140625
   }
 }
