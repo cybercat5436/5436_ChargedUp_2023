@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,11 +47,12 @@ private int counter;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    DataLogManager.log("Auton Drive Command Execute");
 
     //SmartDashboard.putNumber(timer.get());
     this.xSpeed = swerveSubsystem.autoBalance();
 
-    if(swerveSubsystem.getRollDegrees() < 2.5 && swerveSubsystem.getRollDegrees() > -2.5){
+    if(swerveSubsystem.getPitchDegrees() < 2.5 && swerveSubsystem.getPitchDegrees() > -2.5){
       counter++;
     } else {
       counter = 0;
@@ -96,6 +98,7 @@ private int counter;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    DataLogManager.log("Auton Drive Command isFinished");
     //WRITE EXIT CONDITION BASED ON HOW MANY CYCLES IT'S BALANCED 
     //TIME BASED EXIT CONDITION
     if(counter == 5 || timer.get() > timeLimit){

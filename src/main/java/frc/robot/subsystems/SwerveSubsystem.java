@@ -38,14 +38,14 @@ public class SwerveSubsystem extends SubsystemBase{
     
     private ArrayList<SwerveModuleState> moduleStates = new ArrayList<>();
     private ArrayList<SwerveModule> swerveModules = new ArrayList<>();
-    private double balanceConstant = (.0033);
-    private double feedForwardConstant = (.00034);
+    private double balanceConstant = (.008767);
+    private double feedForwardConstant = (0);
     private double previousRoll = 0;
     private double previousPitch = 0;
     private double rollROC;
     private double pitchROC;
     private double rollROCConstant = 0;
-    private double pitchROCConstant = 0;
+    private double pitchROCConstant = -3.5972;
     private double errorMultiplier;
     private double xSpeed;
     private double integratorSum;

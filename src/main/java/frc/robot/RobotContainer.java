@@ -100,8 +100,11 @@ public class RobotContainer {
     Trajectory trajectoryLeft = new Trajectory();
 
 
-    // String chargePad1JSON = "paths/ChargePad1.wpilib.json";
-    // Trajectory chargePadTragectory = new Trajectory();
+    String chargePad1JSON = "paths/ChargePad1.wpilib.json";
+    Trajectory chargePad1Trajectory = new Trajectory();
+
+    String chargePad2JSON = "paths/ChargePad2.wpilib.json";
+    Trajectory chargePad2Trajectory = new Trajectory();
 
     private final ZeroExtender zeroExtender = new ZeroExtender(extender);
 
@@ -209,12 +212,19 @@ public class RobotContainer {
         System.out.println("Unable to open ForwardLeftPath trajectory " + ex);
       }
 
-      // try {
-      //   Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(chargePad1JSON);
-      //   chargePadTragectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
-      // } catch (IOException ex) {
-      //   System.out.print("unable to open charge pad 1" + ex);
-      //}
+      try {
+        Path chargePadTrajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(chargePad1JSON);
+        chargePad1Trajectory = TrajectoryUtil.fromPathweaverJson(chargePadTrajectoryPath1);
+      } catch (IOException ex) {
+        System.out.print("unable to open charge pad 1" + ex);
+      }
+
+      try {
+        Path chargePadTrajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(chargePad2JSON);
+        chargePad2Trajectory = TrajectoryUtil.fromPathweaverJson(chargePadTrajectoryPath2);
+      } catch (IOException ex) {
+        System.out.print("unable to open charge pad 1" + ex);
+      }
 
       //create auton commands
 
@@ -225,16 +235,22 @@ public class RobotContainer {
       //Reset all the drive motors of the swervemodules to 0
       swerveSubsystem.resetEncoders();
 
-      // // 4. Construct command to follow trajectory
-      // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-      //         trajectory,
-      //         swerveSubsystem::getPose,
-      //         DriveConstants.kDriveKinematics,
-      //         swerveSubsystem.getxController(),
-      //         swerveSubsystem.getyController(),
-      //         thetaController,
-      //         swerveSubsystem::setModuleStates,
-      //         swerveSubsystem);
+      SwerveControllerCommand autoBalanceTrajectoryCommand = new SwerveControllerCommand(
+        chargePad1Trajectory.concatenate(chargePad2Trajectory),
+          swerveSubsystem::getPose,
+          DriveConstants.kDriveKinematics,
+          swerveSubsystem.getxController(),
+          swerveSubsystem.getyController(),
+          thetaController,
+          swerveSubsystem::setModuleStates,
+          swerveSubsystem); 
+      
+      //Trajectory to Drive to Pad
+      SequentialCommandGroup autonDriveToPad = new SequentialCommandGroup(
+                    new InstantCommand(() -> swerveSubsystem.resetOdometry(chargePad1Trajectory.getInitialPose())), 
+                    new ManualEncoderCalibration(swerveSubsystem),
+                    autoBalanceTrajectoryCommand,  
+                    new InstantCommand(() -> swerveSubsystem.stopModules()));
    
 
         SwerveControllerCommand rightRoutineCommand = new SwerveControllerCommand(
@@ -285,9 +301,11 @@ public class RobotContainer {
                               new ManualEncoderCalibration(swerveSubsystem),
                               leftDriveAndDeliverCommand,  
                               new InstantCommand(() -> swerveSubsystem.stopModules()));
+        
 
-        // AutonomousDriveCommand autonomousDriveCommand = new AutonomousDriveCommand(swerveSubsystem, 6);
-        //           SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
+        // Command to Auto Balance                      
+        AutonomousDriveCommand autonAutoBalance = new AutonomousDriveCommand(swerveSubsystem, 6);
+        SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
 
         
       
@@ -323,6 +341,9 @@ public class RobotContainer {
       autonChooser.addOption("Left Drive Path", Commands.parallel(autonForwardLeftPath, new AutonIntakeCommand(intake, 8)));
       //Delivers the cone alone(NOT Tested)
       autonChooser.addOption("Deliver Routine", scoreHighGoalDeliverAuton.andThen(retractArmDeliverAuton));
+
+
+      autonChooser.addOption("AutoBalance Routine", autonDriveToPad.andThen(autonAutoBalance).andThen(setTo90));
       
 
       // autonChooser.addOption("Auton Balance", autonForwardPath

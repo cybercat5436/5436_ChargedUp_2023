@@ -57,7 +57,7 @@ public class SetTo90 extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    DataLogManager.log("isFinished");;
+    DataLogManager.log("isFinished");
     return timer.get() > timeLimit ? true : false;
   }
 }
