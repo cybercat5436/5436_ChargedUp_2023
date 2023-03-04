@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
@@ -20,7 +21,7 @@ import frc.robot.subsystems.LimeLight;
 public class SwerveJoystickCmd extends CommandBase {
     private SwerveSubsystem swerveSubsystem;
     private LimeLight limeLightGrid;
-    private Supplier <Double> xSpdFunction, ySpdFunction, turningSpdFunction, leftTrigger;
+    private Supplier <Double> xSpdFunction, ySpdFunction, turningSpdFunction, leftTrigger, rightTrigger;
     private Supplier<Boolean> fieldOrientedFunction;
     private Supplier<Boolean> visionAdjustmentFunction;
     private Supplier<Boolean> halfSpeedFunction;
@@ -36,6 +37,13 @@ public class SwerveJoystickCmd extends CommandBase {
     private double rollROC;
     private double rollROCConstant = -4.16;
     private double errorMultiplier;
+    private double superFastModeConstant = 7.5;
+    private double xSpeedFast, ySpeedFast;
+    private SlewRateLimiter slewRateLimiterX = new SlewRateLimiter(superFastModeConstant * 2.0);
+    private SlewRateLimiter slewRateLimiterY = new SlewRateLimiter(superFastModeConstant * 2.0);
+    private double xSpeed, ySpeed;
+
+
 
 
     public  SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
@@ -47,6 +55,7 @@ public class SwerveJoystickCmd extends CommandBase {
                 Supplier<Boolean> chargePadFunction,
                 Supplier<Boolean> visionAdjustmentFunction, 
                 Supplier<Double> leftTrigger,
+                Supplier<Double> rightTrigger,
                 LimeLight limeLight){
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
@@ -57,20 +66,27 @@ public class SwerveJoystickCmd extends CommandBase {
         this.addRequirements(swerveSubsystem);
         this.visionAdjustmentFunction = visionAdjustmentFunction;
         this.leftTrigger = leftTrigger;
+        this.rightTrigger = rightTrigger;
         this.limeLightGrid = limeLight;
 
         // Register the sendable to LiveWindow and SmartDashboard
         SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
         SmartDashboard.putData(this);
     }
-                
+
+   
 
     @Override
 
     public void execute(){
         // get real time joyStick inputs
-        double xSpeed = xSpdFunction.get();
-        double ySpeed = ySpdFunction.get();
+        xSpeed = xSpdFunction.get();
+        ySpeed = ySpdFunction.get();
+        //can not implement sleRateLimiter =.calc because we need x and y values within execute 
+;
+       // System.out.println("THIS IS XSPEED FAST:" + xSpeedFast);
+
+
         double turningSpeed = turningSpdFunction.get();
         boolean targetInView = limeLightGrid.getVisionTargetStatus();
         boolean autoVisionFunction = visionAdjustmentFunction.get();
@@ -79,17 +95,41 @@ public class SwerveJoystickCmd extends CommandBase {
         // Read in the robot xSpeed from controller
         if (Math.abs(xSpeed) > OIConstants.K_DEADBAND) {
             xSpeed = Math.pow(xSpeed, 2) * Math.signum(xSpeed);
-            xSpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+           
+            if (Math.abs(rightTrigger.get())> .2) {
+                
+                 xSpeed *= superFastModeConstant;
+                 System.out.println("This is xspeed" + xSpeed);
+
+            } else {
+                xSpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+            }
         } else {
             xSpeed = 0.0;
         }
 
+        xSpeedFast = slewRateLimiterX.calculate(xSpeed);
+        
+
         // Read in robot ySpeed from controller
         if (Math.abs(ySpeed) > OIConstants.K_DEADBAND){
             ySpeed = Math.pow(ySpeed, 2) * Math.signum(ySpeed);
-            ySpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+
+            if(Math.abs(rightTrigger.get()) > .2){
+
+                ySpeed *= superFastModeConstant;
+                
+            } else {
+                ySpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+            }
         } else {
             ySpeed = 0.0;
+        }
+        
+        ySpeedFast = slewRateLimiterY.calculate(ySpeed); 
+        if(rightTrigger.get() > 0.2) {
+            xSpeed = xSpeedFast;
+            ySpeed = ySpeedFast;
         }
 
         // Read in robot turningSpeed from controller
@@ -105,6 +145,9 @@ public class SwerveJoystickCmd extends CommandBase {
         xSpeed *= superSlowMo;
         ySpeed *= superSlowMo;
         turningSpeed *= superSlowMo;
+
+
+
 
         // make driving smoother
         // xSpeed = slewRateLimiter.calculate(xSpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
@@ -209,15 +252,16 @@ public class SwerveJoystickCmd extends CommandBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        // TODO Auto-generated method stub
-        super.initSendable(builder);
+        // TODO Auto-generated method super.initSendable(builder);
         builder.addDoubleProperty("kLimeLightHorizontal", () -> kLimelightHorizontal, (value) -> kLimelightHorizontal = value);
         builder.addDoubleProperty("kLimeLightForward", () -> kLimelightForward, (value) -> kLimelightForward = value);
         builder.addBooleanProperty("targetInView", () -> limeLightGrid.getVisionTargetStatus(), null);
         builder.addBooleanProperty("autoVisionFunction", () -> visionAdjustmentFunction.get(), null);
         builder.addDoubleProperty("kLimeLightTurning", () -> kLimelightTurning, (value) -> kLimelightTurning = value);
         builder.addDoubleProperty("targetHeading", () -> targetHeading, (value) -> targetHeading = value);
-
+        builder.addDoubleProperty("x speed", () -> xSpeed, (value) -> xSpeed = value);
+        builder.addDoubleProperty("Y speed", () -> ySpeed, (value) -> ySpeed = value);
+        builder.addDoubleProperty("rightTrigger.get()",() -> rightTrigger.get(), null);
 
     }
 
