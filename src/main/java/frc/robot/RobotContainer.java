@@ -328,7 +328,7 @@ public class RobotContainer {
         
 
         // Command to Auto Balance                      
-        AutonomousDriveCommand autonAutoBalance = new AutonomousDriveCommand(swerveSubsystem, 6);
+        AutonomousDriveCommand autonAutoBalance = new AutonomousDriveCommand(swerveSubsystem, 10);
         SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
 
         
