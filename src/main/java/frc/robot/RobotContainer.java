@@ -316,7 +316,8 @@ public class RobotContainer {
         SequentialCommandGroup autonForwardLeftPath = new SequentialCommandGroup(
                             new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectoryLeft.getInitialPose())), 
                             new ManualEncoderCalibration(swerveSubsystem),
-                            leftRoutineCommand,  
+                            leftRoutineCommand, 
+
                             new InstantCommand(() -> swerveSubsystem.stopModules()));
         
         SequentialCommandGroup autonLeftDriveAndDeliver = new SequentialCommandGroup(
@@ -327,7 +328,7 @@ public class RobotContainer {
         
 
         // Command to Auto Balance                      
-        AutonomousDriveCommand autonAutoBalance = new AutonomousDriveCommand(swerveSubsystem, 6);
+        AutonomousDriveCommand autonAutoBalance = new AutonomousDriveCommand(swerveSubsystem, 10);
         SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
 
         
@@ -367,7 +368,7 @@ public class RobotContainer {
 
 
       autonChooser.addOption("AutoBalance Routine", autonDriveToPad.andThen(autonAutoBalance).andThen(setTo90));
-      autonChooser.addOption("AB Drive 2.4", autonDriveToPadTwoPointFour.andThen(new AutonomousDriveCommand(swerveSubsystem, 6)).andThen(new SetTo90(swerveSubsystem, 0.25)));
+      autonChooser.addOption("AB Drive 2.4", autonDriveToPadTwoPointFour.andThen(new AutonomousDriveCommand(swerveSubsystem, 10)).andThen(new SetTo90(swerveSubsystem, 0.25)));
       
 
       // autonChooser.addOption("Auton Balance", autonForwardPath

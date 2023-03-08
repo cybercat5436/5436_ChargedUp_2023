@@ -234,6 +234,32 @@
               "Slider Settings/Block increment": 0.0625,
               "Visuals/Display value": true
             }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Gyro",
+              "_title": "/SmartDashboard/Gyro",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Pitch",
+              "_title": "/SmartDashboard/Pitch",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
