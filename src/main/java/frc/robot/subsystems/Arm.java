@@ -31,7 +31,7 @@ public class Arm extends SubsystemBase {
   private static final int PIDLoopIdx = 0;
 
   private double cruiseVelocity = 20000;
-  private double acceleration = 6000;
+  private double acceleration = 30000;
   private double closedLoopSpeed = 1.0;
 
  

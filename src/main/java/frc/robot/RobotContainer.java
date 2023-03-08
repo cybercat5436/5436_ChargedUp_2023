@@ -401,7 +401,7 @@ public class RobotContainer {
       // secondaryController.rightTrigger().whileTrue(new InstantCommand(()->arm.armMidGoal()))
       //   .whileFalse(new InstantCommand(()->arm.stopArm()));
       
-      secondaryController.start().onTrue(new InstantCommand(()->arm.armMoveToZeroPosition()));
+      //secondaryController.start().onTrue(new InstantCommand(()->arm.armMoveToZeroPosition()));
       //   .onFalse(new InstantCommand(()->arm.stopArm()));
 
 
@@ -464,6 +464,18 @@ public class RobotContainer {
       
 
       //Auto command groups
+      secondaryController.start().onTrue(new SequentialCommandGroup(
+          new ArmGoToHighMotionMagic(arm),
+          new InstantCommand(()->extender.extendHighGoal()) 
+      ));
+      secondaryController.back().onTrue(new SequentialCommandGroup(
+          new ArmGoToMid(arm),
+          new InstantCommand(()->extender.extendMidGoal())
+      ));
+      secondaryController.rightStick().onTrue(new SequentialCommandGroup(
+          new ExtenderRetractToZero(extender),
+          new InstantCommand(()->arm.armMoveToZeroPosition()) 
+      ));
       // secondaryController.pov(90).onTrue(new SequentialCommandGroup(
       //   new InstantCommand(()->extender.gotoDefaultPos()),
       //   new ClawGrabCone(claw),
@@ -486,8 +498,8 @@ public class RobotContainer {
 
 
 
-      secondaryController.back().onTrue(scoreHighGoal);
-      secondaryController.rightStick().onTrue(retractArm);
+      //secondaryController.back().onTrue(scoreHighGoal);
+      //secondaryController.rightStick().onTrue(retractArm);
 
 
       //new JoystickButton(driverJoystick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
