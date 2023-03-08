@@ -69,8 +69,8 @@ public class Arm extends SubsystemBase {
     armMotor.configStatorCurrentLimit(
       new StatorCurrentLimitConfiguration(true, 30, 45, 0.050));
 
-    SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
-    SmartDashboard.putData(this);  
+    //SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
+    //SmartDashboard.putData(this);  
   }
 
   @Override
@@ -128,30 +128,30 @@ public class Arm extends SubsystemBase {
   public void restoreMaxSpeed(){
     armMotor.configClosedLoopPeakOutput(0, 0.5);
   }
+
   @Override
   public void initSendable(SendableBuilder builder) {
-    // TODO Auto-generated method stub
-    super.initSendable(builder);
-    builder.addDoubleProperty("Speed (manual)", () -> speed, (value) -> this.speed = value);
+    // super.initSendable(builder);
+    // builder.addDoubleProperty("Speed (manual)", () -> speed, (value) -> this.speed = value);
     
-    builder.addDoubleProperty("Speed (Closed Loop)", () -> closedLoopSpeed, (value) -> {
-      this.closedLoopSpeed = value;
-      armMotor.configClosedLoopPeakOutput(SLOTIDX, closedLoopSpeed);
-    });
+    // builder.addDoubleProperty("Speed (Closed Loop)", () -> closedLoopSpeed, (value) -> {
+    //   this.closedLoopSpeed = value;
+    //   armMotor.configClosedLoopPeakOutput(SLOTIDX, closedLoopSpeed);
+    // });
 
-    builder.addDoubleProperty("Cruise Velocity", () -> cruiseVelocity, (value) -> {
-      this.cruiseVelocity = value;
-      armMotor.configMotionCruiseVelocity(cruiseVelocity, TIMEOUT);
-    });
+    // builder.addDoubleProperty("Cruise Velocity", () -> cruiseVelocity, (value) -> {
+    //   this.cruiseVelocity = value;
+    //   armMotor.configMotionCruiseVelocity(cruiseVelocity, TIMEOUT);
+    // });
     
-    builder.addDoubleProperty("Acceleration", () -> acceleration, (value) -> {
-      this.acceleration = value;
-      armMotor.configMotionAcceleration(acceleration, TIMEOUT);
-    });
+    // builder.addDoubleProperty("Acceleration", () -> acceleration, (value) -> {
+    //   this.acceleration = value;
+    //   armMotor.configMotionAcceleration(acceleration, TIMEOUT);
+    // });
     
-    builder.addDoubleProperty("Arm kP", () -> kP, (value) -> {
-      kP = value;
-      armMotor.config_kP(0, kP);
-    });
+    // builder.addDoubleProperty("Arm kP", () -> kP, (value) -> {
+    //   kP = value;
+    //   armMotor.config_kP(0, kP);
+    // });
   }
 }
