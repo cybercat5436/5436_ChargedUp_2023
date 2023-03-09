@@ -4,20 +4,29 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Claw;
 
 public class ClawGrabCone extends CommandBase {
   /** Creates a new ClawGrabCone. */
   private Claw claw;
+  private Timer timer;
+  private double timelimit;
   public ClawGrabCone(Claw claw) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.claw = claw;
+    this.timer = new Timer();
+    this.timelimit = 2;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    DataLogManager.log("ClawGrab Initialize");
+    timer.reset();
+    timer.restart();
     claw.grabCone();
   }
 
@@ -32,6 +41,6 @@ public class ClawGrabCone extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return claw.isConeGrabbed();
+    return claw.isConeGrabbed() || timer.get() > timelimit;
   }
 }

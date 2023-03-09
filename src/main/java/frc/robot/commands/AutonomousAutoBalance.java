@@ -16,7 +16,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class AutonomousDriveCommand extends CommandBase {
+public class AutonomousAutoBalance extends CommandBase {
   /** Creates a new AutonomousDriveCommand. */
 private final SwerveSubsystem swerveSubsystem;
 private double xSpeed;
@@ -26,7 +26,7 @@ private Timer timer;
 private double timeLimit;
 private int counter;
 
-  public AutonomousDriveCommand(SwerveSubsystem swerveSubsystem, double timeLimit) {
+  public AutonomousAutoBalance(SwerveSubsystem swerveSubsystem, double timeLimit) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveSubsystem = swerveSubsystem;
     this.xSpeed = 0;
