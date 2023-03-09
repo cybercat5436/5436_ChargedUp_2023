@@ -20,8 +20,8 @@ import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
   private TalonFX armMotor = new TalonFX(Constants.RoboRioPortConfig.ARM_MOTOR);
-  private double speed = 0.4;
-  private final double HIGH_POS = -162000;
+  private double speed = 0.6;
+  private final double HIGH_POS = -177000;
   private final double HIGH_POS2 = -154000;
   private final double MID_POS = -140000;
   private final double CHASSIS_EXIT_POS = -130000;
@@ -30,9 +30,9 @@ public class Arm extends SubsystemBase {
   private static final int SLOTIDX = 0;
   private static final int PIDLoopIdx = 0;
 
-  private double cruiseVelocity = 12000;
-  private double acceleration = 6000;
-  private double closedLoopSpeed = 0.5;
+  private double cruiseVelocity = 20000;
+  private double acceleration = 30000;
+  private double closedLoopSpeed = 1.0;
 
  
   /** Creates a new Arm. */
@@ -69,8 +69,8 @@ public class Arm extends SubsystemBase {
     armMotor.configStatorCurrentLimit(
       new StatorCurrentLimitConfiguration(true, 30, 45, 0.050));
 
-    SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
-    SmartDashboard.putData(this);  
+    //SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
+    //SmartDashboard.putData(this);  
   }
 
   @Override
@@ -128,30 +128,30 @@ public class Arm extends SubsystemBase {
   public void restoreMaxSpeed(){
     armMotor.configClosedLoopPeakOutput(0, 0.5);
   }
+
   @Override
   public void initSendable(SendableBuilder builder) {
-    // TODO Auto-generated method stub
-    super.initSendable(builder);
-    builder.addDoubleProperty("Speed (manual)", () -> speed, (value) -> this.speed = value);
+    // super.initSendable(builder);
+    // builder.addDoubleProperty("Speed (manual)", () -> speed, (value) -> this.speed = value);
     
-    builder.addDoubleProperty("Speed (Closed Loop)", () -> closedLoopSpeed, (value) -> {
-      this.closedLoopSpeed = value;
-      armMotor.configClosedLoopPeakOutput(SLOTIDX, closedLoopSpeed);
-    });
+    // builder.addDoubleProperty("Speed (Closed Loop)", () -> closedLoopSpeed, (value) -> {
+    //   this.closedLoopSpeed = value;
+    //   armMotor.configClosedLoopPeakOutput(SLOTIDX, closedLoopSpeed);
+    // });
 
-    builder.addDoubleProperty("Cruise Velocity", () -> cruiseVelocity, (value) -> {
-      this.cruiseVelocity = value;
-      armMotor.configMotionCruiseVelocity(cruiseVelocity, TIMEOUT);
-    });
+    // builder.addDoubleProperty("Cruise Velocity", () -> cruiseVelocity, (value) -> {
+    //   this.cruiseVelocity = value;
+    //   armMotor.configMotionCruiseVelocity(cruiseVelocity, TIMEOUT);
+    // });
     
-    builder.addDoubleProperty("Acceleration", () -> acceleration, (value) -> {
-      this.acceleration = value;
-      armMotor.configMotionAcceleration(acceleration, TIMEOUT);
-    });
+    // builder.addDoubleProperty("Acceleration", () -> acceleration, (value) -> {
+    //   this.acceleration = value;
+    //   armMotor.configMotionAcceleration(acceleration, TIMEOUT);
+    // });
     
-    builder.addDoubleProperty("Arm kP", () -> kP, (value) -> {
-      kP = value;
-      armMotor.config_kP(0, kP);
-    });
+    // builder.addDoubleProperty("Arm kP", () -> kP, (value) -> {
+    //   kP = value;
+    //   armMotor.config_kP(0, kP);
+    // });
   }
 }
