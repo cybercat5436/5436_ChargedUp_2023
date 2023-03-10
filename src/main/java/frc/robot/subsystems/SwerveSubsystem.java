@@ -350,9 +350,9 @@ public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("kThetaController", () -> kThetaController, (value) -> kThetaController = value);
 
     builder.addDoubleProperty("balanceConstant", () -> balanceConstant, (value) -> balanceConstant = value);
-    builder.addDoubleProperty("Roll Rate of Change", () -> rollROC, null);
+    builder.addDoubleProperty("Pitch Rate of Change", () -> rollROC, null);
    // builder.addDoubleProperty("Roll Rate of Change Constant", () -> rollROCConstant, (value) -> rollROCConstant = value);
-   builder.addDoubleProperty("Roll Rate of Change Constant", () -> pitchROCConstant, (value) -> pitchROCConstant = value);
+   builder.addDoubleProperty("Pitch Rate of Change Constant", () -> pitchROCConstant, (value) -> pitchROCConstant = value);
 
     builder.addDoubleProperty("feed forward", () -> feedForwardConstant, (value) -> feedForwardConstant = value);
 

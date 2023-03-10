@@ -46,6 +46,7 @@ import frc.robot.commands.ExtenderRetractToZero;
 import frc.robot.commands.ManualEncoderCalibration;
 import frc.robot.commands.SetTo90;
 import frc.robot.commands.OrientCone;
+import frc.robot.commands.SeekFulcrum;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroExtender;
 import frc.robot.subsystems.Arm;
@@ -55,6 +56,7 @@ import frc.robot.subsystems.Extender;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Orienter;
+import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -495,7 +497,9 @@ public class RobotContainer {
       //   //   System.out.println("Extender High Goal");
       //   //   extender.extendHighGoal();})
       // ));
-
+      primaryController.back().onTrue(
+          new SeekFulcrum(swerveSubsystem))
+          .onFalse(new InstantCommand(()->swerveSubsystem.stopModules()));
 
 
       //secondaryController.back().onTrue(scoreHighGoal);
