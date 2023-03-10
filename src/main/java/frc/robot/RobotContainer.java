@@ -190,10 +190,10 @@ public class RobotContainer {
       SmartDashboard.putData(manualEncoderCalibration);
       configureButtonBindings();
 
-      SmartDashboard.putData(new InstantCommand(() -> swerveSubsystem.zeroIntegrator()));
+      // SmartDashboard.putData(new InstantCommand(() -> swerveSubsystem.zeroIntegrator()));
 
-      SmartDashboard.putData(zeroExtender);
-      SmartDashboard.putData(new ArmGoToHighMotionMagic(arm));
+      // SmartDashboard.putData(zeroExtender);
+      // SmartDashboard.putData(new ArmGoToHighMotionMagic(arm));
 
       try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);

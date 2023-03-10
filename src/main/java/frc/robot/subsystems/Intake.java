@@ -37,8 +37,8 @@ public class Intake extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
     super.initSendable(builder);
-    builder.addDoubleProperty("Intake Speed", () -> speed, (value) -> speed = value);
-    builder.addDoubleProperty("Intake Position", () -> getIntakePosition(), null);
+    // builder.addDoubleProperty("Intake Speed", () -> speed, (value) -> speed = value);
+    // builder.addDoubleProperty("Intake Position", () -> getIntakePosition(), null);
   }
 
   public void stopIntake(){

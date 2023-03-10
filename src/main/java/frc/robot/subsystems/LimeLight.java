@@ -43,16 +43,16 @@ public class LimeLight extends SubsystemBase {
     verticalError = getVisionTargetVerticalError();
     area = getVisionTargetAreaError();
     targetInView = getVisionTargetStatus();
-    SmartDashboard.putBoolean("Valid Target Found", targetInView);
-    SmartDashboard.putNumber("tx", getVisionTargetHorizontalError());
-    SmartDashboard.putNumber("ty", getVisionTargetVerticalError());
-    if (isOriented()) {
-      System.out.println("It is oriented!!!!");
+    // SmartDashboard.putBoolean("Valid Target Found", targetInView);
+    // SmartDashboard.putNumber("tx", getVisionTargetHorizontalError());
+    // SmartDashboard.putNumber("ty", getVisionTargetVerticalError());
+    // if (isOriented()) {
+      // System.out.println("It is oriented!!!!");
     
-    }
+    // }
     // System.out.println("This is Tlong:" + tLongLocal.getDouble(0));
-    SmartDashboard.putNumber("tLong", tLongLocal.getDouble(0));
-    SmartDashboard.putBoolean("Is oriented", isOriented());
+    // SmartDashboard.putNumber("tLong", tLongLocal.getDouble(0));
+    // SmartDashboard.putBoolean("Is oriented", isOriented());
   }
   
 

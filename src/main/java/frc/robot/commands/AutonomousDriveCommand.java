@@ -58,7 +58,7 @@ private int counter;
       counter = 0;
     }
 
-    SmartDashboard.putNumber("Counter", counter);
+    // SmartDashboard.putNumber("Counter", counter);
 
   //   if (Math.abs(xSpeed) > OIConstants.K_DEADBAND) {
   //     xSpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;

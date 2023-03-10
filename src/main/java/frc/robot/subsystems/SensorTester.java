@@ -46,11 +46,11 @@ public class SensorTester extends SubsystemBase{
     public void initSendable(SendableBuilder builder) {
         // TODO Auto-generated method stub
         super.initSendable(builder);
-        builder.addDoubleProperty("FrontLeftAnalog", () -> frontLeftTurningEncoder.getVoltage(), null);
-        builder.addDoubleProperty("FrontRightAnalog", () -> frontRighTurningEncoder.getVoltage(), null);
-        builder.addDoubleProperty("BackLeftAnalog", () -> backLeftTurningEncoder.getVoltage(), null);
-        builder.addDoubleProperty("BackRightAnalog", () -> backRightTurningEncoder.getVoltage(), null);
-        builder.addDoubleProperty("Gyro", () -> gyro.getYaw(), null);
+        // builder.addDoubleProperty("FrontLeftAnalog", () -> frontLeftTurningEncoder.getVoltage(), null);
+        // builder.addDoubleProperty("FrontRightAnalog", () -> frontRighTurningEncoder.getVoltage(), null);
+        // builder.addDoubleProperty("BackLeftAnalog", () -> backLeftTurningEncoder.getVoltage(), null);
+        // builder.addDoubleProperty("BackRightAnalog", () -> backRightTurningEncoder.getVoltage(), null);
+        // builder.addDoubleProperty("Gyro", () -> gyro.getYaw(), null);
     }
 
     

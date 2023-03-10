@@ -98,16 +98,16 @@ public class Extender extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
-    super.initSendable(builder);
-    builder.addDoubleProperty("Extender Speed", () -> speed, (value) -> speed = value);
-    builder.addDoubleProperty("Extender Position", () -> getExtenderPosition(), null);
-    builder.addDoubleProperty("Extender kP", () -> kP, (value) ->{
-      kP = value;
-      extenderPID.setP(kP);
-    });
-    builder.addDoubleProperty("Midgoal Desired Rotations", () -> desiredMidGoal, (value)->desiredMidGoal=value);
-    builder.addDoubleProperty("Highgoal Desired Rotations", () -> desiredHighGoal, (value)->desiredHighGoal=value);
+    // super.initSendable(builder);
+    // builder.addDoubleProperty("Extender Speed", () -> speed, (value) -> speed = value);
+    // builder.addDoubleProperty("Extender Position", () -> getExtenderPosition(), null);
+    // builder.addDoubleProperty("Extender kP", () -> kP, (value) ->{
+    //   kP = value;
+    //   extenderPID.setP(kP);
+    // });
+    // builder.addDoubleProperty("Midgoal Desired Rotations", () -> desiredMidGoal, (value)->desiredMidGoal=value);
+    // builder.addDoubleProperty("Highgoal Desired Rotations", () -> desiredHighGoal, (value)->desiredHighGoal=value);
 
-    builder.addBooleanProperty("Zero Limit Switch", () -> zeroLimitSwitch.get(), null);
+    // builder.addBooleanProperty("Zero Limit Switch", () -> zeroLimitSwitch.get(), null);
   }
 }

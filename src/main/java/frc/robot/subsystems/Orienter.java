@@ -54,16 +54,16 @@ public class Orienter extends SubsystemBase implements Sendable{
   }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Motor speed", orienterMotor.get());
+    // SmartDashboard.putNumber("Motor speed", orienterMotor.get());
     // This method will be called once per scheduler run
   }
   @Override
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
     super.initSendable(builder);
-    builder.addDoubleProperty("spinThreshold", () -> limelightOrient.spinThreshold, (value) -> limelightOrient.spinThreshold = value);
-    builder.addDoubleProperty("spinKConstant", () -> spinKConstant, (value) -> spinKConstant = value);
-    builder.addDoubleProperty("OtherValue", () -> spinOtherValue, (value) -> spinOtherValue = value);
+    // builder.addDoubleProperty("spinThreshold", () -> limelightOrient.spinThreshold, (value) -> limelightOrient.spinThreshold = value);
+    // builder.addDoubleProperty("spinKConstant", () -> spinKConstant, (value) -> spinKConstant = value);
+    // builder.addDoubleProperty("OtherValue", () -> spinOtherValue, (value) -> spinOtherValue = value);
 
 }
 }

@@ -174,9 +174,9 @@ public class SwerveModule implements Sendable{
 
     turningMotor.set(turningPidController.calculate(turningEncoder.getPosition(), state.angle.getRadians()));
 
-    SmartDashboard.putString(String.format("%s Modue State", this.wheelPosition.name()), state.toString());
+    // SmartDashboard.putString(String.format("%s Modue State", this.wheelPosition.name()), state.toString());
     
-    SmartDashboard.putNumber(String.format("%s Drive Motor Power", this.wheelPosition.name()) , driveMotorPower);
+    // SmartDashboard.putNumber(String.format("%s Drive Motor Power", this.wheelPosition.name()) , driveMotorPower);
 
   }
 
@@ -215,7 +215,7 @@ public class SwerveModule implements Sendable{
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
     builder.addDoubleProperty("Power From Module", () -> this.getDriveVelocity(), null);
-    builder.addDoubleProperty("Physical Restraints", () -> DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond, null);
+    // builder.addDoubleProperty("Physical Restraints", () -> DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond, null);
   }
 
 
