@@ -14,8 +14,8 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class SeekFulcrum extends CommandBase {
 
   private double xSpeed;
-  private double ySpeed;
-  private double turningSpeed;
+  private double ySpeed = 0;
+  private double turningSpeed = 0;
   private SwerveSubsystem swerveSubsystem;
   private double pitchDegrees;
   private double previousPitchDegrees;
@@ -34,7 +34,9 @@ public class SeekFulcrum extends CommandBase {
   public void initialize() {
     timer.reset();
     timer.start();
-    previousPitchDegrees = swerveSubsystem.getPitchDegrees();
+    double pitch = swerveSubsystem.getPitchDegrees();
+    previousPitchDegrees = pitch;
+    swerveSubsystem.setSaturatedPitch(pitch);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,7 +44,7 @@ public class SeekFulcrum extends CommandBase {
   public void execute() {
     pitchDegrees = swerveSubsystem.getPitchDegrees();
 
-    xSpeed = .5;
+    xSpeed = .1*DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond*-Math.signum(pitchDegrees);
 
     deltaPitch = ((pitchDegrees - previousPitchDegrees) / 20);
 
@@ -61,18 +63,15 @@ public class SeekFulcrum extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Fulcrom seeked");
+    System.out.println("Fulcrum seeked");
     System.out.println("Time Spent In SeekFulcrum: "+timer.get()+" seconds");
+    swerveSubsystem.stopModules();
+    swerveSubsystem.resetEncoders();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-    if (deltaPitch > .01) {
-      return true;
-    }
-
-    return false;
+    return Math.abs(deltaPitch) > .5;
   }
 }
