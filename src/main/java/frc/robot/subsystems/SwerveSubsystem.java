@@ -13,6 +13,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -50,6 +51,8 @@ public class SwerveSubsystem extends SubsystemBase{
     private double xSpeed;
     private double integratorSum;
     private double integratorConstant = 0.0000;
+    private double targetPitch = 0;
+    private double saturatedPitch = -10;
 
 
 
@@ -144,6 +147,7 @@ public class SwerveSubsystem extends SubsystemBase{
             try {
                 Thread.sleep(1000);
                 zeroHeading();
+                targetPitch = getPitchDegrees();
             } catch (Exception e) {
             }
         }).start(); 
@@ -195,6 +199,12 @@ public Pose2d getPose(){
     return odometry.getPoseMeters();
 }
 
+public double getSaturatedPitch(){
+    return saturatedPitch;
+}
+public void setSaturatedPitch(double x){
+    saturatedPitch = x;
+}
 public PIDController getxController(){
     // DataLogManager.log(String.format("X conroller %.2f", kPXController));
     return xController = new PIDController(kPXController, 0, 0);
@@ -242,13 +252,17 @@ public void setModuleStates(SwerveModuleState[] desiredStates){
 
 }
 
+public ArrayList<SwerveModule> getSwerveModules(){
+    return this.swerveModules;
+}
+
 public double autoBalance(){
     //rollROC = ((getRollDegrees() - previousRoll)/20);
 
     pitchROC = ((getPitchDegrees() - previousPitch)/ 20);
 
     //double balanceError = 0 - getRollDegrees();
-    double balanceError = 0 - getPitchDegrees();
+    double balanceError = targetPitch - getPitchDegrees();
 
 
 
@@ -285,7 +299,10 @@ public double autoBalance(){
 }
 
 public void stopModules(){
-
+    ChassisSpeeds chassisSpeeds;
+    chassisSpeeds = new ChassisSpeeds(0, 0, 0);
+    SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    this.setModuleStates(moduleStates);
 }
 @Override
 public void periodic() {
@@ -351,9 +368,9 @@ public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("kThetaController", () -> kThetaController, (value) -> kThetaController = value);
 
     builder.addDoubleProperty("balanceConstant", () -> balanceConstant, (value) -> balanceConstant = value);
-    builder.addDoubleProperty("Roll Rate of Change", () -> rollROC, null);
+    builder.addDoubleProperty("Pitch Rate of Change", () -> rollROC, null);
    // builder.addDoubleProperty("Roll Rate of Change Constant", () -> rollROCConstant, (value) -> rollROCConstant = value);
-   builder.addDoubleProperty("Roll Rate of Change Constant", () -> pitchROCConstant, (value) -> pitchROCConstant = value);
+   builder.addDoubleProperty("Pitch Rate of Change Constant", () -> pitchROCConstant, (value) -> pitchROCConstant = value);
 
     builder.addDoubleProperty("feed forward", () -> feedForwardConstant, (value) -> feedForwardConstant = value);
 
