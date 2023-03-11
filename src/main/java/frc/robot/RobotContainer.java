@@ -44,6 +44,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ExtendHighGoal;
 import frc.robot.commands.ExtenderRetractToZero;
 import frc.robot.commands.ManualEncoderCalibration;
+import frc.robot.commands.MoveToFulcrum;
 import frc.robot.commands.SetTo90;
 import frc.robot.commands.OrientCone;
 import frc.robot.commands.SeekFulcrum;
@@ -136,6 +137,8 @@ public class RobotContainer {
       Trajectory chargePad1Trajectory = util.getTrajectory("paths/ChargePad2mts.wpilib.json");
       Trajectory chargePad2Trajectory = util.getTrajectory("paths/ChargePad2.4mts.wpilib.json");
 
+      
+
       //create auton commands
 
       ProfiledPIDController thetaController = swerveSubsystem.getThetaController();
@@ -214,10 +217,19 @@ public class RobotContainer {
 
       autonChooser.addOption("AutoBalance Routine", autonDriveToPad.andThen(autonAutoBalance).andThen(setTo90));
       
+      // autonChooser.addOption("AB Drive 2.4", util.scoreHighGoal(extender, claw, arm)
+      // .andThen(util.retractArm(extender, claw, arm))
+      // .andThen(util.autonDriveCommand("paths/ChargePad2.4mts.wpilib.json", swerveSubsystem))
+      // .andThen(new AutonomousAutoBalance(swerveSubsystem, 10))
+      // .andThen(new SetTo90(swerveSubsystem, 0.25)));
+
+      //autonChooser.addOption("Charge Pad Routine", );
+
       autonChooser.addOption("AB Drive 2.4", util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(util.autonDriveCommand("paths/ChargePad2.4mts.wpilib.json", swerveSubsystem))
-      .andThen(new AutonomousAutoBalance(swerveSubsystem, 10))
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
       SmartDashboard.putData(autonChooser);

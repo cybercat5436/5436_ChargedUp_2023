@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -44,10 +45,11 @@ public class SeekFulcrum extends CommandBase {
   public void execute() {
     pitchDegrees = swerveSubsystem.getPitchDegrees();
 
-    xSpeed = .1*DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond*-Math.signum(pitchDegrees);
+    xSpeed = .2*DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond*-Math.signum(pitchDegrees);
 
     deltaPitch = ((pitchDegrees - previousPitchDegrees) / 20);
-
+    SmartDashboard.putNumber("SeekFulcrum Delta Pitch", deltaPitch);
+    //System.out.println(deltaPitch);
     ChassisSpeeds chassisSpeeds;
 
     chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
@@ -72,6 +74,6 @@ public class SeekFulcrum extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(deltaPitch) > .5;
+    return (Math.abs(deltaPitch) > .03)||timer.get()>4.0;
   }
 }

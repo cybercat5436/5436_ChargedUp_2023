@@ -47,7 +47,7 @@ public class LimeLight extends SubsystemBase {
     SmartDashboard.putNumber("tx", getVisionTargetHorizontalError());
     SmartDashboard.putNumber("ty", getVisionTargetVerticalError());
     if (isOriented()) {
-      System.out.println("It is oriented!!!!");
+      //System.out.println("It is oriented!!!!");
     
     }
     // System.out.println("This is Tlong:" + tLongLocal.getDouble(0));

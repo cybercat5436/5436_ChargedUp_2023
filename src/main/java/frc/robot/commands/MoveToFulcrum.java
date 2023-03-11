@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveModule;
@@ -52,8 +53,9 @@ public class MoveToFulcrum extends CommandBase {
       dSum+=x.getDrivePosition();
     }
     distanceError = targetDistance - dSum/4.0;
-    xSpeed = distanceError*kPDistance;
-
+    xSpeed = distanceError*kPDistance*-1;
+    SmartDashboard.putNumber("MoveToFulcrum xSpeed", xSpeed);
+    System.out.println(xSpeed);
     ChassisSpeeds chassisSpeeds;
     chassisSpeeds = new ChassisSpeeds(xSpeed, 0, 0);
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
