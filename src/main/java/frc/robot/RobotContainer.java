@@ -211,7 +211,11 @@ public class RobotContainer {
 
 
       autonChooser.addOption("AutoBalance Routine", autonDriveToPad.andThen(autonAutoBalance).andThen(setTo90));
-      autonChooser.addOption("AB Drive 2.4", util.autonDriveCommand("paths/ChargePad2.4mts.wpilib.json", swerveSubsystem).andThen(new AutonomousAutoBalance(swerveSubsystem, 10)).andThen(new SetTo90(swerveSubsystem, 0.25)));
+      autonChooser.addOption("AB Drive 2.4", util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(util.autonDriveCommand("paths/ChargePad2.4mts.wpilib.json", swerveSubsystem))
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 10))
+      .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
       SmartDashboard.putData(autonChooser);
 
