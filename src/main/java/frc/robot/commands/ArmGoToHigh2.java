@@ -4,21 +4,26 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 
 public class ArmGoToHigh2 extends CommandBase {
   private Arm arm;
+ 
   /** Creates a new ArmGoToHigh. */
   public ArmGoToHigh2(Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;
+   
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     //arm.slowMaxSpeed();
+    DataLogManager.log("Arm Go to High2 Initialised");
+    
     arm.armHighGoal2();
   }
 
