@@ -232,6 +232,14 @@ public class RobotContainer {
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
+      autonChooser.addOption("Over Charge Pad + Balance", 
+      util.autonDriveCommand("paths/ChargePadForward.wpilib.json", swerveSubsystem)
+      .andThen(util.autonDriveCommand("paths/ChargePadBackward.wpilib.json", swerveSubsystem))
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new SetTo90(swerveSubsystem, 0.25))
+      );
+
       SmartDashboard.putData(autonChooser);
 
 }
