@@ -128,6 +128,12 @@ public class RobotContainer {
 
       SmartDashboard.putData(new InstantCommand(() -> swerveSubsystem.zeroIntegrator()));
 
+      SequentialCommandGroup stateMachineAutoBalance = new SequentialCommandGroup(
+        new SeekFulcrum(swerveSubsystem),
+        new MoveToFulcrum(swerveSubsystem));
+      SmartDashboard.putData(stateMachineAutoBalance);
+
+
       // SmartDashboard.putData(zeroExtender);
       // SmartDashboard.putData(new ArmGoToHighMotionMagic(arm));
 

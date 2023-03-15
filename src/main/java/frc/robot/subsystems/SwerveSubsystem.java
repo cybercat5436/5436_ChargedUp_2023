@@ -338,7 +338,7 @@ public void periodic() {
     // SmartDashboard.putNumber("FL Target Angle", moduleStates.get(0).angle.getRadians());
     // SmartDashboard.putNumber("Gyro", gyro.getAngle());
    // SmartDashboard.putNumber("Mystery", getHeading());
-//    SmartDashboard.putNumber ("Pitch", gyro.getPitch());
+       SmartDashboard.putNumber ("Pitch", gyro.getPitch());
 //    SmartDashboard.putNumber ("Roll", gyro.getRoll());
    
     // DataLogManager.log(String.format("Back Left Encoder Voltage %f", backLeft.getAbsoluteEncoder().getVoltage()));
