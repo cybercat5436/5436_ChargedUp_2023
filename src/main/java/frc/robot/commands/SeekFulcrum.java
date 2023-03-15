@@ -37,7 +37,11 @@ public class SeekFulcrum extends CommandBase {
     timer.start();
     double pitch = swerveSubsystem.getPitchDegrees();
     previousPitchDegrees = pitch;
-    swerveSubsystem.setSaturatedPitch(pitch);
+    if (Math.abs(pitch) > 10) {
+      swerveSubsystem.setSaturatedPitch(pitch);
+    } 
+    System.out.println("Seeking Fulcrum");
+   
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,7 +62,6 @@ public class SeekFulcrum extends CommandBase {
 
     swerveSubsystem.setModuleStates(moduleStates);
 
-
     previousPitchDegrees = pitchDegrees;
   }
 
@@ -74,6 +77,16 @@ public class SeekFulcrum extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(deltaPitch) > .03)||timer.get()>4.0;
-  }
+   boolean isTilting = Math.abs(deltaPitch) > .03;
+   boolean isUnsaturated = Math.abs(pitchDegrees) < Math.abs(swerveSubsystem.getSaturatedPitch() - 1);
+   boolean isTimedOut = timer.get()>4.0;
+   if (isUnsaturated) {
+    System.out.println("Fulcrum Seeked");
+   }
+   if (isTimedOut) {
+    System.out.println("Timed out :(");
+   }
+
+   return (isTilting && isUnsaturated) || isTimedOut;
+}
 }
