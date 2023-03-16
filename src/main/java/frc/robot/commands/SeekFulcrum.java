@@ -81,7 +81,7 @@ public class SeekFulcrum extends CommandBase {
    boolean isUnsaturated = Math.abs(pitchDegrees) < Math.abs(swerveSubsystem.getSaturatedPitch() - 1);
    boolean isTimedOut = timer.get()>4.0;
    if (isUnsaturated) {
-    System.out.println("Fulcrum Seeked");
+    System.out.println("Fulcrum Seeked with angle " + pitchDegrees);
    }
    if (isTimedOut) {
     System.out.println("Timed out :(");

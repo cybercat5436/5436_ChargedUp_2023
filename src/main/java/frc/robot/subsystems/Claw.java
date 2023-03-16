@@ -28,14 +28,14 @@ public class Claw extends SubsystemBase {
   private RelativeEncoder clawEncoder = clawMotor.getEncoder();
   private double kP = 0.1;
   private double cubeDesiredPos = 15;
-  private double coneDesiredPos = 107;
+  private double coneDesiredPos = 90;
 
   public Claw() {
     clawMotor.restoreFactoryDefaults();
     clawMotor.clearFaults();
     clawMotor.setSmartCurrentLimit(30, 30);
     clawMotor.setIdleMode(IdleMode.kBrake);
-    clawMotor.setInverted(true);
+    //clawMotor.setInverted(true);
     clawPID.setP(kP);
     clawPID.setOutputRange(-1, 1);
     resetClawEncoder();
@@ -82,7 +82,7 @@ public class Claw extends SubsystemBase {
     // TODO Auto-generated method stub
     super.initSendable(builder);
     // builder.addDoubleProperty("Claw Speed", () -> speed, (value) -> speed = value);
-    // builder.addDoubleProperty("Claw Position", () -> getClawPosition(), null);
+    builder.addDoubleProperty("Claw Position", () -> getClawPosition(), null);
     // builder.addDoubleProperty("Claw kP", () -> kP, (value) ->{
     //   kP = value;
     //   clawPID.setP(kP);

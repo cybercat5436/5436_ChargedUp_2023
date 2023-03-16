@@ -23,7 +23,7 @@ public class Arm extends SubsystemBase {
   private double speed = 0.6;
   private final double HIGH_POS = -177000;
   private final double HIGH_POS2 = -154000;
-  private final double MID_POS = -140000;
+  private final double MID_POS = -155000;
   private final double CHASSIS_EXIT_POS = -130000;
   private double kP = 0.25;
   private static final int TIMEOUT = 30;
