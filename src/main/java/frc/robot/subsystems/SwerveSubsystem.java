@@ -135,9 +135,9 @@ public class SwerveSubsystem extends SubsystemBase{
 
 
     private int loopCount = 0;
-    private double kPXController =  2.9;
-    private double kPYController = 2.9;
-    private double kThetaController = 2.9;
+    // private double kPXController =  2.9;
+    // private double kPYController = 2.9;
+    //private double kThetaController = 2.9;
     PIDController xController;
     PIDController yController;
     ProfiledPIDController thetaController;
@@ -207,17 +207,17 @@ public void setSaturatedPitch(double x){
 }
 public PIDController getxController(){
     // DataLogManager.log(String.format("X conroller %.2f", kPXController));
-    return xController = new PIDController(kPXController, 0, 0);
+    return xController = new PIDController(AutoConstants.kPXController, 0, 0);
 }
 
 public PIDController getyController(){
     // DataLogManager.log(String.format("Y controller %.2f", kPYController));
-    return yController = new PIDController(kPYController, 0, 0);
+    return yController = new PIDController(AutoConstants.kPYController, 0,0);
 }
 
 public ProfiledPIDController getThetaController(){
     // DataLogManager.log(String.format("Theta controller %.2f", kThetaController));
-    return thetaController = new ProfiledPIDController(kThetaController, 0, 0,AutoConstants.kThetaControllerConstraints);
+    return thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0,AutoConstants.kThetaControllerConstraints);
 }
 
 public void resetOdometry(Pose2d pose){

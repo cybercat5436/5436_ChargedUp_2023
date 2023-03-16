@@ -92,9 +92,6 @@ public class RobotContainer {
     private final Extender extender = new Extender();
     private final CommandXboxController primaryController = new CommandXboxController(1);
     private final CommandXboxController secondaryController = new CommandXboxController(0);
-
-    private final ZeroExtender zeroExtender = new ZeroExtender(extender);
-
     private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
   
@@ -133,29 +130,14 @@ public class RobotContainer {
         new MoveToFulcrum(swerveSubsystem));
       SmartDashboard.putData(stateMachineAutoBalance);
 
-
-      // SmartDashboard.putData(zeroExtender);
-      // SmartDashboard.putData(new ArmGoToHighMotionMagic(arm));
-
+      //Create Trajectory
       Trajectory trajectory = util.getTrajectory("paths/ForwardPathRight.wpilib.json");
       Trajectory trajectory2 = util.getTrajectory("paths/ForwardPathRight1.wpilib.json");
-      Trajectory trajectoryLeft = util.getTrajectory("paths/ForwardPathLeft.wpilib.json");
       Trajectory chargePad1Trajectory = util.getTrajectory("paths/ChargePad2mts.wpilib.json");
-      Trajectory chargePad2Trajectory = util.getTrajectory("paths/ChargePad2.4mts.wpilib.json");
-
       
-
       //create auton commands
-
-      ProfiledPIDController thetaController = swerveSubsystem.getThetaController();
-      thetaController.enableContinuousInput(-Math.PI, Math.PI);
-      //Set the odometry to initial pose of the trajectory
-      swerveSubsystem.resetOdometry(trajectory.getInitialPose());
-      //Reset all the drive motors of the swervemodules to 0
-      swerveSubsystem.resetEncoders();
-
       SwerveControllerCommand autoBalanceTrajectoryCommand = util.getSwerveControllerCommand(chargePad1Trajectory, swerveSubsystem);
-      SwerveControllerCommand autoBalanceTrajectoryTwoPointFourCommand = util.getSwerveControllerCommand(chargePad2Trajectory, swerveSubsystem);
+      
       
       //Trajectory to Drive to Pad
       SequentialCommandGroup autonDriveToPad = new SequentialCommandGroup(
@@ -163,74 +145,47 @@ public class RobotContainer {
                     new ManualEncoderCalibration(swerveSubsystem),
                     autoBalanceTrajectoryCommand,  
                     new InstantCommand(() -> swerveSubsystem.stopModules()));
-      
-      //Trajectory to Drive to Pad
-      SequentialCommandGroup autonDriveToPadTwoPointFour = new SequentialCommandGroup(
-                    new InstantCommand(() -> swerveSubsystem.resetOdometry(chargePad2Trajectory.getInitialPose())), 
-                    new ManualEncoderCalibration(swerveSubsystem),
-                    autoBalanceTrajectoryTwoPointFourCommand,  
-                    new InstantCommand(() -> swerveSubsystem.stopModules()));
+  
                 
-        SequentialCommandGroup autonForwardPath = new SequentialCommandGroup(
-                  //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
+       SequentialCommandGroup autonForwardPath = new SequentialCommandGroup(
+                  new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
                   new ManualEncoderCalibration(swerveSubsystem),
                   util.getSwerveControllerCommand(trajectory.concatenate(trajectory2), swerveSubsystem),  
                   new InstantCommand(() -> swerveSubsystem.stopModules()));   
         
-        SwerveControllerCommand leftRoutineCommand = util.getSwerveControllerCommand(trajectoryLeft, swerveSubsystem);
-        SwerveControllerCommand leftDriveAndDeliverCommand = util.getSwerveControllerCommand(trajectoryLeft, swerveSubsystem);                          
-        SequentialCommandGroup autonForwardLeftPath = new SequentialCommandGroup(
-                            new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectoryLeft.getInitialPose())), 
-                            new ManualEncoderCalibration(swerveSubsystem),
-                            leftRoutineCommand, 
-
-                            new InstantCommand(() -> swerveSubsystem.stopModules()));
-        
-        SequentialCommandGroup autonLeftDriveAndDeliver = new SequentialCommandGroup(
-                              new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectoryLeft.getInitialPose())), 
-                              new ManualEncoderCalibration(swerveSubsystem),
-                              leftDriveAndDeliverCommand,  
-                              new InstantCommand(() -> swerveSubsystem.stopModules()));
-        
-
         // Command to Auto Balance                      
         AutonomousAutoBalance autonAutoBalance = new AutonomousAutoBalance(swerveSubsystem, 10);
         SetTo90 setTo90 = new SetTo90(swerveSubsystem, 0.25);
 
 
       //Right path, delivers and drives out of community(Tested)
-      autonChooser.setDefaultOption("Right Drive And Deliver", util.scoreHighGoal(extender, claw, arm).andThen(util.retractArm(extender, claw, arm)).andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
+      autonChooser.setDefaultOption("Right Drive And Deliver", util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
+
       //Left path, Deliver and drive out of community(Not Tested)
-      autonChooser.addOption("Left Drive and Deliver", new InstantCommand(()->arm.resetArmEncoder())
-      .andThen(new ZeroExtender(extender))
-      .andThen(new ClawGrabCone(claw))
-      .andThen(new ArmGoToHighMotionMagic(arm))
-      .andThen(new ExtendHighGoal(extender, 2.0))
-      .andThen(new ArmGoToHigh2(arm))
-      .andThen(new WaitCommand(0.5))
-      .andThen(new ClawReset(claw))
-      .andThen(new ExtenderRetractToZero(extender))
-      .andThen(new InstantCommand(()->arm.armMoveToZeroPosition()))
-      .andThen(Commands.parallel(autonLeftDriveAndDeliver, new AutonIntakeCommand(intake, 8))));
-      //autonChooser.addOption("Left Forward Path", scoreHighGoalAuton.andThen(retractArmAuton).andThen(Commands.parallel(autonForwardLeftPath, new AutonIntakeCommand(intake, 8))));
-      //autonChooser.setDefaultOption("Right Forward Path", scoreHighGoalAuton.andThen(retractArmAuton));
+      autonChooser.addOption("Left Drive and Deliver", util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(Commands.parallel(util.autonDriveCommand("paths/ForwardPathLeft.wpilib.json", swerveSubsystem)
+      , new AutonIntakeCommand(intake, 8))));
       
       //Left path, only drives(Not Tested)
-      autonChooser.addOption("Left Drive Path", Commands.parallel(autonForwardLeftPath, new AutonIntakeCommand(intake, 8)));
+      autonChooser.addOption("Left Drive Path", 
+      Commands.parallel(util.autonDriveCommand("paths/ForwardPathLeft.wpilib.json", swerveSubsystem)
+      , new AutonIntakeCommand(intake, 8)));
+
       //Delivers the cone alone(NOT Tested)
-      autonChooser.addOption("Deliver Routine", util.scoreHighGoal(extender, claw, arm).andThen(util.retractArm(extender, claw, arm)));
+      autonChooser.addOption("Deliver Routine", 
+      util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm)));
 
-
-      autonChooser.addOption("AutoBalance Routine", autonDriveToPad.andThen(autonAutoBalance).andThen(setTo90));
+      //Drive to charge pad 2mts, auto balance(Non State Machine balance)
+      autonChooser.addOption("AutoBalance Routine", autonDriveToPad
+      .andThen(autonAutoBalance)
+      .andThen(setTo90));
       
-      // autonChooser.addOption("AB Drive 2.4", util.scoreHighGoal(extender, claw, arm)
-      // .andThen(util.retractArm(extender, claw, arm))
-      // .andThen(util.autonDriveCommand("paths/ChargePad2.4mts.wpilib.json", swerveSubsystem))
-      // .andThen(new AutonomousAutoBalance(swerveSubsystem, 10))
-      // .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
-      //autonChooser.addOption("Charge Pad Routine", );
-
+      //Drive to charge pad 2.4mts, auto balance(State Machine balance)
       autonChooser.addOption("AB Drive 2.4", util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(util.autonDriveCommand("paths/ChargePad2.4mts.wpilib.json", swerveSubsystem))
@@ -238,6 +193,7 @@ public class RobotContainer {
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
+      //21 points auton(Drive out of community, charge pad and balance-state Machine)
       autonChooser.addOption("Over Charge Pad + Balance", 
       util.autonDriveCommand("paths/ChargePadForward.wpilib.json", swerveSubsystem)
       .andThen(util.autonDriveCommand("paths/ChargePadBackward.wpilib.json", swerveSubsystem))

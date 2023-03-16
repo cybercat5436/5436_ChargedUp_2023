@@ -94,7 +94,9 @@ public final class Constants {
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
         //used to be 1.5
         public static final double kPXController = 2.9;
-        public static final double kPYController = 1;
+        public static final double kPYController = 2.9;
+
+        //Test with 2.9 * 2, which was set in swervesubsystem auton
         public static final double kPThetaController = 1;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
