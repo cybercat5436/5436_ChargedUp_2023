@@ -82,7 +82,6 @@ public class Utils {
 
       return new SequentialCommandGroup(
         new ArmGoToHigh2(arm),
-        new WaitCommand(0.5),
         new ClawReset(claw),
         new ExtenderRetractToZero(extender),
         new InstantCommand(()->arm.armMoveToZeroPosition()));

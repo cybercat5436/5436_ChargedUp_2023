@@ -30,7 +30,7 @@ public class SetTo90 extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogManager.log("initialize");
+    DataLogManager.log("********initialize Move to 90**********");
     timer.reset();
     timer.start();
   }
@@ -38,7 +38,7 @@ public class SetTo90 extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    DataLogManager.log("execute");
+    // DataLogManager.log("execute");
     ChassisSpeeds chassisSpeeds;
     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0.1, 0, swerveSubsystem.getRotation2d());
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds); 
@@ -51,13 +51,13 @@ public class SetTo90 extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {     
-    DataLogManager.log("end"); 
+    // DataLogManager.log("end"); 
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    DataLogManager.log("isFinished");
+    // DataLogManager.log("isFinished");
     return timer.get() > timeLimit ? true : false;
   }
 }

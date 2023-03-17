@@ -21,7 +21,7 @@ public class MoveToFulcrum extends CommandBase {
   private double saturatedPitch;
   private double distanceConstant = 0.05;
   private double xSpeed;
-  private double kPDistance = 0.25;
+  private double kPDistance = 1.0;
   private Timer timer;
   private double timeLimit = 2;
   private double distanceError;
@@ -53,9 +53,10 @@ public class MoveToFulcrum extends CommandBase {
       dSum+=x.getDrivePosition();
     }
     distanceError = targetDistance - dSum/4.0;
-    xSpeed = distanceError*kPDistance*-1;
-    SmartDashboard.putNumber("MoveToFulcrum xSpeed", xSpeed);
-    System.out.println(xSpeed);
+    xSpeed = distanceError*kPDistance*-1 * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+    // SmartDashboard.putNumber("Target Distance: " + targetDistance + "  -- MoveToFulcrum xSpeed", xSpeed);
+    System.out.println("deltaPitch: " + deltaPitch);
+    System.out.println("Target Distance: " + targetDistance + "  -- XSpeed =- " + xSpeed);
     ChassisSpeeds chassisSpeeds;
     chassisSpeeds = new ChassisSpeeds(xSpeed, 0, 0);
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -78,7 +79,7 @@ public class MoveToFulcrum extends CommandBase {
       System.out.println("Successfully moved to fulcrum.");
       return true;
     }else if(Math.abs(swerveSubsystem.getPitchDegrees())>8){
-      System.out.println("Error is saturated.");
+      System.out.println("Error is saturated at " + swerveSubsystem.getPitchDegrees());
       return true;
     }else{
       return false;

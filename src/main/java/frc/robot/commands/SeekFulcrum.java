@@ -33,14 +33,15 @@ public class SeekFulcrum extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("*********** Entering Seeking Fulcrum ************");
     timer.reset();
     timer.start();
-    double pitch = swerveSubsystem.getPitchDegrees();
-    previousPitchDegrees = pitch;
-    if (Math.abs(pitch) > 10) {
-      swerveSubsystem.setSaturatedPitch(pitch);
-    } 
-    System.out.println("Seeking Fulcrum");
+    pitchDegrees = swerveSubsystem.getPitchDegrees();
+    previousPitchDegrees = pitchDegrees;
+    swerveSubsystem.setSaturatedPitch(pitchDegrees);
+    System.out.println("Saturated Pitch set to " + pitchDegrees);
+    // if (Math.abs(pitchDegrees) > 10) {
+    // } 
    
   }
 
@@ -49,7 +50,7 @@ public class SeekFulcrum extends CommandBase {
   public void execute() {
     pitchDegrees = swerveSubsystem.getPitchDegrees();
 
-    xSpeed = .2*DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond*-Math.signum(pitchDegrees);
+    xSpeed = .1*DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond*-Math.signum(pitchDegrees);
 
     deltaPitch = ((pitchDegrees - previousPitchDegrees) / 20);
     SmartDashboard.putNumber("SeekFulcrum Delta Pitch", deltaPitch);
@@ -78,7 +79,7 @@ public class SeekFulcrum extends CommandBase {
   @Override
   public boolean isFinished() {
    boolean isTilting = Math.abs(deltaPitch) > .03;
-   boolean isUnsaturated = Math.abs(pitchDegrees) < Math.abs(swerveSubsystem.getSaturatedPitch() - 1);
+   boolean isUnsaturated = Math.abs(pitchDegrees) < Math.abs(swerveSubsystem.getSaturatedPitch()) - 2.0;
    boolean isTimedOut = timer.get()>4.0;
    if (isUnsaturated) {
     System.out.println("Fulcrum Seeked with angle " + pitchDegrees);
@@ -87,6 +88,6 @@ public class SeekFulcrum extends CommandBase {
     System.out.println("Timed out :(");
    }
 
-   return (isTilting && isUnsaturated) || isTimedOut;
+   return isUnsaturated || isTimedOut;
 }
 }
