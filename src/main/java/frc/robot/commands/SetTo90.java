@@ -30,7 +30,7 @@ public class SetTo90 extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogManager.log("********initialize Move to 90**********");
+    // DataLogManager.log("********initialize Move to 90**********");
     timer.reset();
     timer.start();
   }

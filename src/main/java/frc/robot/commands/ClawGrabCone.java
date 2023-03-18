@@ -25,7 +25,7 @@ public class ClawGrabCone extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogManager.log("ClawGrab Initialize");
+    // DataLogManager.log("ClawGrab Initialize");
     claw.grabCone();
     timer.reset();
     timer.start();

@@ -47,7 +47,7 @@ private int counter;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    DataLogManager.log("Auton Drive Command Execute");
+    // DataLogManager.log("Auton Drive Command Execute");
 
     //SmartDashboard.putNumber(timer.get());
     this.xSpeed = swerveSubsystem.autoBalance();
@@ -98,7 +98,7 @@ private int counter;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    DataLogManager.log("Auton Drive Command isFinished");
+    // DataLogManager.log("Auton Drive Command isFinished");
     //WRITE EXIT CONDITION BASED ON HOW MANY CYCLES IT'S BALANCED 
     //TIME BASED EXIT CONDITION
     if(counter == 5 || timer.get() > timeLimit){

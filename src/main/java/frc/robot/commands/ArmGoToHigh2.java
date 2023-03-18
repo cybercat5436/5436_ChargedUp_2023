@@ -22,7 +22,7 @@ public class ArmGoToHigh2 extends CommandBase {
   @Override
   public void initialize() {
     //arm.slowMaxSpeed();
-    DataLogManager.log("Arm Go to High2 Initialised");
+    // DataLogManager.log("Arm Go to High2 Initialised");
     
     arm.armHighGoal2();
   }

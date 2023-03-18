@@ -22,7 +22,7 @@ public class ClawReset extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogManager.log("Claw Reset Initialise");
+    // DataLogManager.log("Claw Reset Initialise");
     claw.gotoDefaultPos();
   }
 

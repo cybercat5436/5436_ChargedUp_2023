@@ -21,7 +21,7 @@ public class ArmGoToHighMotionMagic extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogManager.log("Arm Go To High Motion Magic Initialised");
+    // DataLogManager.log("Arm Go To High Motion Magic Initialised");
     arm.armHighGoalMotionMagic();
   }
 
