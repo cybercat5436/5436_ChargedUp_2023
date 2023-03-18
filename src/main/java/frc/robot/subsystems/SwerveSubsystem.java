@@ -225,10 +225,10 @@ public void resetOdometry(Pose2d pose){
 }
 
 public void resetEncoders(){
-    frontLeft.resetEncoders();
-    backLeft.resetEncoders();
-    frontRight.resetEncoders();
-    backRight.resetEncoders();
+    frontLeft.resetDriveEncoders();
+    backLeft.resetDriveEncoders();
+    frontRight.resetDriveEncoders();
+    backRight.resetDriveEncoders();
 }
 
 public void zeroHeading(){

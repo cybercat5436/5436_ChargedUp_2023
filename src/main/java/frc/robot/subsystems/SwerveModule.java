@@ -88,7 +88,7 @@ public class SwerveModule implements Sendable{
 
     //NEED TO ADD CONVERSIONS HERE
 
-    resetEncoders();
+    resetDriveEncoders();
   }
 
   /*
@@ -114,13 +114,13 @@ public class SwerveModule implements Sendable{
   }
   */
 
-  public void resetEncoders() {
+  public void resetDriveEncoders() {
     driveEncoder.setPosition(0.0);
     
     // DataLogManager.log(String.format("About to reset encoders for position %s", this.wheelPosition.name()));
     // DataLogManager.log(String.format("turning Encoder %.2f", turningEncoder.getPosition()));
     // DataLogManager.log(String.format("absoluteEncoder %.2f", this.getAbsoluteEncoderRadians()));
-    turningEncoder.setPosition(getAbsoluteEncoderRadians());
+    // turningEncoder.setPosition(getAbsoluteEncoderRadians());
     // DataLogManager.log(String.format("After reset encoders for position %s", this.wheelPosition.name()));
     // DataLogManager.log(String.format("after zero turningEncoder %.2f", turningEncoder.getPosition()));
     // DataLogManager.log(String.format("after zero absoluteEncoder %.2f", this.getAbsoluteEncoderRadians()));
