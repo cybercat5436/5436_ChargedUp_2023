@@ -55,9 +55,9 @@ public final class Constants {
         public static final int EXTENDER_ZERO_LIMIT_SWITCH = 0;
         public static final int EXTENDER_MAX_LIMIT_SWITCH = 1;
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -1.285;
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 2.827;//-1.285;
         public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 2.482;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = -2.399;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = -2.86;//-2.399;
         public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -2.752;
         
     }
