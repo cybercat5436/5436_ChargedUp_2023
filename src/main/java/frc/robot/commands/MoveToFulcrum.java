@@ -46,17 +46,22 @@ public class MoveToFulcrum extends CommandBase {
   @Override
   public void execute() {
     double deltaPitch = swerveSubsystem.getPitchDegrees() - saturatedPitch;
-    double targetDistance = centerOfMassHeight*Math.tan(Math.toRadians(deltaPitch))-distanceConstant;
+    double targetDistance = centerOfMassHeight*Math.tan(Math.toRadians(deltaPitch));
+    boolean isDistanceConstantGreaterThanTarget = distanceConstant > Math.abs(targetDistance);
+    double distanceConstantSign = -Math.signum(saturatedPitch);
+    targetDistance = isDistanceConstantGreaterThanTarget ? 0.0 : -(targetDistance - (distanceConstant * distanceConstantSign));
+
     ArrayList<SwerveModule> swerveModules = swerveSubsystem.getSwerveModules();
     double dSum = 0;
     for(SwerveModule x: swerveModules){
       dSum+=x.getDrivePosition();
     }
-    distanceError = targetDistance - dSum/4.0;
-    xSpeed = distanceError*kPDistance*-1 * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+    distanceError = dSum/4.0 - targetDistance;
+    System.out.println("DistError:   " + distanceError);
+    xSpeed = distanceError * kPDistance * -1 * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
     // SmartDashboard.putNumber("Target Distance: " + targetDistance + "  -- MoveToFulcrum xSpeed", xSpeed);
     System.out.println("deltaPitch: " + deltaPitch);
-    System.out.println("Target Distance: " + targetDistance + "  -- XSpeed =- " + xSpeed);
+    System.out.println("Target Distance:  " + targetDistance + "  ****  XSpeed =  " + xSpeed);
     ChassisSpeeds chassisSpeeds;
     chassisSpeeds = new ChassisSpeeds(xSpeed, 0, 0);
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
