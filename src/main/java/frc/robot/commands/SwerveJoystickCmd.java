@@ -42,6 +42,7 @@ public class SwerveJoystickCmd extends CommandBase {
     private SlewRateLimiter slewRateLimiterX = new SlewRateLimiter(superFastModeConstant * 2.0);
     private SlewRateLimiter slewRateLimiterY = new SlewRateLimiter(superFastModeConstant * 2.0);
     private double xSpeed, ySpeed;
+    private boolean isSlewActive;
 
 
 
@@ -80,14 +81,16 @@ public class SwerveJoystickCmd extends CommandBase {
 
     public void execute(){
         // get real time joyStick inputs
-        xSpeed = xSpdFunction.get();
-        ySpeed = ySpdFunction.get();
+        // xSpeed = xSpdFunction.get();
+        // ySpeed = ySpdFunction.get();
         //can not implement sleRateLimiter =.calc because we need x and y values within execute 
 ;
        // System.out.println("THIS IS XSPEED FAST:" + xSpeedFast);
 
 
         double turningSpeed = turningSpdFunction.get();
+        isSlewActive = rightTrigger.get() > 0.2;
+
         boolean targetInView = limeLightGrid.getVisionTargetStatus();
         boolean autoVisionFunction = visionAdjustmentFunction.get();
                 boolean halfSpeed = halfSpeedFunction.get();
@@ -107,6 +110,9 @@ public class SwerveJoystickCmd extends CommandBase {
         } else {
             xSpeed = 0.0;
         }
+        xSpeed = processRawDriveSignal(xSpdFunction.get());
+        xSpeed = applySpeedScaleToDrive(xSpeed, slewRateLimiterX);
+
 
         xSpeedFast = slewRateLimiterX.calculate(xSpeed);
         
@@ -237,6 +243,24 @@ public class SwerveJoystickCmd extends CommandBase {
     
 
 
+    }
+
+    /**
+     * Process the controller input into the drive command by applying deadband and squaring
+     * @param rawDriveSignal
+     * @return
+     */
+    private double processRawDriveSignal(double rawDriveSignal){
+        // Read in the robot xSpeed from controller
+        boolean isOutsideDeadband = Math.abs(rawDriveSignal) > OIConstants.K_DEADBAND;
+        double speed = isOutsideDeadband ? rawDriveSignal : 0.0;
+        return Math.pow(speed,2) * Math.signum(speed);
+    }
+
+    private double applySpeedScaleToDrive(double processedDriveSignal, SlewRateLimiter slewRateLimiter){
+        double requestedSpeed = processedDriveSignal *  DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+        double slewedSpeed = slewRateLimiter.calculate(requestedSpeed);
+        return isSlewActive ? slewedSpeed : requestedSpeed;
     }
 
     @Override
