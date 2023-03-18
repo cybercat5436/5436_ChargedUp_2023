@@ -50,7 +50,7 @@ public class SeekFulcrum extends CommandBase {
   public void execute() {
     pitchDegrees = swerveSubsystem.getPitchDegrees();
 
-    xSpeed = .1*DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond*-Math.signum(pitchDegrees);
+    xSpeed = 0.12 *DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond*-Math.signum(pitchDegrees);
 
     deltaPitch = ((pitchDegrees - previousPitchDegrees) / 20);
     SmartDashboard.putNumber("SeekFulcrum Delta Pitch", deltaPitch);
@@ -80,7 +80,7 @@ public class SeekFulcrum extends CommandBase {
   public boolean isFinished() {
    boolean isTilting = Math.abs(deltaPitch) > .03;
    boolean isUnsaturated = Math.abs(pitchDegrees) < Math.abs(swerveSubsystem.getSaturatedPitch()) - 2.0;
-   boolean isTimedOut = timer.get()>4.0;
+   boolean isTimedOut = timer.get()>7.0;
    if (isUnsaturated) {
     System.out.println("Fulcrum Seeked with angle " + pitchDegrees);
    }
