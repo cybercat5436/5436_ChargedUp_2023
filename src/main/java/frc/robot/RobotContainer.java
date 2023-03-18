@@ -36,6 +36,7 @@ import frc.robot.commands.AutonIntakeCommand;
 import frc.robot.commands.AutonReleaseCommand;
 import frc.robot.commands.AutonomousAutoBalance;
 import frc.robot.commands.ArmGoToHighMotionMagic;
+import frc.robot.commands.AbsoluteEncoderCalibration;
 import frc.robot.commands.ArmGoToHigh2;
 import frc.robot.commands.ArmGoToMid;
 import frc.robot.commands.ClawGrabCone;
@@ -113,12 +114,14 @@ public class RobotContainer {
         limeLightGrid));
 
       // Configure the button bindings
-      ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);        
+      ManualEncoderCalibration manualEncoderCalibration = new ManualEncoderCalibration(swerveSubsystem);  
+      AbsoluteEncoderCalibration absoluteEncoderCalibration = new AbsoluteEncoderCalibration(swerveSubsystem);           
       primaryController.b()
 
           .onTrue(new OrientCone(orienter, limeLightGrid));
 
       SmartDashboard.putData(manualEncoderCalibration);
+      SmartDashboard.putData(absoluteEncoderCalibration);
       configureButtonBindings();
 
       Utils util = new Utils();

@@ -84,11 +84,8 @@ public class SwerveModule implements Sendable{
     turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
     turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
-    
-
-    //NEED TO ADD CONVERSIONS HERE
-
     resetDriveEncoders();
+    resetTurningEncoderWithAbsolute();
   }
 
   /*
@@ -124,6 +121,10 @@ public class SwerveModule implements Sendable{
     // DataLogManager.log(String.format("After reset encoders for position %s", this.wheelPosition.name()));
     // DataLogManager.log(String.format("after zero turningEncoder %.2f", turningEncoder.getPosition()));
     // DataLogManager.log(String.format("after zero absoluteEncoder %.2f", this.getAbsoluteEncoderRadians()));
+  }
+  public void resetTurningEncoderWithAbsolute () {
+    turningEncoder.setPosition(getAbsoluteEncoderRadians());
+
   }
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition( driveEncoder.getPosition(), new Rotation2d(turningEncoder.getPosition()));
