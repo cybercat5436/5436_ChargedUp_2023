@@ -68,7 +68,7 @@ public class Utils {
 
     }
 
-    public SequentialCommandGroup scoreHighGoal(Extender extender, Claw claw, Arm arm){
+  public SequentialCommandGroup scoreHighGoal(Extender extender, Claw claw, Arm arm){
 
       return new SequentialCommandGroup(
         new InstantCommand(()->arm.resetArmEncoder()),
