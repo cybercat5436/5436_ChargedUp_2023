@@ -53,7 +53,7 @@ public class MoveToFulcrum extends CommandBase {
       dSum+=x.getDrivePosition();
     }
     distanceError = targetDistance - dSum/4.0;
-    xSpeed = distanceError*kPDistance*-1 * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+    xSpeed = distanceError * kPDistance * -1.0 * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
     // SmartDashboard.putNumber("Target Distance: " + targetDistance + "  -- MoveToFulcrum xSpeed", xSpeed);
     System.out.println("deltaPitch: " + deltaPitch);
     System.out.println("Target Distance: " + targetDistance + "  -- XSpeed =- " + xSpeed);
