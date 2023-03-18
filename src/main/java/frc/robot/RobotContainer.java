@@ -202,15 +202,19 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
-      autonChooser.addOption("2.5 path ", 
-      util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem)
+      autonChooser.addOption("2.5 path ",
+      util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem))
       .andThen(new SeekFulcrum(swerveSubsystem))
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
       autonChooser.addOption("2.5 with 5v 1a path ", 
-      util.autonDriveCommand("paths/2.5With5and1.wpilib.json", swerveSubsystem)
+      util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(util.autonDriveCommand("paths/2.5With5and1.wpilib.json", swerveSubsystem))
       .andThen(new SeekFulcrum(swerveSubsystem))
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25))
