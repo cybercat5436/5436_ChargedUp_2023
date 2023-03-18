@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.fasterxml.jackson.databind.deser.impl.ExternalTypeHandler.Builder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -21,9 +22,9 @@ import frc.robot.Constants;
 public class Arm extends SubsystemBase {
   private TalonFX armMotor = new TalonFX(Constants.RoboRioPortConfig.ARM_MOTOR);
   private double speed = 0.6;
-  private final double HIGH_POS = -177000;
+  private final double HIGH_POS = -185000;
   private final double HIGH_POS2 = -154000;
-  private final double MID_POS = -155000;
+  private final double MID_POS = -163000;
   private final double CHASSIS_EXIT_POS = -130000;
   private double kP = 0.25;
   private static final int TIMEOUT = 30;
@@ -69,8 +70,9 @@ public class Arm extends SubsystemBase {
     armMotor.configStatorCurrentLimit(
       new StatorCurrentLimitConfiguration(true, 30, 45, 0.050));
 
-    //SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
-    //SmartDashboard.putData(this);  
+
+    SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
+    SmartDashboard.putData(this);  
   }
 
   @Override
@@ -153,5 +155,6 @@ public class Arm extends SubsystemBase {
     //   kP = value;
     //   armMotor.config_kP(0, kP);
     // });
+    builder.addDoubleProperty("Arm Position", () -> getArmPosition(), null);
   }
 }
