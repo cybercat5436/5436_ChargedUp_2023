@@ -199,6 +199,10 @@ public Pose2d getPose(){
     return odometry.getPoseMeters();
 }
 
+public double getTargetPitch(){
+    return this.targetPitch;
+}
+
 public double getSaturatedPitch(){
     return saturatedPitch;
 }

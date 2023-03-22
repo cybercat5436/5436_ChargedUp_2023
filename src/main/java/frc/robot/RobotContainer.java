@@ -232,6 +232,14 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
+      autonChooser.addOption("PlanB --> 2.6m + AutoBalance", 
+      util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem))
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 7.0))
+      .andThen(new SetTo90(swerveSubsystem, 0.25))
+      );
+
       SmartDashboard.putData(autonChooser);
 
 }

@@ -25,6 +25,7 @@ private double turningSpeed;
 private Timer timer;
 private double timeLimit;
 private int counter;
+private double targetPitch = 0.0;
 
   public AutonomousAutoBalance(SwerveSubsystem swerveSubsystem, double timeLimit) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -34,6 +35,7 @@ private int counter;
     this.turningSpeed = 0;
     timer = new Timer();
     this.timeLimit = timeLimit;
+    swerveSubsystem.getTargetPitch();
     this.counter = 0;
   }
 
@@ -51,8 +53,9 @@ private int counter;
 
     //SmartDashboard.putNumber(timer.get());
     this.xSpeed = swerveSubsystem.autoBalance();
+    double pitchError = targetPitch - swerveSubsystem.getPitchDegrees();
 
-    if(swerveSubsystem.getPitchDegrees() < 2.5 && swerveSubsystem.getPitchDegrees() > -2.5){
+    if(Math.abs(pitchError) < 2.5){
       counter++;
     } else {
       counter = 0;
@@ -88,11 +91,7 @@ private int counter;
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //SwerveModuleState[] moduleStates = new SwerveModuleState[4];
-    // for (int i = 0; i < moduleStates.length; i++) {
-    //   moduleStates[i].angle = Rotation2d.fromDegrees(90);
-    // }
-    // swerveSubsystem.setModuleStates(moduleStates);
+    swerveSubsystem.stopModules();
   }
 
   // Returns true when the command should end.
