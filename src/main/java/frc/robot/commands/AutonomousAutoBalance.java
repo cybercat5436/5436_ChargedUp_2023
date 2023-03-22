@@ -35,7 +35,7 @@ private double targetPitch = 0.0;
     this.turningSpeed = 0;
     timer = new Timer();
     this.timeLimit = timeLimit;
-    swerveSubsystem.getTargetPitch();
+    this.targetPitch = swerveSubsystem.getTargetPitch();
     this.counter = 0;
   }
 
