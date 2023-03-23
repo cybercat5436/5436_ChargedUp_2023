@@ -221,9 +221,15 @@ public class RobotContainer {
       .andThen(new SeekFulcrum(swerveSubsystem))
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25))
+      );      autonChooser.addOption("PlanB --> 2.6m + AutoBalance", 
+      util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem))
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 7.0))
+      .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
-      autonChooser.addOption("2.6 straight Path", 
+      autonChooser.addOption("2/3 State Machine --> 2.6m + Seek + Move", 
       util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(util.autonDriveCommand("paths/2.6Meters.wpilib.json", swerveSubsystem))
@@ -232,13 +238,18 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
-      autonChooser.addOption("PlanB --> 2.6m + AutoBalance", 
+
+      autonChooser.addOption("Full State Machine --> 2.6m + Seek + Move + AutoBalance", 
       util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem))
-      .andThen(new AutonomousAutoBalance(swerveSubsystem, 7.0))
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 5.0))
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
+
+
 
       SmartDashboard.putData(autonChooser);
 

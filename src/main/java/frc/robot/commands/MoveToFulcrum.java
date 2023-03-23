@@ -17,14 +17,17 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class MoveToFulcrum extends CommandBase {
   private SwerveSubsystem swerveSubsystem;
-  private double centerOfMassHeight = 0.6;
+  private double centerOfMassHeight = 0.4;
   private double saturatedPitch;
   private double distanceConstant = 0.05;
   private double xSpeed;
   private double kPDistance = 1.0;
   private Timer timer;
-  private double timeLimit = 2;
+  private double minTimeInState = 2.0;
+  private double maxTimeInState = 5.0;
   private double distanceError;
+  private double allowableError = 0.01;
+  private int targetAchievedCount = 0;
   
 
   /** Creates a new MoveToFulcrum. */
@@ -51,17 +54,27 @@ public class MoveToFulcrum extends CommandBase {
     double distanceConstantSign = -Math.signum(saturatedPitch);
     targetDistance = isDistanceConstantGreaterThanTarget ? 0.0 : -(targetDistance - (distanceConstant * distanceConstantSign));
 
+    // quantify how far the chassis has moved
     ArrayList<SwerveModule> swerveModules = swerveSubsystem.getSwerveModules();
     double dSum = 0;
     for(SwerveModule x: swerveModules){
       dSum+=x.getDrivePosition();
     }
-    distanceError = dSum/4.0 - targetDistance;
+    // quantify distance error
+    distanceError = targetDistance - dSum/4.0;
     System.out.println("DistError:   " + distanceError);
-    xSpeed = distanceError * kPDistance * -1 * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+    xSpeed = distanceError * kPDistance * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
     // SmartDashboard.putNumber("Target Distance: " + targetDistance + "  -- MoveToFulcrum xSpeed", xSpeed);
     System.out.println("deltaPitch: " + deltaPitch);
     System.out.println("Target Distance:  " + targetDistance + "  ****  XSpeed =  " + xSpeed);
+    
+    // Count successive cycles where target achieved.
+    if(Math.abs(distanceError) < allowableError){
+      targetAchievedCount++;
+    } else{
+      targetAchievedCount = 0;
+    }
+
     ChassisSpeeds chassisSpeeds;
     chassisSpeeds = new ChassisSpeeds(xSpeed, 0, 0);
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -73,21 +86,41 @@ public class MoveToFulcrum extends CommandBase {
   public void end(boolean interrupted) {
     swerveSubsystem.stopModules();
     System.out.println("Exiting MoveToFulcrum");
-    System.out.println("Time spent in MoveToFulcrum: "+timer.get()+" seconds.");
+    System.out.println("Time spent in MoveToFulcrum: " + timer.get() + " seconds.");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(timer.get()<timeLimit) return false;
-    if(distanceError<0.01){
+    // don't exit at they very beginning, allow the charge pad to tip
+    if(timer.get()<minTimeInState) return false;
+    
+    // check if target position is sustained
+    if(targetAchievedCount >= 5){
       System.out.println("Successfully moved to fulcrum.");
       return true;
-    }else if(Math.abs(swerveSubsystem.getPitchDegrees())>8){
+    }
+
+    // exit if timed out
+    if(timer.get() > maxTimeInState){
+      System.out.println("Moved to fulcrum timed out.");
+      return true;
+    }
+    
+    // check if pitch error is too large
+    if(isPitchErrorLarge()){
       System.out.println("Error is saturated at " + swerveSubsystem.getPitchDegrees());
       return true;
-    }else{
-      return false;
     }
+
+    return false;
+  }
+
+  private boolean isPitchErrorLarge(){
+        // check if pitch error is too large
+        double currentPitch = swerveSubsystem.getPitchDegrees();
+        double pitchError = swerveSubsystem.getTargetPitch() - currentPitch;
+        return Math.abs(pitchError) > 8.0;
+
   }
 }
