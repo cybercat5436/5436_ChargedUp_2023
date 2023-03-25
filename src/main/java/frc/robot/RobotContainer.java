@@ -166,6 +166,14 @@ public class RobotContainer {
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
 
+      autonChooser.setDefaultOption("Auton Balance Test without arm", 
+      util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem)
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new SetTo90(swerveSubsystem, 0.25)));
+
+      
+
       //Left path, Deliver and drive out of community(Not Tested)
       autonChooser.addOption("Left Drive and Deliver", util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))

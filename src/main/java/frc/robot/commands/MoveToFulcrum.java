@@ -19,7 +19,7 @@ public class MoveToFulcrum extends CommandBase {
   private SwerveSubsystem swerveSubsystem;
   private double centerOfMassHeight = 0.6;
   private double saturatedPitch;
-  private double distanceConstant = 0.05;
+  private double distanceConstant = 0.065;
   private double xSpeed;
   private double kPDistance = 1.0;
   private Timer timer;
