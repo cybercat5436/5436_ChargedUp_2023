@@ -196,6 +196,8 @@ public class RobotContainer {
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
+
+
       //21 points auton(Drive out of community, charge pad and balance-state Machine)
       autonChooser.addOption("Over Charge Pad + Balance", 
       util.autonDriveCommand("paths/ChargePadForward.wpilib.json", swerveSubsystem)
@@ -213,6 +215,25 @@ public class RobotContainer {
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
+
+      autonChooser.addOption("2.6V2 path with deliver",
+      util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem))
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new SetTo90(swerveSubsystem, 0.25))
+      );
+
+      autonChooser.addOption("2.6V2 path without ARM",
+      util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem)
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new SetTo90(swerveSubsystem, 0.25)));
+
+
+
+
 
       // autonChooser.addOption("2.5 with 5v 1a path ", 
       // util.scoreHighGoal(extender, claw, arm)
