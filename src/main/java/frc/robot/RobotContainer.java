@@ -173,9 +173,9 @@ public class RobotContainer {
       , new AutonIntakeCommand(intake, 8))));
       
       //Left path, only drives(Not Tested)
-      autonChooser.addOption("Left Drive Path", 
-      Commands.parallel(util.autonDriveCommand("paths/ForwardPathLeft.wpilib.json", swerveSubsystem)
-      , new AutonIntakeCommand(intake, 8)));
+      // autonChooser.addOption("Left Drive Path", 
+      // Commands.parallel(util.autonDriveCommand("paths/ForwardPathLeft.wpilib.json", swerveSubsystem)
+      // , new AutonIntakeCommand(intake, 8)));
 
       //Delivers the cone alone(NOT Tested)
       autonChooser.addOption("Deliver Routine", 
@@ -183,9 +183,9 @@ public class RobotContainer {
       .andThen(util.retractArm(extender, claw, arm)));
 
       //Drive to charge pad 2mts, auto balance(Non State Machine balance)
-      autonChooser.addOption("AutoBalance Routine", autonDriveToPad
-      .andThen(autonAutoBalance)
-      .andThen(setTo90));
+      // autonChooser.addOption("AutoBalance Routine", autonDriveToPad
+      // .andThen(autonAutoBalance)
+      // .andThen(setTo90));
       
 
       //Drive to charge pad 2.4mts, auto balance(State Machine balance)
@@ -197,13 +197,13 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
       //21 points auton(Drive out of community, charge pad and balance-state Machine)
-      autonChooser.addOption("Over Charge Pad + Balance", 
-      util.autonDriveCommand("paths/ChargePadForward.wpilib.json", swerveSubsystem)
-      .andThen(util.autonDriveCommand("paths/ChargePadBackward.wpilib.json", swerveSubsystem))
-      .andThen(new SeekFulcrum(swerveSubsystem))
-      .andThen(new MoveToFulcrum(swerveSubsystem))
-      .andThen(new SetTo90(swerveSubsystem, 0.25))
-      );
+      // autonChooser.addOption("Over Charge Pad + Balance", 
+      // util.autonDriveCommand("paths/ChargePadForward.wpilib.json", swerveSubsystem)
+      // .andThen(util.autonDriveCommand("paths/ChargePadBackward.wpilib.json", swerveSubsystem))
+      // .andThen(new SeekFulcrum(swerveSubsystem))
+      // .andThen(new MoveToFulcrum(swerveSubsystem))
+      // .andThen(new SetTo90(swerveSubsystem, 0.25))
+      // );
 
       autonChooser.addOption("2.5 path ",
       util.scoreHighGoal(extender, claw, arm)
@@ -214,23 +214,23 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
-      autonChooser.addOption("2.5 with 5v 1a path ", 
-      util.scoreHighGoal(extender, claw, arm)
-      .andThen(util.retractArm(extender, claw, arm))
-      .andThen(util.autonDriveCommand("paths/2.5With5and1.wpilib.json", swerveSubsystem))
-      .andThen(new SeekFulcrum(swerveSubsystem))
-      .andThen(new MoveToFulcrum(swerveSubsystem))
-      .andThen(new SetTo90(swerveSubsystem, 0.25))
-      );
+      // autonChooser.addOption("2.5 with 5v 1a path ", 
+      // util.scoreHighGoal(extender, claw, arm)
+      // .andThen(util.retractArm(extender, claw, arm))
+      // .andThen(util.autonDriveCommand("paths/2.5With5and1.wpilib.json", swerveSubsystem))
+      // .andThen(new SeekFulcrum(swerveSubsystem))
+      // .andThen(new MoveToFulcrum(swerveSubsystem))
+      // .andThen(new SetTo90(swerveSubsystem, 0.25))
+      // );
 
-      autonChooser.addOption("2.6 straight Path", 
-      util.scoreHighGoal(extender, claw, arm)
-      .andThen(util.retractArm(extender, claw, arm))
-      .andThen(util.autonDriveCommand("paths/2.6Meters.wpilib.json", swerveSubsystem))
-      .andThen(new SeekFulcrum(swerveSubsystem))
-      .andThen(new MoveToFulcrum(swerveSubsystem))
-      .andThen(new SetTo90(swerveSubsystem, 0.25))
-      );
+      // autonChooser.addOption("2.6 straight Path", 
+      // util.scoreHighGoal(extender, claw, arm)
+      // .andThen(util.retractArm(extender, claw, arm))
+      // .andThen(util.autonDriveCommand("paths/2.6Meters.wpilib.json", swerveSubsystem))
+      // .andThen(new SeekFulcrum(swerveSubsystem))
+      // .andThen(new MoveToFulcrum(swerveSubsystem))
+      // .andThen(new SetTo90(swerveSubsystem, 0.25))
+      // );
 
       SmartDashboard.putData(autonChooser);
 
