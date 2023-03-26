@@ -166,6 +166,14 @@ public class RobotContainer {
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
 
+      autonChooser.setDefaultOption("Auton Balance Test without arm", 
+      util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem)
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new SetTo90(swerveSubsystem, 0.25)));
+
+      
+
       //Left path, Deliver and drive out of community(Not Tested)
       autonChooser.addOption("Left Drive and Deliver", util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
@@ -196,6 +204,8 @@ public class RobotContainer {
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
+
+
       //21 points auton(Drive out of community, charge pad and balance-state Machine)
       autonChooser.addOption("Over Charge Pad + Balance", 
       util.autonDriveCommand("paths/ChargePadForward.wpilib.json", swerveSubsystem)
@@ -214,10 +224,10 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
-      autonChooser.addOption("2.5 with 5v 1a path ", 
+      autonChooser.addOption("2.6V2 path with deliver",
       util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
-      .andThen(util.autonDriveCommand("paths/2.5With5and1.wpilib.json", swerveSubsystem))
+      .andThen(util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem))
       .andThen(new SeekFulcrum(swerveSubsystem))
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25))
@@ -229,12 +239,45 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
+<<<<<<< HEAD
       autonChooser.addOption("2/3 State Machine --> 2.6m + Seek + Move", 
-      util.scoreHighGoal(extender, claw, arm)
-      .andThen(util.retractArm(extender, claw, arm))
-      .andThen(util.autonDriveCommand("paths/2.6Meters.wpilib.json", swerveSubsystem))
+=======
+      autonChooser.addOption("2.6V2 path without ARM",
+      util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem)
       .andThen(new SeekFulcrum(swerveSubsystem))
       .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new SetTo90(swerveSubsystem, 0.25)));
+
+
+
+
+
+      // autonChooser.addOption("2.5 with 5v 1a path ", 
+      // util.scoreHighGoal(extender, claw, arm)
+      // .andThen(util.retractArm(extender, claw, arm))
+      // .andThen(util.autonDriveCommand("paths/2.5With5and1.wpilib.json", swerveSubsystem))
+      // .andThen(new SeekFulcrum(swerveSubsystem))
+      // .andThen(new MoveToFulcrum(swerveSubsystem))
+      // .andThen(new SetTo90(swerveSubsystem, 0.25))
+      // );
+
+      autonChooser.addOption("2.6 Auto Balance Path", 
+>>>>>>> Comp2-Update
+      util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(util.autonDriveCommand("paths/2.6-1A-2.5Vpath.wpilib.json", swerveSubsystem))
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new SetTo90(swerveSubsystem, 0.25))
+      );
+
+      autonChooser.addOption("2.6 straight Path", 
+      util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(util.autonDriveCommand("paths/2.7-1A-2.5Vpath.wpilib.json", swerveSubsystem))
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+>>>>>>> Comp2-Update
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
@@ -251,6 +294,12 @@ public class RobotContainer {
 
 
 
+
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> Comp2-Update
       SmartDashboard.putData(autonChooser);
 
 }

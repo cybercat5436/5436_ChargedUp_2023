@@ -50,7 +50,7 @@ public class SeekFulcrum extends CommandBase {
   public void execute() {
     pitchDegrees = swerveSubsystem.getPitchDegrees();
 
-    xSpeed = 0.10 *DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond*-Math.signum(pitchDegrees);
+    xSpeed = 0.15 *DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond*-Math.signum(pitchDegrees);
 
     deltaPitch = ((pitchDegrees - previousPitchDegrees) / 20);
     SmartDashboard.putNumber("SeekFulcrum Delta Pitch", deltaPitch);

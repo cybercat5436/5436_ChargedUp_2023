@@ -13,7 +13,7 @@ public class ClawGrabCone extends CommandBase {
   /** Creates a new ClawGrabCone. */
   private Claw claw;
   private Timer timer;
-  private double timeLimit = 1.5;
+  private double timeLimit = 1.2;
   
   public ClawGrabCone(Claw claw) {
     // Use addRequirements() here to declare subsystem dependencies.
