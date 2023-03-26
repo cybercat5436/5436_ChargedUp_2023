@@ -62,11 +62,11 @@ public class MoveToFulcrum extends CommandBase {
     }
     // quantify distance error
     distanceError = targetDistance - dSum/4.0;
-    System.out.println("DistError:   " + distanceError);
+    // System.out.println("DistError:   " + distanceError);
     xSpeed = distanceError * kPDistance * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
     // SmartDashboard.putNumber("Target Distance: " + targetDistance + "  -- MoveToFulcrum xSpeed", xSpeed);
-    System.out.println("deltaPitch: " + deltaPitch);
-    System.out.println("Target Distance:  " + targetDistance + "  ****  XSpeed =  " + xSpeed);
+    // System.out.println("deltaPitch: " + deltaPitch);
+    // System.out.println("Target Distance:  " + targetDistance + "  ****  XSpeed =  " + xSpeed);
     
     // Count successive cycles where target achieved.
     if(Math.abs(distanceError) < allowableError){
@@ -93,7 +93,7 @@ public class MoveToFulcrum extends CommandBase {
   @Override
   public boolean isFinished() {
     // don't exit at they very beginning, allow the charge pad to tip
-    if(timer.get()<minTimeInState) return false;
+    if(timer.get() < minTimeInState) return false;
     
     // check if target position is sustained
     if(targetAchievedCount >= 5){
@@ -109,7 +109,7 @@ public class MoveToFulcrum extends CommandBase {
     
     // check if pitch error is too large
     if(isPitchErrorLarge()){
-      System.out.println("Error is saturated at " + swerveSubsystem.getPitchDegrees());
+      System.out.println("Moved to fulcrum exited because pitch error to large.");
       return true;
     }
 
@@ -118,9 +118,19 @@ public class MoveToFulcrum extends CommandBase {
 
   private boolean isPitchErrorLarge(){
         // check if pitch error is too large
+        double errorThreshold = 8.0;
         double currentPitch = swerveSubsystem.getPitchDegrees();
         double pitchError = swerveSubsystem.getTargetPitch() - currentPitch;
-        return Math.abs(pitchError) > 8.0;
+        
+        if(Math.abs(pitchError) > errorThreshold){
+          System.out.println("Error is saturated, pitch is " + currentPitch + 
+          " with target of: " + swerveSubsystem.getTargetPitch() +
+          " for error of: " + pitchError);
+          return true;
+        }else{
+          return false;
+        }
 
+        
   }
 }

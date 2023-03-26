@@ -4,45 +4,16 @@
 
 package frc.robot;
 
-import java.util.List;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.time.Instant;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AutonArmDownCommand;
-import frc.robot.commands.AutonArmUpCommand;
-import frc.robot.commands.AutonGrabCommand;
 import frc.robot.commands.AutonIntakeCommand;
-import frc.robot.commands.AutonReleaseCommand;
 import frc.robot.commands.AutonomousAutoBalance;
 import frc.robot.commands.ArmGoToHighMotionMagic;
 import frc.robot.commands.AbsoluteEncoderCalibration;
-import frc.robot.commands.ArmGoToHigh2;
 import frc.robot.commands.ArmGoToMid;
-import frc.robot.commands.ClawGrabCone;
-import frc.robot.commands.ClawReset;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.ExtendHighGoal;
 import frc.robot.commands.ExtenderRetractToZero;
 import frc.robot.commands.ManualEncoderCalibration;
 import frc.robot.commands.MoveToFulcrum;
@@ -50,27 +21,19 @@ import frc.robot.commands.SetTo90;
 import frc.robot.commands.OrientCone;
 import frc.robot.commands.SeekFulcrum;
 import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.commands.ZeroExtender;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Extender;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Orienter;
-import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 
@@ -162,7 +125,8 @@ public class RobotContainer {
 
 
       //Right path, delivers and drives out of community(Tested)
-      autonChooser.setDefaultOption("Right Drive And Deliver", util.scoreHighGoal(extender, claw, arm)
+      autonChooser.setDefaultOption("Right Drive And Deliver", 
+      util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
 
@@ -173,7 +137,6 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
       
-
       //Left path, Deliver and drive out of community(Not Tested)
       autonChooser.addOption("Left Drive and Deliver", util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
@@ -197,23 +160,23 @@ public class RobotContainer {
       
 
       //Drive to charge pad 2.4mts, auto balance(State Machine balance)
-      autonChooser.addOption("AB Drive 2.4", util.scoreHighGoal(extender, claw, arm)
-      .andThen(util.retractArm(extender, claw, arm))
-      .andThen(util.autonDriveCommand("paths/ChargePad2.4mts.wpilib.json", swerveSubsystem))
-      .andThen(new SeekFulcrum(swerveSubsystem))
-      .andThen(new MoveToFulcrum(swerveSubsystem))
-      .andThen(new SetTo90(swerveSubsystem, 0.25)));
+      // autonChooser.addOption("AB Drive 2.4", util.scoreHighGoal(extender, claw, arm)
+      // .andThen(util.retractArm(extender, claw, arm))
+      // .andThen(util.autonDriveCommand("paths/ChargePad2.4mts.wpilib.json", swerveSubsystem))
+      // .andThen(new SeekFulcrum(swerveSubsystem))
+      // .andThen(new MoveToFulcrum(swerveSubsystem))
+      // .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
 
 
-      //21 points auton(Drive out of community, charge pad and balance-state Machine)
-      autonChooser.addOption("Over Charge Pad + Balance", 
-      util.autonDriveCommand("paths/ChargePadForward.wpilib.json", swerveSubsystem)
-      .andThen(util.autonDriveCommand("paths/ChargePadBackward.wpilib.json", swerveSubsystem))
-      .andThen(new SeekFulcrum(swerveSubsystem))
-      .andThen(new MoveToFulcrum(swerveSubsystem))
-      .andThen(new SetTo90(swerveSubsystem, 0.25))
-      );
+      // //21 points auton(Drive out of community, charge pad and balance-state Machine)
+      // autonChooser.addOption("Over Charge Pad + Balance", 
+      // util.autonDriveCommand("paths/ChargePadForward.wpilib.json", swerveSubsystem)
+      // .andThen(util.autonDriveCommand("paths/ChargePadBackward.wpilib.json", swerveSubsystem))
+      // .andThen(new SeekFulcrum(swerveSubsystem))
+      // .andThen(new MoveToFulcrum(swerveSubsystem))
+      // .andThen(new SetTo90(swerveSubsystem, 0.25))
+      // );
 
       autonChooser.addOption("2.5 path ",
       util.scoreHighGoal(extender, claw, arm)
@@ -224,14 +187,17 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
-      autonChooser.addOption("2.6V2 path with deliver",
-      util.scoreHighGoal(extender, claw, arm)
-      .andThen(util.retractArm(extender, claw, arm))
-      .andThen(util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem))
-      .andThen(new SeekFulcrum(swerveSubsystem))
-      .andThen(new MoveToFulcrum(swerveSubsystem))
-      .andThen(new SetTo90(swerveSubsystem, 0.25))
-      );      autonChooser.addOption("PlanB --> 2.6m + AutoBalance", 
+      // autonChooser.addOption("2.6V2 path with deliver",
+      // util.scoreHighGoal(extender, claw, arm)
+      // .andThen(util.retractArm(extender, claw, arm))
+      // .andThen(util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem))
+      // .andThen(new SeekFulcrum(swerveSubsystem))
+      // .andThen(new MoveToFulcrum(swerveSubsystem))
+      // .andThen(new SetTo90(swerveSubsystem, 0.25))
+      // );      
+      
+
+      autonChooser.addOption("PlanB --> 2.6m + AutoBalance", 
       util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem))
@@ -239,14 +205,19 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
-<<<<<<< HEAD
-      autonChooser.addOption("2/3 State Machine --> 2.6m + Seek + Move", 
-=======
+      autonChooser.addOption("PlanB No Arm --> 2.6m + AutoBalance", 
+      util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem)
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 7.0))
+      .andThen(new SetTo90(swerveSubsystem, 0.25))
+      );
+
+
       autonChooser.addOption("2.6V2 path without ARM",
       util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem)
       .andThen(new SeekFulcrum(swerveSubsystem))
       .andThen(new MoveToFulcrum(swerveSubsystem))
-      .andThen(new SetTo90(swerveSubsystem, 0.25)));
+      .andThen(new SetTo90(swerveSubsystem, 0.25))
+      );
 
 
 
@@ -262,7 +233,6 @@ public class RobotContainer {
       // );
 
       autonChooser.addOption("2.6 Auto Balance Path", 
->>>>>>> Comp2-Update
       util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(util.autonDriveCommand("paths/2.6-1A-2.5Vpath.wpilib.json", swerveSubsystem))
@@ -271,15 +241,14 @@ public class RobotContainer {
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
-      autonChooser.addOption("2.6 straight Path", 
-      util.scoreHighGoal(extender, claw, arm)
-      .andThen(util.retractArm(extender, claw, arm))
-      .andThen(util.autonDriveCommand("paths/2.7-1A-2.5Vpath.wpilib.json", swerveSubsystem))
-      .andThen(new SeekFulcrum(swerveSubsystem))
-      .andThen(new MoveToFulcrum(swerveSubsystem))
->>>>>>> Comp2-Update
-      .andThen(new SetTo90(swerveSubsystem, 0.25))
-      );
+      // autonChooser.addOption("2.6 straight Path", 
+      // util.scoreHighGoal(extender, claw, arm)
+      // .andThen(util.retractArm(extender, claw, arm))
+      // .andThen(util.autonDriveCommand("paths/2.7-1A-2.5Vpath.wpilib.json", swerveSubsystem))
+      // .andThen(new SeekFulcrum(swerveSubsystem))
+      // .andThen(new MoveToFulcrum(swerveSubsystem))
+      // .andThen(new SetTo90(swerveSubsystem, 0.25))
+      // );
 
 
       autonChooser.addOption("Full State Machine --> 2.6m + Seek + Move + AutoBalance", 
@@ -288,18 +257,20 @@ public class RobotContainer {
       .andThen(util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem))
       .andThen(new SeekFulcrum(swerveSubsystem))
       .andThen(new MoveToFulcrum(swerveSubsystem))
-      .andThen(new AutonomousAutoBalance(swerveSubsystem, 5.0))
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 3.0))
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 
 
+      autonChooser.addOption("Full State Machine No Arm --> 2.6m + Seek + Move + AutoBalance", 
+      util.autonDriveCommand("paths/2-6V2.wpilib.json", swerveSubsystem)
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 3.0))
+      .andThen(new SetTo90(swerveSubsystem, 0.25))
+      );
 
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> Comp2-Update
       SmartDashboard.putData(autonChooser);
 
 }
