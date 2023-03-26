@@ -172,8 +172,19 @@ public class RobotContainer {
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
-      
+      autonChooser.setDefaultOption("NEWER Auton Balance Test without", 
+      util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem)
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 2))
+      .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
+      autonChooser.setDefaultOption("new old charge pad ", 
+      util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem)
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 7))
+      .andThen(new SetTo90(swerveSubsystem, 0.25)));
+
+      
       //Left path, Deliver and drive out of community(Not Tested)
       autonChooser.addOption("Left Drive and Deliver", util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
@@ -221,6 +232,7 @@ public class RobotContainer {
       .andThen(util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem))
       .andThen(new SeekFulcrum(swerveSubsystem))
       .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 8))
       .andThen(new SetTo90(swerveSubsystem, 0.25))
       );
 

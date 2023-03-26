@@ -28,7 +28,7 @@ public class Claw extends SubsystemBase {
   private RelativeEncoder clawEncoder = clawMotor.getEncoder();
   private double kP = 0.1;
   private double cubeDesiredPos = 15;
-  private double coneDesiredPos = 96;
+  private double coneDesiredPos = 99;
 
   public Claw() {
     clawMotor.restoreFactoryDefaults();
