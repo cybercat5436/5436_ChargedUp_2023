@@ -166,20 +166,20 @@ public class RobotContainer {
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
 
-      autonChooser.setDefaultOption("Auton Balance Test without arm", 
+      autonChooser.addOption("Auton Balance Test without arm", 
       util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem)
       .andThen(new SeekFulcrum(swerveSubsystem))
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
-      autonChooser.setDefaultOption("NEWER Auton Balance Test without", 
+      autonChooser.addOption("NEWER Auton Balance Test without", 
       util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem)
       .andThen(new SeekFulcrum(swerveSubsystem))
       .andThen(new MoveToFulcrum(swerveSubsystem))
       .andThen(new AutonomousAutoBalance(swerveSubsystem, 2))
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
 
-      autonChooser.setDefaultOption("new old charge pad ", 
+      autonChooser.addOption("new old charge pad ", 
       util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem)
       .andThen(new AutonomousAutoBalance(swerveSubsystem, 7))
       .andThen(new SetTo90(swerveSubsystem, 0.25)));
@@ -192,9 +192,9 @@ public class RobotContainer {
       , new AutonIntakeCommand(intake, 8))));
       
       //Left path, only drives(Not Tested)
-      autonChooser.addOption("Left Drive Path", 
-      Commands.parallel(util.autonDriveCommand("paths/ForwardPathLeft.wpilib.json", swerveSubsystem)
-      , new AutonIntakeCommand(intake, 8)));
+      // autonChooser.addOption("Left Drive Path", 
+      // Commands.parallel(util.autonDriveCommand("paths/ForwardPathLeft.wpilib.json", swerveSubsystem)
+      // , new AutonIntakeCommand(intake, 8)));
 
       //Delivers the cone alone(NOT Tested)
       autonChooser.addOption("Deliver Routine", 
@@ -202,9 +202,9 @@ public class RobotContainer {
       .andThen(util.retractArm(extender, claw, arm)));
 
       //Drive to charge pad 2mts, auto balance(Non State Machine balance)
-      autonChooser.addOption("AutoBalance Routine", autonDriveToPad
-      .andThen(autonAutoBalance)
-      .andThen(setTo90));
+      // autonChooser.addOption("AutoBalance Routine", autonDriveToPad
+      // .andThen(autonAutoBalance)
+      // .andThen(setTo90));
       
 
       //Drive to charge pad 2.4mts, auto balance(State Machine balance)
