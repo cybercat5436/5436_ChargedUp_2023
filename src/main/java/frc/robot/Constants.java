@@ -64,9 +64,9 @@ public final class Constants {
 
 
     public static class DriveConstants{
-        public static final double kTranslateDriveMaxSpeedMetersPerSecond = 5;
-        public static final double kRotateDriveMaxSpeedMetersPerSecond = 10;
-        public static final double kPhysicalMaxSpeedMetersPerSecond = 8;
+        public static final double kTranslateDriveMaxSpeedMetersPerSecond = 2.9;
+        public static final double kRotateDriveMaxSpeedMetersPerSecond = 4.36;
+        public static final double kPhysicalMaxSpeedMetersPerSecond = 4.36;
         //public static final double kTrackWidth = Units.inchesToMeters(19); //OLD
         public static final double kTrackWidth = 0.55;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -83,7 +83,7 @@ public final class Constants {
     }
 
     public static class OIConstants{
-        public static final double K_DEADBAND = .10;
+        public static final double K_DEADBAND = 0.10;
     }
 
     public static final class AutoConstants {

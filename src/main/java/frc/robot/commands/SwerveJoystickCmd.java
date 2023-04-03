@@ -11,6 +11,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
@@ -26,25 +27,16 @@ public class SwerveJoystickCmd extends CommandBase {
     private Supplier<Boolean> visionAdjustmentFunction;
     private Supplier<Boolean> halfSpeedFunction;
     private Supplier<Boolean> chargePadFunction;
-    private SlewRateLimiter slewRateLimiter = new SlewRateLimiter(0.5);
     private double kLimelightHorizontal = 0.08;
     private double kLimelightForward = 1.3;
     private double kLimelightTurning =  0.1;
     private double targetHeading = 0;
-    private double balanceConstant = (.0033);
-    private double feedForwardConstant = (.00034);
-    private double previousRoll = 0;
-    private double rollROC;
-    private double rollROCConstant = -4.16;
-    private double errorMultiplier;
-    private double superFastModeConstant = 7.5;
-    private double xSpeedFast, ySpeedFast;
-    private SlewRateLimiter slewRateLimiterX = new SlewRateLimiter(superFastModeConstant * 2.0);
-    private SlewRateLimiter slewRateLimiterY = new SlewRateLimiter(superFastModeConstant * 2.0);
-    private double xSpeed, ySpeed;
+    // private double superFastModeConstant = 7.5;
+    private SlewRateLimiter slewRateLimiterX = new SlewRateLimiter(DriveConstants.kPhysicalMaxSpeedMetersPerSecond * 2.0);
+    private SlewRateLimiter slewRateLimiterY = new SlewRateLimiter(DriveConstants.kPhysicalMaxSpeedMetersPerSecond * 2.0);
+    private SlewRateLimiter slewRateLimiterTheta = new SlewRateLimiter(DriveConstants.kPhysicalMaxSpeedMetersPerSecond * 2.0);
+    private double xSpeed, ySpeed, turningSpeed;
     private boolean isSlewActive;
-
-
 
 
     public  SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
@@ -64,11 +56,13 @@ public class SwerveJoystickCmd extends CommandBase {
         this.turningSpdFunction = turningSpdFunction;
         this.chargePadFunction = chargePadFunction;
         this.halfSpeedFunction = halfSpeedFunction;
-        this.addRequirements(swerveSubsystem);
         this.visionAdjustmentFunction = visionAdjustmentFunction;
         this.leftTrigger = leftTrigger;
         this.rightTrigger = rightTrigger;
         this.limeLightGrid = limeLight;
+
+        this.addRequirements(swerveSubsystem);
+
 
         // Register the sendable to LiveWindow and SmartDashboard
         SendableRegistry.addLW(this, this.getClass().getSimpleName(), this.getClass().getSimpleName());
@@ -80,70 +74,27 @@ public class SwerveJoystickCmd extends CommandBase {
     @Override
 
     public void execute(){
-        // get real time joyStick inputs
-        // xSpeed = xSpdFunction.get();
-        // ySpeed = ySpdFunction.get();
-        //can not implement sleRateLimiter =.calc because we need x and y values within execute 
-;
-       // System.out.println("THIS IS XSPEED FAST:" + xSpeedFast);
 
-
-        double turningSpeed = turningSpdFunction.get();
         isSlewActive = rightTrigger.get() > 0.2;
 
         boolean targetInView = limeLightGrid.getVisionTargetStatus();
         boolean autoVisionFunction = visionAdjustmentFunction.get();
-                boolean halfSpeed = halfSpeedFunction.get();
 
         // Read in the robot xSpeed from controller
-        if (Math.abs(xSpeed) > OIConstants.K_DEADBAND) {
-            xSpeed = Math.pow(xSpeed, 2) * Math.signum(xSpeed);
-           
-            if (Math.abs(rightTrigger.get())> .2) {
-                
-                 xSpeed *= superFastModeConstant;
-                 System.out.println("This is xspeed" + xSpeed);
-
-            } else {
-                xSpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
-            }
-        } else {
-            xSpeed = 0.0;
-        }
         xSpeed = processRawDriveSignal(xSpdFunction.get());
-        xSpeed = applySpeedScaleToDrive(xSpeed, slewRateLimiterX);
-
-
-        xSpeedFast = slewRateLimiterX.calculate(xSpeed);
+        xSpeed = applySpeedScaleToDrive(xSpeed);
+        xSpeed = applySlewRateLimiter(xSpeed, slewRateLimiterX);
         
-
-        // Read in robot ySpeed from controller
-        if (Math.abs(ySpeed) > OIConstants.K_DEADBAND){
-            ySpeed = Math.pow(ySpeed, 2) * Math.signum(ySpeed);
-
-            if(Math.abs(rightTrigger.get()) > .2){
-
-                ySpeed *= superFastModeConstant;
-                
-            } else {
-                ySpeed *= DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
-            }
-        } else {
-            ySpeed = 0.0;
-        }
-        
-        ySpeedFast = slewRateLimiterY.calculate(ySpeed); 
-        if(rightTrigger.get() > 0.2) {
-            xSpeed = xSpeedFast;
-            ySpeed = ySpeedFast;
-        }
+        // Read in the robot ySpeed from controller
+        ySpeed = processRawDriveSignal(ySpdFunction.get());
+        ySpeed = applySpeedScaleToDrive(ySpeed);
+        ySpeed = applySlewRateLimiter(ySpeed, slewRateLimiterY);
+    
 
         // Read in robot turningSpeed from controller
-        if (Math.abs(turningSpeed) > OIConstants.K_DEADBAND){
-            turningSpeed *= DriveConstants.kRotateDriveMaxSpeedMetersPerSecond;
-        } else {
-            turningSpeed = 0.0;
-        }
+        turningSpeed = processRawDriveSignal(turningSpdFunction.get());
+        turningSpeed = applySpeedScaleToDrive(turningSpeed);
+        turningSpeed = applySlewRateLimiter(turningSpeed, slewRateLimiterTheta);
 
         // Apply speed reduction if commanded
         double superSlowMo = (1 - leftTrigger.get());
@@ -152,13 +103,6 @@ public class SwerveJoystickCmd extends CommandBase {
         ySpeed *= superSlowMo;
         turningSpeed *= superSlowMo;
 
-
-
-
-        // make driving smoother
-        // xSpeed = slewRateLimiter.calculate(xSpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-        // ySpeed = slewRateLimiter.calculate(ySpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-        // turningSpeed = slewRateLimiter.calculate(turningSpeed) *DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
         if(targetInView && autoVisionFunction){
             fieldOrientedFunction = () -> false;
             xSpeed = limeLightGrid.getVisionTargetAreaError() * kLimelightForward;
@@ -173,38 +117,8 @@ public class SwerveJoystickCmd extends CommandBase {
  
         //rollROC = ((swerveSubsystem.getRollDegrees() - previousRoll)/20);
         if (chargePadFunction.get()) {
-            xSpeed = swerveSubsystem.autoBalance();
-        //    double balanceError = 0 - swerveSubsystem.getRollDegrees();
-        //     if (balanceError < 0) {
-        //         errorMultiplier = -1;
-        //     } else {
-        //         errorMultiplier = 1;
-        //     }
-        //     double sqrBalanceError = (Math.pow(balanceError, 2)) * errorMultiplier;
-            
-        //     //rollROC (rate of change) is in Degrees/Milisecond
-        //     double proportionalSpeed = (balanceConstant * balanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
-        //     //deriv speed -4.16 proportional speed .0033
-        //     double derivSpeed = ((rollROC * rollROCConstant) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
-        //     double feedForwardSpeed = ((feedForwardConstant * sqrBalanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
-        //     //derivSpeed = Math.min(Math.abs(proportionalSpeed + feedForwardSpeed), Math.abs(derivSpeed)) * Math.signum(derivSpeed);
-        //     SmartDashboard.putNumber("proportional speed", proportionalSpeed);
-        //     SmartDashboard.putNumber("deriv Speed", derivSpeed);
-        //     SmartDashboard.putNumber("feed forward speed", feedForwardSpeed);
-        //     xSpeed = proportionalSpeed + derivSpeed + feedForwardSpeed;
-        //     previousRoll = swerveSubsystem.getRollDegrees();
-    
+            xSpeed = swerveSubsystem.autoBalance();    
         }
-
-        /**  if(chargePadFunction.get()){
-
-            double balanceError = 0 - swerveSubsystem.getRollDegrees();
-            xSpeed = (balanceConstant * balanceError) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
-            xSpeed += ((rollROC * rollROCConstant) * DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
-            previousRoll = swerveSubsystem.getRollDegrees();
-
-        } */
-        
         
         // convert speeds to reference frames
         ChassisSpeeds chassisSpeeds;
@@ -219,30 +133,13 @@ public class SwerveJoystickCmd extends CommandBase {
 
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-        swerveSubsystem.setModuleStates(moduleStates);
-        for(int i = 0; i< moduleStates.length; i++){
+        // swerveSubsystem.setModuleStates(moduleStates);
+        // for(int i = 0; i< moduleStates.length; i++){
 
             // DataLogManager.log(String.format("module %d %f", i, moduleStates[i].speedMetersPerSecond));
 
-        }
+        // }
         
-
-        SmartDashboard.putBoolean("fieldOrientedFlag", fieldOrientedFunction.get());
-        SmartDashboard.putNumber("Left Stick Y", xSpeed);
-        SmartDashboard.putNumber("Left Stick X", ySpeed);
-        SmartDashboard.putNumber("Drive Angle", Math.atan2(ySpeed,xSpeed));
-        SmartDashboard.putNumber("vxSpeed", chassisSpeeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("vySpeed", chassisSpeeds.vyMetersPerSecond);
-        SmartDashboard.putNumber("kLimelightHorizontal", kLimelightHorizontal);
-        SmartDashboard.putNumber("kLimelightForward", kLimelightForward);
-        SmartDashboard.putBoolean("targetInView", limeLightGrid.getVisionTargetStatus());
-        SmartDashboard.putBoolean("autoVisionFunction", visionAdjustmentFunction.get());
-        SmartDashboard.putNumber("xSpeed", xSpeed);
-        SmartDashboard.putNumber("ySpeed", ySpeed);
-        SmartDashboard.putBoolean(" half speed", halfSpeed);
-    
-
-
     }
 
     /**
@@ -257,10 +154,16 @@ public class SwerveJoystickCmd extends CommandBase {
         return Math.pow(speed,2) * Math.signum(speed);
     }
 
-    private double applySpeedScaleToDrive(double processedDriveSignal, SlewRateLimiter slewRateLimiter){
-        double requestedSpeed = processedDriveSignal *  DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
-        double slewedSpeed = slewRateLimiter.calculate(requestedSpeed);
-        return isSlewActive ? slewedSpeed : requestedSpeed;
+    private double applySpeedScaleToDrive(double processedDriveSignal){
+        // If right trigger is pulled, used max speed, otherwise use translate speed
+        double speedMultiplier = isSlewActive ? DriveConstants.kPhysicalMaxSpeedMetersPerSecond : DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond;
+        return processedDriveSignal *  speedMultiplier;
+    }
+
+    private double applySlewRateLimiter(double scaledDriveSpeed, SlewRateLimiter slewRateLimiter){
+        // If right trigger is pulled, return slewRate figure, otherwise use scaled speed
+        double slewedSpeed = slewRateLimiter.calculate(scaledDriveSpeed);
+        return isSlewActive ? slewedSpeed : scaledDriveSpeed;
     }
 
     @Override
@@ -277,15 +180,16 @@ public class SwerveJoystickCmd extends CommandBase {
     @Override
     public void initSendable(SendableBuilder builder) {
         // TODO Auto-generated method super.initSendable(builder);
-        builder.addDoubleProperty("kLimeLightHorizontal", () -> kLimelightHorizontal, (value) -> kLimelightHorizontal = value);
-        builder.addDoubleProperty("kLimeLightForward", () -> kLimelightForward, (value) -> kLimelightForward = value);
-        builder.addBooleanProperty("targetInView", () -> limeLightGrid.getVisionTargetStatus(), null);
-        builder.addBooleanProperty("autoVisionFunction", () -> visionAdjustmentFunction.get(), null);
-        builder.addDoubleProperty("kLimeLightTurning", () -> kLimelightTurning, (value) -> kLimelightTurning = value);
-        builder.addDoubleProperty("targetHeading", () -> targetHeading, (value) -> targetHeading = value);
+        // builder.addDoubleProperty("kLimeLightHorizontal", () -> kLimelightHorizontal, (value) -> kLimelightHorizontal = value);
+        // builder.addDoubleProperty("kLimeLightForward", () -> kLimelightForward, (value) -> kLimelightForward = value);
+        // builder.addBooleanProperty("targetInView", () -> limeLightGrid.getVisionTargetStatus(), null);
+        // builder.addBooleanProperty("autoVisionFunction", () -> visionAdjustmentFunction.get(), null);
+        // builder.addDoubleProperty("kLimeLightTurning", () -> kLimelightTurning, (value) -> kLimelightTurning = value);
+        // builder.addDoubleProperty("targetHeading", () -> targetHeading, (value) -> targetHeading = value);
         builder.addDoubleProperty("x speed", () -> xSpeed, (value) -> xSpeed = value);
         builder.addDoubleProperty("Y speed", () -> ySpeed, (value) -> ySpeed = value);
-        builder.addDoubleProperty("rightTrigger.get()",() -> rightTrigger.get(), null);
+        builder.addDoubleProperty("FPGA Clock", () -> Timer.getFPGATimestamp(), null);
+        // builder.addDoubleProperty("rightTrigger.get()",() -> rightTrigger.get(), null);
 
     }
 
