@@ -20,7 +20,7 @@ import frc.robot.Constants;
 public class Extender extends SubsystemBase {
   private CANSparkMax extenderMotor = new CANSparkMax(Constants.RoboRioPortConfig.EXTENDER_MOTOR, MotorType.kBrushless);
   private RelativeEncoder extenderEncoder = extenderMotor.getEncoder();
-  private double speed = 0.6;
+  private double speed = 0.8;
   private SparkMaxPIDController extenderPID = extenderMotor.getPIDController();
   private double kP = 0.1;
   private double desiredMidGoal = 103;
@@ -98,16 +98,16 @@ public class Extender extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
-    super.initSendable(builder);
-    builder.addDoubleProperty("Extender Speed", () -> speed, (value) -> speed = value);
-    builder.addDoubleProperty("Extender Position", () -> getExtenderPosition(), null);
-    builder.addDoubleProperty("Extender kP", () -> kP, (value) ->{
-      kP = value;
-      extenderPID.setP(kP);
-    });
-    builder.addDoubleProperty("Midgoal Desired Rotations", () -> desiredMidGoal, (value)->desiredMidGoal=value);
-    builder.addDoubleProperty("Highgoal Desired Rotations", () -> desiredHighGoal, (value)->desiredHighGoal=value);
+    // super.initSendable(builder);
+    // builder.addDoubleProperty("Extender Speed", () -> speed, (value) -> speed = value);
+    // builder.addDoubleProperty("Extender Position", () -> getExtenderPosition(), null);
+    // builder.addDoubleProperty("Extender kP", () -> kP, (value) ->{
+    //   kP = value;
+    //   extenderPID.setP(kP);
+    // });
+    // builder.addDoubleProperty("Midgoal Desired Rotations", () -> desiredMidGoal, (value)->desiredMidGoal=value);
+    // builder.addDoubleProperty("Highgoal Desired Rotations", () -> desiredHighGoal, (value)->desiredHighGoal=value);
 
-    builder.addBooleanProperty("Zero Limit Switch", () -> zeroLimitSwitch.get(), null);
+    // builder.addBooleanProperty("Zero Limit Switch", () -> zeroLimitSwitch.get(), null);
   }
 }

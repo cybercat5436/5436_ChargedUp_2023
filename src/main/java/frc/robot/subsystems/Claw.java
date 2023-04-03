@@ -28,7 +28,7 @@ public class Claw extends SubsystemBase {
   private RelativeEncoder clawEncoder = clawMotor.getEncoder();
   private double kP = 0.1;
   private double cubeDesiredPos = 15;
-  private double coneDesiredPos = 117;
+  private double coneDesiredPos = 99;
 
   public Claw() {
     clawMotor.restoreFactoryDefaults();
@@ -46,7 +46,7 @@ public class Claw extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Claw Motor", clawMotor.get());
+    // SmartDashboard.putNumber("Claw Motor", clawMotor.get());
   }
 
   public void clawGrab(){
@@ -81,13 +81,13 @@ public class Claw extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     // TODO Auto-generated method stub
     super.initSendable(builder);
-    builder.addDoubleProperty("Claw Speed", () -> speed, (value) -> speed = value);
+    // builder.addDoubleProperty("Claw Speed", () -> speed, (value) -> speed = value);
     builder.addDoubleProperty("Claw Position", () -> getClawPosition(), null);
-    builder.addDoubleProperty("Claw kP", () -> kP, (value) ->{
-      kP = value;
-      clawPID.setP(kP);
-    });
-    builder.addDoubleProperty("Cube Desired Rotations", () -> cubeDesiredPos, (value)->cubeDesiredPos=value);
-    builder.addDoubleProperty("Cone Desired Rotations", () -> coneDesiredPos, (value)->coneDesiredPos=value);
+    // builder.addDoubleProperty("Claw kP", () -> kP, (value) ->{
+    //   kP = value;
+    //   clawPID.setP(kP);
+    // });
+    // builder.addDoubleProperty("Cube Desired Rotations", () -> cubeDesiredPos, (value)->cubeDesiredPos=value);
+    // builder.addDoubleProperty("Cone Desired Rotations", () -> coneDesiredPos, (value)->coneDesiredPos=value);
   }
 }

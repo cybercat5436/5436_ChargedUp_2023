@@ -55,10 +55,10 @@ public final class Constants {
         public static final int EXTENDER_ZERO_LIMIT_SWITCH = 0;
         public static final int EXTENDER_MAX_LIMIT_SWITCH = 1;
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 0;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 0;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0;
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 2.827;//-1.285;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 2.482;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = -2.86;//-2.399;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -2.752;
         
     }
 
@@ -94,8 +94,10 @@ public final class Constants {
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
         //used to be 1.5
         public static final double kPXController = 2.9;
-        public static final double kPYController = 1;
-        public static final double kPThetaController = 1;
+        public static final double kPYController = 2.9;
+
+        //Test with 2.9 * 2, which was set in swervesubsystem auton
+        public static final double kPThetaController = 8.0;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
                 new TrapezoidProfile.Constraints(

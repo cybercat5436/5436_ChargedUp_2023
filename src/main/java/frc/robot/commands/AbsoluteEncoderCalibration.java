@@ -4,43 +4,35 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.SwerveSubsystem;
 
-public class ArmGoToHigh2 extends CommandBase {
-  private Arm arm;
- 
-  /** Creates a new ArmGoToHigh. */
-  public ArmGoToHigh2(Arm arm) {
+public class AbsoluteEncoderCalibration extends CommandBase {
+  /** Creates a new ManualEncoderCalibration. */
+  private SwerveSubsystem swerveSubsystem;
+
+  public AbsoluteEncoderCalibration(SwerveSubsystem swerveSubsystem) {
+    this.swerveSubsystem = swerveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.arm = arm;
-   
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    //arm.slowMaxSpeed();
-    // DataLogManager.log("Arm Go to High2 Initialised");
-    
-    arm.armHighGoal2();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    swerveSubsystem.getSwerveModules().forEach(module -> module.resetTurningEncoderWithAbsolute());
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    //arm.restoreMaxSpeed();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return arm.isAtHighGoal();
-    return arm.isAtHighGoal2();
+    return true;
   }
 }
