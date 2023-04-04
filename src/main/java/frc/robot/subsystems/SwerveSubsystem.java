@@ -41,11 +41,11 @@ public class SwerveSubsystem extends SubsystemBase{
     private ArrayList<SwerveModule> swerveModules = new ArrayList<>();
     private double balanceConstant = (.008767);
     private double feedForwardConstant = (0);
-    private double previousRoll = 0;
+    // private double previousRoll = 0;
     private double previousPitch = 0;
-    private double rollROC;
+    // private double rollROC;
     private double pitchROC;
-    private double rollROCConstant = 0;
+    // private double rollROCConstant = 0;
     private double pitchROCConstant = -3.5972;
     private double errorMultiplier;
     private double xSpeed;
@@ -130,14 +130,10 @@ public class SwerveSubsystem extends SubsystemBase{
       new Pose2d(0, 0, new Rotation2d(0)));
 
  
-
-      
-
-
     private int loopCount = 0;
-    // private double kPXController =  2.9;
-    // private double kPYController = 2.9;
-    //private double kThetaController = 2.9;
+    private double kPXController =  AutoConstants.kPXController;
+    private double kPYController = AutoConstants.kPYController;;
+    private double kPThetaController = AutoConstants.kPThetaController;
     PIDController xController;
     PIDController yController;
     ProfiledPIDController thetaController;
@@ -207,17 +203,17 @@ public void setSaturatedPitch(double x){
 }
 public PIDController getxController(){
     // DataLogManager.log(String.format("X conroller %.2f", kPXController));
-    return xController = new PIDController(AutoConstants.kPXController, 0, 0);
+    return new PIDController(kPXController, 0, 0);
 }
 
 public PIDController getyController(){
     // DataLogManager.log(String.format("Y controller %.2f", kPYController));
-    return yController = new PIDController(AutoConstants.kPYController, 0,0);
+    return new PIDController(kPYController, 0,0);
 }
 
 public ProfiledPIDController getThetaController(){
     // DataLogManager.log(String.format("Theta controller %.2f", kThetaController));
-    return thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0,AutoConstants.kThetaControllerConstraints);
+    return new ProfiledPIDController(kPThetaController, 0, 0,AutoConstants.kThetaControllerConstraints);
 }
 
 public void resetOdometry(Pose2d pose){
@@ -258,11 +254,12 @@ public ArrayList<SwerveModule> getSwerveModules(){
 
 public double autoBalance(){
     //rollROC = ((getRollDegrees() - previousRoll)/20);
+    double currentPitch = getPitchDegrees();
 
-    pitchROC = ((getPitchDegrees() - previousPitch)/ 20);
+    pitchROC = ((currentPitch - previousPitch)/ 20);
 
     //double balanceError = 0 - getRollDegrees();
-    double balanceError = targetPitch - getPitchDegrees();
+    double balanceError = targetPitch - currentPitch;
 
 
 
@@ -293,7 +290,7 @@ public double autoBalance(){
 
     xSpeed = proportionalSpeed + derivSpeed + feedForwardSpeed + integratorSpeed;
     //previousRoll = getRollDegrees();
-    previousPitch = getPitchDegrees();
+    previousPitch = currentPitch;
 
     return xSpeed;
 }
@@ -368,12 +365,12 @@ public void initSendable(SendableBuilder builder) {
     // builder.addDoubleProperty("kPYController", () -> kPYController, (value) -> kPYController = value);
     // builder.addDoubleProperty("kThetaController", () -> kThetaController, (value) -> kThetaController = value);
 
-    // builder.addDoubleProperty("balanceConstant", () -> balanceConstant, (value) -> balanceConstant = value);
+    builder.addDoubleProperty("balanceConstant", () -> balanceConstant, (value) -> balanceConstant = value);
     // builder.addDoubleProperty("Roll Rate of Change", () -> rollROC, null);
 //    builder.addDoubleProperty("Roll Rate of Change Constant", () -> rollROCConstant, (value) -> rollROCConstant = value);
-//    builder.addDoubleProperty("Roll Rate of Change Constant", () -> pitchROCConstant, (value) -> pitchROCConstant = value);
+   builder.addDoubleProperty("Roll Rate of Change Constant", () -> pitchROCConstant, (value) -> pitchROCConstant = value);
 
-    // builder.addDoubleProperty("feed forward", () -> feedForwardConstant, (value) -> feedForwardConstant = value);
+    builder.addDoubleProperty("feed forward", () -> feedForwardConstant, (value) -> feedForwardConstant = value);
 
     // builder.addDoubleProperty("Integrator Constant", () -> integratorConstant, (value) -> integratorConstant = value);
 

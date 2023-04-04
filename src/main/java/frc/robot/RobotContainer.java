@@ -173,7 +173,7 @@ public class RobotContainer {
         
         
         //for testing
-        autonChooser.setDefaultOption("exit for 21 point auton", 
+        autonChooser.setDefaultOption("BTI exit for 21 point auton", 
         util.autonDriveCommand("paths/exit-community-v2.wpilib.json", swerveSubsystem).withTimeout(2.0)
         .andThen(new InstantCommand(() -> System.out.println("Inside the instant command"))));
         // util.autonDriveCommand("paths/exitCommunity.wpilib.json", swerveSubsystem));

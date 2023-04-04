@@ -21,9 +21,9 @@ public final class Constants {
 
     public static final class ModuleConstants {
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-        public static final double kDriveMotorGearRatio = 1 / 5.8462;
+        public static final double kDriveMotorGearRatio = 1 / 6.92;
         public static final double kTurningMotorGearRatio = 1 / 18.0;
-        public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters / 1.38;
+        public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
         public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
         public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
         public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60;
@@ -69,7 +69,7 @@ public final class Constants {
         public static final double kPhysicalMaxSpeedMetersPerSecond = 4.36;
         //public static final double kTrackWidth = Units.inchesToMeters(19); //OLD
         public static final double kTrackWidth = 0.55;
-        public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
+        public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 3.78;
         //kWheelBase: Distance between front and back of the robot
         //public static final double kWheelBase = Units.inchesToMeters(23.5);
         public static final double kWheelBase = 0.63;
@@ -89,9 +89,9 @@ public final class Constants {
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 4;
         public static final double kMaxAngularSpeedRadiansPerSecond = 
-                DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 7.5;
+                DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 2.0;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
+        public static final double kMaxAngularAccelerationRadiansPerSecondSquared = kMaxAngularSpeedRadiansPerSecond * 2.0;  // half a second to accelerate to full speed
         //used to be 1.5
         public static final double kPXController = 2.9;
         public static final double kPYController = 2.9;
