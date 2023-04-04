@@ -133,12 +133,12 @@ public class SwerveJoystickCmd extends CommandBase {
 
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-        // swerveSubsystem.setModuleStates(moduleStates);
-        // for(int i = 0; i< moduleStates.length; i++){
+        swerveSubsystem.setModuleStates(moduleStates);
+        for(int i = 0; i< moduleStates.length; i++){
 
-            // DataLogManager.log(String.format("module %d %f", i, moduleStates[i].speedMetersPerSecond));
+            SmartDashboard.putNumber(String.format("module %d", i), moduleStates[i].speedMetersPerSecond);
 
-        // }
+        }
         
     }
 
@@ -188,7 +188,7 @@ public class SwerveJoystickCmd extends CommandBase {
         // builder.addDoubleProperty("targetHeading", () -> targetHeading, (value) -> targetHeading = value);
         builder.addDoubleProperty("x speed", () -> xSpeed, (value) -> xSpeed = value);
         builder.addDoubleProperty("Y speed", () -> ySpeed, (value) -> ySpeed = value);
-        builder.addDoubleProperty("FPGA Clock", () -> Timer.getFPGATimestamp(), null);
+        // builder.addDoubleProperty("FPGA Clock", () -> Timer.getFPGATimestamp(), null);
         // builder.addDoubleProperty("rightTrigger.get()",() -> rightTrigger.get(), null);
 
     }
