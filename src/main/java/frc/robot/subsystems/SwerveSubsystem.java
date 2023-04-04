@@ -244,7 +244,7 @@ public void setModuleStates(SwerveModuleState[] desiredStates){
     for(int i = 0; i < 4; i++){
         moduleStates.add(desiredStates[i]);
     }
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     frontLeft.setDesiredState(desiredStates[0]);
     frontRight.setDesiredState(desiredStates[1]);
     backLeft.setDesiredState(desiredStates[2]);
@@ -326,6 +326,7 @@ public void periodic() {
       //  SmartDashboard.putNumber(String.format("%s Back Left", swerveMo))
         SmartDashboard.putNumber(String.format("%s Turning Encoder", swerveModule.wheelPosition.name()), swerveModule.getTurningPosition());
         // SmartDashboard.putNumber(String.format("%s Target Angle", swerveModule.wheelPosition.name()), swerveModule.getState().angle.getRadians());
+        SmartDashboard.putNumber(String.format("%s Velocity", swerveModule.wheelPosition.name()), swerveModule.getDriveVelocity());
     }
     // SmartDashboard.putNumber("FL Angle", frontLeft.getAbsoluteEncoderRadians());
     // SmartDashboard.putNumber("FL Turning Encoder", frontLeft.getTurningPosition());

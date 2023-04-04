@@ -96,7 +96,7 @@ public class SwerveModule implements Sendable{
   public double getSpinPosition() {
     return spinEncoder.getPosition();
   }
-
+  
   public double getDriveVelocity() {
     return driverEncoder.getVelocity();
   }

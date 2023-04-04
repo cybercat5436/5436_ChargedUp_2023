@@ -55,18 +55,18 @@ public final class Constants {
         public static final int EXTENDER_ZERO_LIMIT_SWITCH = 0;
         public static final int EXTENDER_MAX_LIMIT_SWITCH = 1;
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 2.827;//-1.285;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 2.482;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = -2.86;//-2.399;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -2.752;
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -0.954;//2.827;//-1.285;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0.79;//2.482;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 1.79;//-2.86;//-2.399;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -2.201;//-2.752;
         
     }
 
 
     public static class DriveConstants{
-        public static final double kTranslateDriveMaxSpeedMetersPerSecond = 5;
-        public static final double kRotateDriveMaxSpeedMetersPerSecond = 10;
-        public static final double kPhysicalMaxSpeedMetersPerSecond = 8;
+        public static final double kTranslateDriveMaxSpeedMetersPerSecond = 2.9;
+        public static final double kRotateDriveMaxSpeedMetersPerSecond = 4.36;
+        public static final double kPhysicalMaxSpeedMetersPerSecond = 4.36;
         //public static final double kTrackWidth = Units.inchesToMeters(19); //OLD
         public static final double kTrackWidth = 0.55;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -83,7 +83,7 @@ public final class Constants {
     }
 
     public static class OIConstants{
-        public static final double K_DEADBAND = .10;
+        public static final double K_DEADBAND = 0.10;
     }
 
     public static final class AutoConstants {
