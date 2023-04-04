@@ -55,8 +55,8 @@ public class Utils {
         return trajectory;
     }
 
-    public SequentialCommandGroup autonDriveCommand(String path, SwerveSubsystem swerveSubsystem){
-      Trajectory trajectory = getTrajectory(path);
+    public SequentialCommandGroup autonDriveCommand(String string, SwerveSubsystem swerveSubsystem){
+      Trajectory trajectory = getTrajectory(string);
       SwerveControllerCommand swerveControllerCommand = getSwerveControllerCommand(trajectory, swerveSubsystem);
 
       return new SequentialCommandGroup(
