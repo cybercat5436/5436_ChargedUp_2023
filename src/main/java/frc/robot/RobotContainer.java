@@ -137,6 +137,8 @@ public class RobotContainer {
       Trajectory trajectory = util.getTrajectory("paths/ForwardPathRight.wpilib.json");
       Trajectory trajectory2 = util.getTrajectory("paths/ForwardPathRight1.wpilib.json");
       Trajectory chargePad1Trajectory = util.getTrajectory("paths/ChargePad2mts.wpilib.json");
+      Trajectory goingToReversTrajectory = util.getTrajectory("paths/goingToReverseFulcrum.wpilib.json");
+      Trajectory exitCommunity = util.getTrajectory("paths/exitCommunity.wpilib.json");
       
       //create auton commands
       SwerveControllerCommand autoBalanceTrajectoryCommand = util.getSwerveControllerCommand(chargePad1Trajectory, swerveSubsystem);
@@ -154,7 +156,15 @@ public class RobotContainer {
                   new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
                   new ManualEncoderCalibration(swerveSubsystem),
                   util.getSwerveControllerCommand(trajectory.concatenate(trajectory2), swerveSubsystem),  
-                  new InstantCommand(() -> swerveSubsystem.stopModules()));   
+                  new InstantCommand(() -> swerveSubsystem.stopModules())); 
+
+        SequentialCommandGroup twentyOnePointAuton = new SequentialCommandGroup(
+          new InstantCommand(() -> swerveSubsystem.resetOdometry(exitCommunity.getInitialPose())),
+          new ManualEncoderCalibration(swerveSubsystem),
+          util.getSwerveControllerCommand(exitCommunity.concatenate(goingToReversTrajectory), swerveSubsystem)
+        );
+                  
+
         
         // Command to Auto Balance                      
         AutonomousAutoBalance autonAutoBalance = new AutonomousAutoBalance(swerveSubsystem, 10);
@@ -162,9 +172,50 @@ public class RobotContainer {
 
 
       //Right path, delivers and drives out of community(Tested)
-      autonChooser.setDefaultOption("Right Drive And Deliver", util.scoreHighGoal(extender, claw, arm)
+      autonChooser.setDefaultOption("Right Drive And Deliver", 
+      util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
       .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
+
+      autonChooser.setDefaultOption("21 point auton",  
+      util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(Commands.parallel(twentyOnePointAuton))
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 8))
+      .andThen(new SetTo90(swerveSubsystem, 0.25))
+      );
+
+      //for testing
+      autonChooser.setDefaultOption("exit for 21 point auton", 
+      util.autonDriveCommand("exitCommunity.wpilib.json", swerveSubsystem));
+
+      //super unsure that it works 
+      autonChooser.setDefaultOption("testing the back and forth", 
+      Commands.parallel(twentyOnePointAuton));
+
+
+
+      autonChooser.setDefaultOption("21 point auton",  
+      util.scoreHighGoal(extender, claw, arm)
+      .andThen(util.retractArm(extender, claw, arm))
+      .andThen(Commands.parallel(twentyOnePointAuton))
+      .andThen(new SeekFulcrum(swerveSubsystem))
+      .andThen(new MoveToFulcrum(swerveSubsystem))
+      .andThen(new AutonomousAutoBalance(swerveSubsystem, 8))
+      .andThen(new SetTo90(swerveSubsystem, 0.25))
+      );
+
+      //for testing
+      autonChooser.setDefaultOption("exit for 21 point auton", 
+      util.autonDriveCommand("exitCommunity.wpilib.json", swerveSubsystem));
+
+      //super unsure that it works 
+      autonChooser.setDefaultOption("testing the back and forth", 
+      Commands.parallel(twentyOnePointAuton));
+
+
 
       autonChooser.addOption("Auton Balance Test without arm", 
       util.autonDriveCommand("paths/2.5.wpilib.json", swerveSubsystem)
