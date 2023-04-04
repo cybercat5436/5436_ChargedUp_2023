@@ -185,15 +185,22 @@ public class RobotContainer {
         .andThen(util.retractArm(extender, claw, arm))
         .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
 
-  /**    autonChooser.setDefaultOption("21 point auton",  
-      util.scoreHighGoal(extender, claw, arm)
-      .andThen(util.retractArm(extender, claw, arm))
-      .andThen(Commands.parallel(twentyOnePointAuton))
-      .andThen(new SeekFulcrum(swerveSubsystem))
-      .andThen(new MoveToFulcrum(swerveSubsystem))
-      .andThen(new AutonomousAutoBalance(swerveSubsystem, 8))
-      .andThen(new SetTo90(swerveSubsystem, 0.25))
-      ); */
+        // Full 21 point auton routine
+        Trajectory trajOverChargePAD = util.getTrajectory("paths/exit-community-v2.wpilib.json");
+        Trajectory trajReverseToFulcrum = util.getTrajectory("paths/reverse-to-fulcrum-v2.wpilib.json");
+  
+        autonChooser.addOption("21 point autonV2",  
+        util.scoreHighGoal(extender, claw, arm)
+        .andThen(util.retractArm(extender, claw, arm))
+        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())))
+        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(trajOverChargePAD.concatenate(trajReverseToFulcrum), swerveSubsystem))
+        .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
+        .andThen(new SeekFulcrum(swerveSubsystem))
+        .andThen(new MoveToFulcrum(swerveSubsystem))
+        .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
+        .andThen(new SetTo90(swerveSubsystem, 0.25))
+        );
 
 
       

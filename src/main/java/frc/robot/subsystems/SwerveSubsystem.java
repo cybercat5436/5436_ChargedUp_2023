@@ -18,11 +18,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.IntegerEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,9 +27,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.enums.WheelPosition;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.kauailabs.navx.frc.AHRS;
 
 /** Add your docs here. */
 public class SwerveSubsystem extends SubsystemBase{
@@ -114,23 +108,16 @@ public class SwerveSubsystem extends SubsystemBase{
             backLeft.getPosition(),
             backRight.getPosition() };
 
-      public SwerveModulePosition[] getModulePositions(){
-            return new SwerveModulePosition[]{
-                frontLeft.getPosition(),
-                frontRight.getPosition(),
-                backLeft.getPosition(),
-                backRight.getPosition() };
-      }
+
     //idk if this is the gyro we have 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
         DriveConstants.kDriveKinematics,
-     new Rotation2d(0),
-     getModulePositions(),
-      new Pose2d(0, 0, new Rotation2d(0)));
+        new Rotation2d(0),
+        getModulePositions(),
+        new Pose2d(0, 0, new Rotation2d(0)));
 
  
-    private int loopCount = 0;
     private double kPXController =  AutoConstants.kPXController;
     private double kPYController = AutoConstants.kPYController;;
     private double kPThetaController = AutoConstants.kPThetaController;
@@ -214,6 +201,14 @@ public PIDController getyController(){
 public ProfiledPIDController getThetaController(){
     // DataLogManager.log(String.format("Theta controller %.2f", kThetaController));
     return new ProfiledPIDController(kPThetaController, 0, 0,AutoConstants.kThetaControllerConstraints);
+}
+
+public SwerveModulePosition[] getModulePositions(){
+    return new SwerveModulePosition[]{
+        frontLeft.getPosition(),
+        frontRight.getPosition(),
+        backLeft.getPosition(),
+        backRight.getPosition() };
 }
 
 public void resetOdometry(Pose2d pose){
@@ -371,6 +366,7 @@ public void initSendable(SendableBuilder builder) {
    builder.addDoubleProperty("Roll Rate of Change Constant", () -> pitchROCConstant, (value) -> pitchROCConstant = value);
 
     builder.addDoubleProperty("feed forward", () -> feedForwardConstant, (value) -> feedForwardConstant = value);
+    builder.addStringProperty("Odometry Position", () -> this.odometry.getPoseMeters().toString(), null);
 
     // builder.addDoubleProperty("Integrator Constant", () -> integratorConstant, (value) -> integratorConstant = value);
 

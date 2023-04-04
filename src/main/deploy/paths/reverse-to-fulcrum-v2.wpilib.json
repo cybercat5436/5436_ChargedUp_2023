@@ -1,0 +1,257 @@
+[
+{
+"acceleration": -2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.543,
+"y": 2.189
+}
+},
+"time": 0.0,
+"velocity": -0.0
+},
+{
+"acceleration": -2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.419013738632202,
+"y": 2.189
+}
+},
+"time": 0.3149428663968092,
+"velocity": -0.787357165992023
+},
+{
+"acceleration": -2.499999999999999,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.300335876464844,
+"y": 2.189
+}
+},
+"time": 0.44060333501702487,
+"velocity": -1.1015083375425623
+},
+{
+"acceleration": -2.5000000000000013,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.190287431716919,
+"y": 2.189
+}
+},
+"time": 0.5311968134566181,
+"velocity": -1.3279920336415452
+},
+{
+"acceleration": -2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.090306640625,
+"y": 2.189
+}
+},
+"time": 0.6017928941920134,
+"velocity": -1.5044822354800338
+},
+{
+"acceleration": -2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.000262754440308,
+"y": 2.189
+}
+},
+"time": 0.6589307979202018,
+"velocity": -1.6473269948005047
+},
+{
+"acceleration": -2.500000000000003,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.918769836425781,
+"y": 2.189
+}
+},
+"time": 0.7066711617572737,
+"velocity": -1.7666779043931846
+},
+{
+"acceleration": -2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.843500558853149,
+"y": 2.189
+}
+},
+"time": 0.7480638695442259,
+"velocity": -1.870159673860565
+},
+{
+"acceleration": 2.499999999999815,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.7715,
+"y": 2.189
+}
+},
+"time": 0.7856207736560944,
+"velocity": -1.9640519341402363
+},
+{
+"acceleration": 2.500000000000003,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.69949944114685,
+"y": 2.189
+}
+},
+"time": 0.8231776777679628,
+"velocity": -1.8701596738605721
+},
+{
+"acceleration": 2.5,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.624230163574218,
+"y": 2.189
+}
+},
+"time": 0.8645703855549147,
+"velocity": -1.7666779043931922
+},
+{
+"acceleration": 2.5000000000000027,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.5427372455596915,
+"y": 2.189
+}
+},
+"time": 0.9123107493919865,
+"velocity": -1.6473269948005127
+},
+{
+"acceleration": 2.4999999999999987,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.452693359374998,
+"y": 2.189
+}
+},
+"time": 0.9694486531201751,
+"velocity": -1.5044822354800411
+},
+{
+"acceleration": 2.5,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.352712568283079,
+"y": 2.189
+}
+},
+"time": 1.040044733855571,
+"velocity": -1.3279920336415518
+},
+{
+"acceleration": 2.4999999999999987,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.242664123535153,
+"y": 2.189
+}
+},
+"time": 1.1306382122951635,
+"velocity": -1.1015083375425703
+},
+{
+"acceleration": 2.5000000000000004,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.123986261367794,
+"y": 2.189
+}
+},
+"time": 1.2562986809153802,
+"velocity": -0.7873571659920287
+},
+{
+"acceleration": 2.5000000000000004,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 3.999999999999994,
+"y": 2.189
+}
+},
+"time": 1.5712415473121917,
+"velocity": -0.0
+}
+]
