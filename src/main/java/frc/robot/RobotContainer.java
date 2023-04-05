@@ -186,39 +186,45 @@ public class RobotContainer {
         .andThen(util.retractArm(extender, claw, arm))
         .andThen(Commands.parallel(autonForwardPath, new AutonIntakeCommand(intake, 8))));
 
-        autonChooser.addOption("Right Forward Backward 2.5", 
-        util.scoreHighGoal(extender, claw, arm)
-        .andThen(util.retractArm(extender, claw, arm))
-        .andThen(util.autonDriveCommand("paths/RightPathForward2.5.wpilib.json", swerveSubsystem))
-        .andThen(util.autonDriveCommand("paths/RightPathBackward2.5.wpilib.json", swerveSubsystem))
-        );
+        // autonChooser.addOption("Right Forward Backward 2.5", 
+        // util.scoreHighGoal(extender, claw, arm)
+        // .andThen(util.retractArm(extender, claw, arm))
+        // .andThen(util.autonDriveCommand("paths/RightPathForward2.5.wpilib.json", swerveSubsystem))
+        // .andThen(util.autonDriveCommand("paths/RightPathBackward2.5.wpilib.json", swerveSubsystem))
+        // );
+
+        Trajectory trajRightForward1 = util.getTrajectory("paths/RightPathForward2.5.wpilib.json");
+        Trajectory trajRightForward2 = util.getTrajectory("paths/RightPathForward2.5Part2.wpilib.json");
 
         autonChooser.addOption("Right Forward 2.5 TEST", 
-        util.autonDriveCommand("paths/RightPathForward2.5.wpilib.json", swerveSubsystem)
-        .andThen(util.autonDriveCommand("paths/RightPathForward2.5Part2.wpilib.json", swerveSubsystem))
+        // util.autonDriveCommand("paths/RightPathForward2.5.wpilib.json", swerveSubsystem)
+        // .andThen(util.autonDriveCommand("paths/RightPathForward2.5Part2.wpilib.json", swerveSubsystem))
+        new InstantCommand(() -> swerveSubsystem.resetOdometry(trajRightForward1.getInitialPose()))
+        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(trajRightForward1.concatenate(trajRightForward2), swerveSubsystem))
+        .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
         );
 
         // Full 21 point auton routine
-        Trajectory trajOverChargePAD = util.getTrajectory("paths/exit-community-v2.wpilib.json");
+        Trajectory trajOverChargePad = util.getTrajectory("paths/exit-community-v2.wpilib.json");
         Trajectory trajReverseToFulcrum = util.getTrajectory("paths/reverse-to-fulcrum-v2.wpilib.json");
 
         
   
-        // autonChooser.addOption("21 point autonV2",  
+        autonChooser.addOption("21 point autonV2",  
         // // util.scoreHighGoal(extender, claw, arm)
         // // .andThen(util.retractArm(extender, claw, arm))
-        // // .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())))
-        // // .andThen(new ManualEncoderCalibration(swerveSubsystem))
-        // (util.getSwerveControllerCommand(trajOverChargePAD.concatenate(trajReverseToFulcrum), swerveSubsystem))
-        // .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
+        new InstantCommand(() -> swerveSubsystem.resetOdometry(trajOverChargePad.getInitialPose()))
+        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(trajOverChargePad.concatenate(trajReverseToFulcrum), swerveSubsystem))
+        .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
         // // .andThen(new SeekFulcrum(swerveSubsystem))
         // // .andThen(new MoveToFulcrum(swerveSubsystem))
         // // .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
         // // .andThen(new SetTo90(swerveSubsystem, 0.25))
-        // );
+        );
 
 
-      
       //Left path, Deliver and drive out of community(Not Tested)
       autonChooser.addOption("Left Drive and Deliver", util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
