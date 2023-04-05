@@ -206,7 +206,7 @@ public class RobotContainer {
         .andThen(util.getSwerveControllerCommand(traj12Right3, swerveSubsystem))
         .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
         .andThen(new InstantCommand(() -> intake.intakeFeedOut()).repeatedly().withTimeout(3.0))
-        .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
+        .andThen(new InstantCommand(() -> intake.stopIntake()))
         );
 
         autonChooser.addOption("Right Grab",  
