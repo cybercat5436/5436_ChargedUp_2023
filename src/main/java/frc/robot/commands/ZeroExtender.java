@@ -24,7 +24,7 @@ public class ZeroExtender extends CommandBase {
   public void initialize() {
     timer.reset();
     timer.start();
-    extender.retract(0.1);
+    extender.retract(0.25);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

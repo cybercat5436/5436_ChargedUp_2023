@@ -28,7 +28,8 @@ public class Claw extends SubsystemBase {
   private RelativeEncoder clawEncoder = clawMotor.getEncoder();
   private double kP = 0.1;
   private double cubeDesiredPos = 15;
-  private double coneDesiredPos = 99;
+  private double coneDesiredPos = 3;
+  private double zeroPos = -90;
 
   public Claw() {
     clawMotor.restoreFactoryDefaults();
@@ -71,7 +72,7 @@ public class Claw extends SubsystemBase {
     clawPID.setReference(cubeDesiredPos, CANSparkMax.ControlType.kPosition);
   }
   public void gotoDefaultPos(){
-    clawPID.setReference(0, CANSparkMax.ControlType.kPosition);
+    clawPID.setReference(zeroPos, CANSparkMax.ControlType.kPosition);
   }
   public boolean isConeGrabbed(){
     return clawEncoder.getPosition()>=coneDesiredPos-4;
@@ -90,4 +91,9 @@ public class Claw extends SubsystemBase {
     // builder.addDoubleProperty("Cube Desired Rotations", () -> cubeDesiredPos, (value)->cubeDesiredPos=value);
     // builder.addDoubleProperty("Cone Desired Rotations", () -> coneDesiredPos, (value)->coneDesiredPos=value);
   }
+
+  public void zeroEncoder () {
+    clawEncoder.setPosition(0);
+  }
+
 }

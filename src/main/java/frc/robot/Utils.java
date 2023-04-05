@@ -73,6 +73,7 @@ public class Utils {
       return new SequentialCommandGroup(
         new InstantCommand(()->arm.resetArmEncoder()),
         new ZeroExtender(extender),
+        new InstantCommand(() -> claw.zeroEncoder()),
         new ClawGrabCone(claw),
         new ArmGoToHighMotionMagic(arm),
         new ExtendHighGoal(extender, 2.0));
@@ -83,8 +84,9 @@ public class Utils {
       return new SequentialCommandGroup(
         new ArmGoToHigh2(arm),
         new ClawReset(claw),
-        new ExtenderRetractToZero(extender),
-        new InstantCommand(()->arm.armMoveToZeroPosition()));
+        new ExtenderRetractToZero(extender)
+        , new InstantCommand(()->arm.armMoveToZeroPosition())
+        );
       
     }
 
