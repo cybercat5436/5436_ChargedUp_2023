@@ -28,7 +28,7 @@ public class Extender extends SubsystemBase {
   private DigitalInput maxLimitSwitch = new DigitalInput(Constants.RoboRioPortConfig.EXTENDER_MAX_LIMIT_SWITCH);
   //changed
   private double desiredHighGoal = 244; // NOT TESTED
-  private double retractLimit = 5.56;
+  private double retractLimit = 3.00;
 
   /** Creates a new Extender. */
   public Extender() {
@@ -104,7 +104,7 @@ public class Extender extends SubsystemBase {
     // TODO Auto-generated method stub
     // super.initSendable(builder);
     // builder.addDoubleProperty("Extender Speed", () -> speed, (value) -> speed = value);
-    // builder.addDoubleProperty("Extender Position", () -> getExtenderPosition(), null);
+     builder.addDoubleProperty("Extender Position", () -> getExtenderPosition(), null);
     // builder.addDoubleProperty("Extender kP", () -> kP, (value) ->{
     //   kP = value;
     //   extenderPID.setP(kP);
