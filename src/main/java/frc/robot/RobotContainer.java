@@ -209,6 +209,30 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> intake.stopIntake()))
         );
 
+
+      // ****************************************************************
+        // Left Drive and Score  
+        // 12 pt auton
+        Trajectory traj12Left1 = util.getTrajectory("paths/left-1.wpilib.json");
+        Trajectory traj12Left2 = util.getTrajectory("paths/left-2.wpilib.json");
+        Trajectory traj12Left3 = util.getTrajectory("paths/left-3.wpilib.json");
+
+        autonChooser.addOption("Left Grab-n-Score",  
+        // // util.scoreHighGoal(extender, claw, arm)
+        // // .andThen(util.retractArm(extender, claw, arm))
+        new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose()))
+        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
+        .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
+        .andThen(util.getSwerveControllerCommand(traj12Left2, swerveSubsystem))
+        .andThen(new InstantCommand(() -> intake.stopIntake()))
+        .andThen(util.getSwerveControllerCommand(traj12Left3, swerveSubsystem))
+        .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
+        .andThen(new InstantCommand(() -> intake.intakeFeedOut()).repeatedly().withTimeout(3.0))
+        .andThen(new InstantCommand(() -> intake.stopIntake()))
+        );
+
+
         autonChooser.addOption("Right Grab",  
         // // util.scoreHighGoal(extender, claw, arm)
         // // .andThen(util.retractArm(extender, claw, arm))
@@ -219,6 +243,19 @@ public class RobotContainer {
         .andThen(util.getSwerveControllerCommand(traj12Right2, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.stopIntake()))
         );
+
+
+        autonChooser.addOption("Left Grab",  
+        // // util.scoreHighGoal(extender, claw, arm)
+        // // .andThen(util.retractArm(extender, claw, arm))
+        new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Right1.getInitialPose()))
+        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
+        .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
+        .andThen(util.getSwerveControllerCommand(traj12Left2, swerveSubsystem))
+        .andThen(new InstantCommand(() -> intake.stopIntake()))
+        );
+
 
       //Left path, Deliver and drive out of community(Not Tested)
       autonChooser.addOption("Left Drive and Deliver", util.scoreHighGoal(extender, claw, arm)
