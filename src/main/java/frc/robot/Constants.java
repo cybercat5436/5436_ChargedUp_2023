@@ -97,7 +97,7 @@ public final class Constants {
         public static final double kPYController = 2.9;
 
         //Test with 2.9 * 2, which was set in swervesubsystem auton
-        public static final double kPThetaController = 15.0;
+        public static final double kPThetaController = 5.0;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
                 new TrapezoidProfile.Constraints(

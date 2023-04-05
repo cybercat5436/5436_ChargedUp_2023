@@ -198,7 +198,7 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "7,3": {
+          "5,3": {
             "size": [
               2,
               1
@@ -215,7 +215,7 @@
               "Visuals/Display value": true
             }
           },
-          "7,2": {
+          "5,2": {
             "size": [
               2,
               1
@@ -245,7 +245,7 @@
               "_showGlyph": false
             }
           },
-          "5,3": {
+          "8,0": {
             "size": [
               1,
               1
@@ -258,7 +258,7 @@
               "_showGlyph": false
             }
           },
-          "5,2": {
+          "6,1": {
             "size": [
               1,
               1
@@ -301,7 +301,7 @@
               "_showGlyph": false
             }
           },
-          "3,2": {
+          "4,1": {
             "size": [
               1,
               1
@@ -327,15 +327,145 @@
               "_showGlyph": false
             }
           },
-          "3,0": {
+          "6,0": {
             "size": [
-              4,
+              1,
               1
             ],
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/SwerveSubsystem/Odometry Position",
               "_title": "SmartDashboard/SwerveSubsystem/Odometry Position",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/BACK_LEFT Turning Encoder",
+              "_title": "SmartDashboard/BACK_LEFT Turning Encoder",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/BACK_RIGHT Turning Encoder",
+              "_title": "SmartDashboard/BACK_RIGHT Turning Encoder",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/FRONT_LEFT Turning Encoder",
+              "_title": "SmartDashboard/FRONT_LEFT Turning Encoder",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/FRONT_RIGHT Turning Encoder",
+              "_title": "SmartDashboard/FRONT_RIGHT Turning Encoder",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveSubsystem/kPXController",
+              "_title": "/SmartDashboard/SwerveSubsystem/kPXController",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveSubsystem/kPYController",
+              "_title": "SmartDashboard/SwerveSubsystem/kPYController",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/BACK_LEFT Position",
+              "_title": "SmartDashboard/BACK_LEFT Position",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/BACK_RIGHT Position",
+              "_title": "SmartDashboard/BACK_RIGHT Position",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/FRONT_LEFT Position",
+              "_title": "SmartDashboard/FRONT_LEFT Position",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/FRONT_RIGHT Position",
+              "_title": "SmartDashboard/FRONT_RIGHT Position",
               "_glyph": 148,
               "_showGlyph": false
             }

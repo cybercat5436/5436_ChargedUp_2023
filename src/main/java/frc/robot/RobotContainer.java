@@ -209,6 +209,17 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
         );
 
+        autonChooser.addOption("Right Grab",  
+        // // util.scoreHighGoal(extender, claw, arm)
+        // // .andThen(util.retractArm(extender, claw, arm))
+        new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Right1.getInitialPose()))
+        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(traj12Right1, swerveSubsystem))
+        .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
+        .andThen(util.getSwerveControllerCommand(traj12Right2, swerveSubsystem))
+        .andThen(new InstantCommand(() -> intake.stopIntake()))
+        );
+
       //Left path, Deliver and drive out of community(Not Tested)
       autonChooser.addOption("Left Drive and Deliver", util.scoreHighGoal(extender, claw, arm)
       .andThen(util.retractArm(extender, claw, arm))
