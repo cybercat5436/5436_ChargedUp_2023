@@ -170,6 +170,19 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "6,3": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/AbsoluteEncoderCalibration",
+              "_title": "/SmartDashboard/AbsoluteEncoderCalibration",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -297,6 +310,32 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/SwerveJoystickCmd/x speed",
               "_title": "SmartDashboard/SwerveJoystickCmd/x speed",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveSubsystem/kThetaController",
+              "_title": "SmartDashboard/SwerveSubsystem/kThetaController",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,0": {
+            "size": [
+              4,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveSubsystem/Odometry Position",
+              "_title": "SmartDashboard/SwerveSubsystem/Odometry Position",
               "_glyph": 148,
               "_showGlyph": false
             }

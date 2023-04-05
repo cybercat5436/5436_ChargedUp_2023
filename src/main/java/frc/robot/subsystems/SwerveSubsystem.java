@@ -33,14 +33,14 @@ public class SwerveSubsystem extends SubsystemBase{
     
     private ArrayList<SwerveModuleState> moduleStates = new ArrayList<>();
     private ArrayList<SwerveModule> swerveModules = new ArrayList<>();
-    private double balanceConstant = (.008767);
+    private double balanceConstant = (.007743);
     private double feedForwardConstant = (0);
     // private double previousRoll = 0;
     private double previousPitch = 0;
     // private double rollROC;
     private double pitchROC;
     // private double rollROCConstant = 0;
-    private double pitchROCConstant = -3.5972;
+    private double pitchROCConstant = -2.027;
     private double errorMultiplier;
     private double xSpeed;
     private double integratorSum;
@@ -356,9 +356,9 @@ public void initSendable(SendableBuilder builder) {
     // builder.addDoubleProperty("FR Power", () -> frontRight.getDriveVelocity(), null);
     // builder.addDoubleProperty("BL Power", () -> backLeft.getDriveVelocity(), null);
     // builder.addDoubleProperty("BR Power", () -> backRight.getDriveVelocity(), null);
-    // builder.addDoubleProperty("kPXController", () -> kPXController, (value) -> kPXController = value);
-    // builder.addDoubleProperty("kPYController", () -> kPYController, (value) -> kPYController = value);
-    // builder.addDoubleProperty("kThetaController", () -> kThetaController, (value) -> kThetaController = value);
+     builder.addDoubleProperty("kPXController", () -> kPXController, (value) -> kPXController = value);
+     builder.addDoubleProperty("kPYController", () -> kPYController, (value) -> kPYController = value);
+     builder.addDoubleProperty("kThetaController", () -> kPThetaController, (value) -> kPThetaController = value);
 
     builder.addDoubleProperty("balanceConstant", () -> balanceConstant, (value) -> balanceConstant = value);
     // builder.addDoubleProperty("Roll Rate of Change", () -> rollROC, null);

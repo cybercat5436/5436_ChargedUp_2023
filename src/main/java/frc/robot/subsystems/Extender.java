@@ -20,7 +20,7 @@ import frc.robot.Constants;
 public class Extender extends SubsystemBase {
   private CANSparkMax extenderMotor = new CANSparkMax(Constants.RoboRioPortConfig.EXTENDER_MOTOR, MotorType.kBrushless);
   private RelativeEncoder extenderEncoder = extenderMotor.getEncoder();
-  private double speed = 0.8;
+  private double speed = 1.0;
   private SparkMaxPIDController extenderPID = extenderMotor.getPIDController();
   private double kP = 0.1;
   private double desiredMidGoal = 103;
@@ -60,7 +60,11 @@ public class Extender extends SubsystemBase {
   }
   public void retract(){
     if(zeroLimitSwitch.get()){
-      extenderMotor.set(speed*-1);
+      if(getExtenderPosition()<12){
+        extenderMotor.set(-0.4);
+      }else{
+        extenderMotor.set(speed*-1);
+      }
     }else{
       resetExtenderEncoder();
     }
