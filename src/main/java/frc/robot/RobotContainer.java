@@ -149,8 +149,8 @@ public class RobotContainer {
 
         // ****************************************************************
         // Full 21 point auton routine
-        Trajectory trajOverChargePad = util.getTrajectory("paths/exit-community-v2.wpilib.json");
-        Trajectory trajReverseToFulcrum = util.getTrajectory("paths/reverse-to-fulcrum-v2.wpilib.json");
+        Trajectory trajOverChargePad = util.getTrajectory("paths/ChargePadForward1.5.wpilib.json");
+        Trajectory trajReverseToFulcrum = util.getTrajectory("paths/ChargePadBackward1.5.wpilib.json");
 
         autonChooser.setDefaultOption("Chargepad 21 point auton",  
         // // util.scoreHighGoal(extender, claw, arm)
@@ -173,7 +173,8 @@ public class RobotContainer {
         autonChooser.addOption("Chargepad 18 point auton", 
         // util.scoreHighGoal(extender, claw, arm)
         // .andThen(util.retractArm(extender, claw, arm))
-        util.autonDriveCommand("OntoChargepad", swerveSubsystem)
+        util.autonDriveCommand("paths/OntoChargepad.wpilib.json", swerveSubsystem)
+        .andThen(new SeekFulcrum(swerveSubsystem))
         .andThen(new MoveToFulcrum(swerveSubsystem))
         .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
         .andThen(new SetTo90(swerveSubsystem, 0.25))
