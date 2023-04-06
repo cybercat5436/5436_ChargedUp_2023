@@ -133,8 +133,8 @@
               "Controls/Rotation": "NONE",
               "compression": -1.0,
               "fps": -1,
-              "imageWidth": -1,
-              "imageHeight": -1
+              "imageWidth": 0,
+              "imageHeight": 0
             }
           },
           "6,1": {
@@ -466,6 +466,19 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/FRONT_RIGHT Position",
               "_title": "SmartDashboard/FRONT_RIGHT Position",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Extender/Extender Position",
+              "_title": "/SmartDashboard/Extender/Extender Position",
               "_glyph": 148,
               "_showGlyph": false
             }
