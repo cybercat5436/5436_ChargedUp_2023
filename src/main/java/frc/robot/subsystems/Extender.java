@@ -69,6 +69,8 @@ public class Extender extends SubsystemBase {
       resetExtenderEncoder();
     }
   }
+
+  
   public boolean maxLimitSwitch(){
     return maxLimitSwitch.get();
   }

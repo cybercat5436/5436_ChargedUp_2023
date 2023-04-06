@@ -37,6 +37,8 @@ public class SwerveJoystickCmd extends CommandBase {
     private SlewRateLimiter slewRateLimiterTheta = new SlewRateLimiter(DriveConstants.kPhysicalMaxSpeedMetersPerSecond * 2.0);
     private double xSpeed, ySpeed, turningSpeed;
     private boolean isSlewActive;
+    //Robot is tippy in Y direction so we are decreasing yspeed
+    private double yScaleFactor = (DriveConstants.ykTranslateDriveMaxSpeedMetersPerSecond/DriveConstants.kTranslateDriveMaxSpeedMetersPerSecond);
 
 
     public  SwerveJoystickCmd(SwerveSubsystem swerveSubsystem,
@@ -130,6 +132,7 @@ public class SwerveJoystickCmd extends CommandBase {
         } else {
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
         }
+        chassisSpeeds.vyMetersPerSecond *= yScaleFactor;
 
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 

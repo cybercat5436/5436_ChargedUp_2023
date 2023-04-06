@@ -322,8 +322,9 @@ public class RobotContainer {
       secondaryController.pov(180).whileTrue(new InstantCommand(()->arm.armDown()));
 
       //Extender Buttons
-      secondaryController.b().onTrue(new InstantCommand(()->extender.extend()))
-        .onFalse(new InstantCommand(()->extender.stopExtend()));      
+      secondaryController.b().onTrue(new InstantCommand(()->extender.extend()).repeatedly())
+        .onFalse(new InstantCommand(()->extender.stopExtend()));  
+      //secondaryController.b().and(() -> secondaryController.leftTrigger().getAsBoolean()).onTrue();    
       secondaryController.x().onTrue(new InstantCommand(()->extender.retract()))
         .onFalse(new InstantCommand(()->extender.stopExtend()));
 
