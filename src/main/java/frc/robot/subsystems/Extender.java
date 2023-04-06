@@ -60,7 +60,7 @@ public class Extender extends SubsystemBase {
   }
   public void retract(){
     if(zeroLimitSwitch.get()){
-      if(getExtenderPosition()<12){
+      if(getExtenderPosition()<10){
         extenderMotor.set(-0.4);
       }else{
         extenderMotor.set(speed*-1);
