@@ -30,6 +30,7 @@ public class Claw extends SubsystemBase {
   private double cubeDesiredPos = 15;
   private double coneDesiredPos = 3;
   private double zeroPos = -90;
+  public double coneRelease = -20;
 
   public Claw() {
     clawMotor.restoreFactoryDefaults();

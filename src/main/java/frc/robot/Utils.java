@@ -90,6 +90,13 @@ public class Utils {
       
     }
 
+    public SequentialCommandGroup retractArm2(Extender extender, Claw claw, Arm arm){
+
+      return new SequentialCommandGroup(
+        new ArmGoToHigh2(arm),
+        new ClawReset(claw));
+      
+    }
   
     
 }

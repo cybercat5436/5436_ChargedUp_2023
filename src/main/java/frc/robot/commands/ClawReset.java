@@ -37,6 +37,6 @@ public class ClawReset extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return claw.getClawPosition()<=60;
+    return claw.getClawPosition() <= claw.coneRelease;
   }
 }

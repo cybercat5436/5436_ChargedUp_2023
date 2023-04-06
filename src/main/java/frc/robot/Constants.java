@@ -65,7 +65,7 @@ public final class Constants {
 
     public static class DriveConstants{
         public static final double kTranslateDriveMaxSpeedMetersPerSecond = 2.9;
-        public static final double ykTranslateDriveMaxSpeedMetersPerSecond = 2.2;
+        public static final double ykTranslateDriveMaxSpeedMetersPerSecond = 1.7;
         public static final double kRotateDriveMaxSpeedMetersPerSecond = 4.36;
         public static final double kPhysicalMaxSpeedMetersPerSecond = 4.36;
         //public static final double kTrackWidth = Units.inchesToMeters(19); //OLD

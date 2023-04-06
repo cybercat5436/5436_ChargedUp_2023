@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -153,9 +154,9 @@ public class RobotContainer {
         Trajectory trajReverseToFulcrum = util.getTrajectory("paths/ChargePadBackward1.5.wpilib.json");
 
         autonChooser.setDefaultOption("Chargepad 21 point auton",  
-        // // util.scoreHighGoal(extender, claw, arm)
-        // // .andThen(util.retractArm(extender, claw, arm))
-        new InstantCommand(() -> swerveSubsystem.resetOdometry(trajOverChargePad.getInitialPose()))
+        util.scoreHighGoal(extender, claw, arm)
+        .andThen(util.retractArm(extender, claw, arm))
+        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajOverChargePad.getInitialPose())))
         .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(trajOverChargePad.concatenate(trajReverseToFulcrum), swerveSubsystem))
         .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
@@ -165,15 +166,50 @@ public class RobotContainer {
         .andThen(new SetTo90(swerveSubsystem, 0.25))
         );
 
+        Trajectory trajForwardPart1 = util.getTrajectory("paths/ChargepadForwardSpeed2.5.wpilib.json");
+        Trajectory trajForwardPart2 = util.getTrajectory("paths/ChargepadFowardSpeed1.5.wpilib.json");
+        Trajectory trajBackwardPart3 = util.getTrajectory("paths/ChargepadBackwardSpeed2.5.wpilib.json");
+
+
+        autonChooser.setDefaultOption("Chargepad 21 point auton V2",  
+        util.scoreHighGoal(extender, claw, arm)
+        .andThen(util.retractArm2(extender, claw, arm))
+
+        .andThen(new ParallelCommandGroup(
+
+          new SequentialCommandGroup(
+            new ExtenderRetractToZero(extender),
+            new InstantCommand(()->arm.armMoveToZeroPosition())
+          ),
+          new SequentialCommandGroup(
+            new InstantCommand(() -> swerveSubsystem.resetOdometry(trajForwardPart1.getInitialPose())),
+            new ManualEncoderCalibration(swerveSubsystem),
+            util.getSwerveControllerCommand(trajForwardPart1.concatenate(trajForwardPart2).concatenate(trajBackwardPart3), swerveSubsystem)
+          )
+
+        ))
+
+        .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
+        .andThen(new SeekFulcrum(swerveSubsystem))
+        .andThen(new MoveToFulcrum(swerveSubsystem))
+        .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
+        .andThen(new SetTo90(swerveSubsystem, 0.25))
+        );
+
+
+
+       
+
+
 
         // ****************************************************************
         // Chargepad deliver and balance 
         // 18 pt auton
 
         autonChooser.addOption("Chargepad 18 point auton", 
-        // util.scoreHighGoal(extender, claw, arm)
-        // .andThen(util.retractArm(extender, claw, arm))
-        util.autonDriveCommand("paths/OntoChargepad.wpilib.json", swerveSubsystem)
+        util.scoreHighGoal(extender, claw, arm)
+        .andThen(util.retractArm(extender, claw, arm))
+        .andThen(util.autonDriveCommand("paths/OntoChargepad.wpilib.json", swerveSubsystem))
         .andThen(new SeekFulcrum(swerveSubsystem))
         .andThen(new MoveToFulcrum(swerveSubsystem))
         .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
@@ -209,9 +245,9 @@ public class RobotContainer {
         Trajectory traj12Right3 = util.getTrajectory("paths/right-3.wpilib.json");
 
         autonChooser.addOption("Right Grab-n-Score 12pt",  
-        // util.scoreHighGoal(extender, claw, arm)
-        // .andThen(util.retractArm(extender, claw, arm))
-        new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Right1.getInitialPose()))
+        util.scoreHighGoal(extender, claw, arm)
+        .andThen(util.retractArm(extender, claw, arm))
+        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Right1.getInitialPose())))
         .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(traj12Right1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
@@ -233,9 +269,9 @@ public class RobotContainer {
         Trajectory traj12Left3Offset = util.getTrajectory("paths/left-3-alternate.wpilib.json");
 
         autonChooser.addOption("Left Grab-n-Score 12pt",  
-        // util.scoreHighGoal(extender, claw, arm)
-        // .andThen(util.retractArm(extender, claw, arm))
-        new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose()))
+        util.scoreHighGoal(extender, claw, arm)
+        .andThen(util.retractArm(extender, claw, arm))
+        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
         .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
@@ -252,9 +288,9 @@ public class RobotContainer {
         // 12 pt auton
 
         autonChooser.addOption("Left Grab-n-Score Offset (FOR TESTING)",  
-        // util.scoreHighGoal(extender, claw, arm)
-        // .andThen(util.retractArm(extender, claw, arm))
-        new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose()))
+        util.scoreHighGoal(extender, claw, arm)
+        .andThen(util.retractArm(extender, claw, arm))
+        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
         .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
@@ -271,9 +307,9 @@ public class RobotContainer {
         // 9 pt auton
 
         autonChooser.addOption("Right Grab 9pt",  
-        // // util.scoreHighGoal(extender, claw, arm)
-        // // .andThen(util.retractArm(extender, claw, arm))
-        new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Right1.getInitialPose()))
+         util.scoreHighGoal(extender, claw, arm)
+        .andThen(util.retractArm(extender, claw, arm))
+        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Right1.getInitialPose())))
         .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(traj12Right1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
@@ -286,9 +322,9 @@ public class RobotContainer {
         // 9 pt auton
 
         autonChooser.addOption("Left Grab 9pt",  
-        // // util.scoreHighGoal(extender, claw, arm)
-        // // .andThen(util.retractArm(extender, claw, arm))
-        new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose()))
+        util.scoreHighGoal(extender, claw, arm)
+        .andThen(util.retractArm(extender, claw, arm))
+        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
         .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
@@ -323,7 +359,7 @@ public class RobotContainer {
       secondaryController.pov(180).whileTrue(new InstantCommand(()->arm.armDown()));
 
       //Extender Buttons
-      secondaryController.b().onTrue(new InstantCommand(()->extender.extend()).repeatedly())
+      secondaryController.b().onTrue(new InstantCommand(()->extender.extend()))
         .onFalse(new InstantCommand(()->extender.stopExtend()));  
       //secondaryController.b().and(() -> secondaryController.leftTrigger().getAsBoolean()).onTrue();    
       secondaryController.x().onTrue(new InstantCommand(()->extender.retract()))

@@ -1,0 +1,257 @@
+[
+{
+"acceleration": -2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.5,
+"y": 2.181
+}
+},
+"time": 0.0,
+"velocity": -0.0
+},
+{
+"acceleration": -2.500000000000001,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.375993415053876,
+"y": 2.181
+}
+},
+"time": 0.31496867773938925,
+"velocity": -0.7874216943484731
+},
+{
+"acceleration": -2.500000000000001,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.258308122552273,
+"y": 2.181
+}
+},
+"time": 0.43971979937021466,
+"velocity": -1.0992994984255366
+},
+{
+"acceleration": -2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.15089896571048,
+"y": 2.181
+}
+},
+"time": 0.5284702710953719,
+"velocity": -1.3211756777384298
+},
+{
+"acceleration": -2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 5.055478878356931,
+"y": 2.181
+}
+},
+"time": 0.5963362284101605,
+"velocity": -1.4908405710254014
+},
+{
+"acceleration": -2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.971892523682739,
+"y": 2.181
+}
+},
+"time": 0.6499892161057816,
+"velocity": -1.6249730402644542
+},
+{
+"acceleration": -2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.898489932991228,
+"y": 2.181
+}
+},
+"time": 0.6936916127552774,
+"velocity": -1.7342290318881934
+},
+{
+"acceleration": -2.4947167903821064,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.8325001444474704,
+"y": 2.181
+}
+},
+"time": 0.7307529571900641,
+"velocity": -1.8268823929751603
+},
+{
+"acceleration": 2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.770404841827821,
+"y": 2.181
+}
+},
+"time": 0.7639885214300348,
+"velocity": -1.9097957131224386
+},
+{
+"acceleration": 2.5,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.70831199326945,
+"y": 2.181
+}
+},
+"time": 0.797224339603853,
+"velocity": -1.826706167687893
+},
+{
+"acceleration": 2.499999999999997,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.642329490019883,
+"y": 2.181
+}
+},
+"time": 0.8342852491338425,
+"velocity": -1.7340538938629193
+},
+{
+"acceleration": 2.5,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.568938785186526,
+"y": 2.181
+}
+},
+"time": 0.8779850412143515,
+"velocity": -1.624804413661647
+},
+{
+"acceleration": 2.5,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.485368532486212,
+"y": 2.181
+}
+},
+"time": 0.9316332963966502,
+"velocity": -1.4906837757059004
+},
+{
+"acceleration": 2.499999999999999,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.389968224994726,
+"y": 2.181
+}
+},
+"time": 0.9994923357650706,
+"velocity": -1.3210361772848493
+},
+{
+"acceleration": 2.500000000000001,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.282581833896343,
+"y": 2.181
+}
+},
+"time": 1.0882333594564695,
+"velocity": -1.0991836180563523
+},
+{
+"acceleration": 2.5,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.1649214472333655,
+"y": 2.181
+}
+},
+"time": 1.2129712087194104,
+"velocity": -0.787338994899
+},
+{
+"acceleration": 2.5,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": -1.2246467991473532e-16
+},
+"translation": {
+"x": 4.040940908655652,
+"y": 2.181
+}
+},
+"time": 1.5279068066790105,
+"velocity": -0.0
+}
+]
