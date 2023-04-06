@@ -448,19 +448,6 @@
               "_glyph": 148,
               "_showGlyph": false
             }
-          },
-          "5,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Extender/Extender Position",
-              "_title": "/SmartDashboard/Extender/Extender Position",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
           }
         }
       }
