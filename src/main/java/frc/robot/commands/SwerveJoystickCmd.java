@@ -100,7 +100,7 @@ public class SwerveJoystickCmd extends CommandBase {
 
         // Apply speed reduction if commanded
         double superSlowMo = (1 - leftTrigger.get());
-        superSlowMo = Math.max(0.2, superSlowMo);
+        superSlowMo = Math.max(0.3, superSlowMo);
         xSpeed *= superSlowMo;
         ySpeed *= superSlowMo;
         turningSpeed *= superSlowMo;
