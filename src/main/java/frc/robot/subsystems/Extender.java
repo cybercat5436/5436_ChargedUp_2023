@@ -27,7 +27,7 @@ public class Extender extends SubsystemBase {
   private DigitalInput zeroLimitSwitch = new DigitalInput(Constants.RoboRioPortConfig.EXTENDER_ZERO_LIMIT_SWITCH);
   private DigitalInput maxLimitSwitch = new DigitalInput(Constants.RoboRioPortConfig.EXTENDER_MAX_LIMIT_SWITCH);
   //changed
-  private double desiredHighGoal = 244; // NOT TESTED
+  private double desiredHighGoal = 250; // NOT TESTED
   private double retractLimit = 3.00;
 
   /** Creates a new Extender. */

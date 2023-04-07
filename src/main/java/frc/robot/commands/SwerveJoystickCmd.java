@@ -166,8 +166,8 @@ public class SwerveJoystickCmd extends CommandBase {
     private double applySlewRateLimiter(double scaledDriveSpeed, SlewRateLimiter slewRateLimiter){
         // If right trigger is pulled, return slewRate figure, otherwise use scaled speed
         double slewedSpeed = slewRateLimiter.calculate(scaledDriveSpeed);
-        //return isSlewActive ? slewedSpeed : scaledDriveSpeed;
-        return slewedSpeed;
+        return isSlewActive ? slewedSpeed : scaledDriveSpeed;
+       // return slewedSpeed;
     }
 
     @Override

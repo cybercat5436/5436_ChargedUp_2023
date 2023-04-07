@@ -306,14 +306,17 @@ public class RobotContainer {
         // Right Grab   
         // 9 pt auton
 
+        Trajectory traj9Right1 = util.getTrajectory("paths/right-1-1.5.wpilib.json");
+        Trajectory traj9Right2 = util.getTrajectory("paths/right-2-1.5.wpilib.json");
+
         autonChooser.addOption("Right Grab 9pt",  
          util.scoreHighGoal(extender, claw, arm)
         .andThen(util.retractArm(extender, claw, arm))
-        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Right1.getInitialPose())))
+        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj9Right1.getInitialPose())))
         .andThen(new ManualEncoderCalibration(swerveSubsystem))
-        .andThen(util.getSwerveControllerCommand(traj12Right1, swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(traj9Right1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
-        .andThen(util.getSwerveControllerCommand(traj12Right2, swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(traj9Right2, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.stopIntake()))
         );
 
@@ -321,14 +324,17 @@ public class RobotContainer {
         // Left Grab   
         // 9 pt auton
 
+        Trajectory traj9Left1 = util.getTrajectory("paths/left-1-1.5.wpilib.json");
+        Trajectory traj9Left2 = util.getTrajectory("paths/left-2-1.5.wpilib.json");
+
         autonChooser.addOption("Left Grab 9pt",  
         util.scoreHighGoal(extender, claw, arm)
         .andThen(util.retractArm(extender, claw, arm))
-        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
+        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj9Left1.getInitialPose())))
         .andThen(new ManualEncoderCalibration(swerveSubsystem))
-        .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(traj9Left1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
-        .andThen(util.getSwerveControllerCommand(traj12Left2, swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(traj9Left2, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.stopIntake()))
         );
 
