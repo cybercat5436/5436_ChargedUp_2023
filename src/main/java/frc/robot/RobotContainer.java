@@ -157,11 +157,11 @@ public class RobotContainer {
         util.scoreHighGoal(extender, claw, arm)
         .andThen(util.retractArm(extender, claw, arm))
         .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(trajOverChargePad.getInitialPose())))
-        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        // .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(trajOverChargePad.concatenate(trajReverseToFulcrum), swerveSubsystem))
         .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
-        .andThen(new SeekFulcrum(swerveSubsystem))
-        .andThen(new MoveToFulcrum(swerveSubsystem))
+        //.andThen(new SeekFulcrum(swerveSubsystem))
+        //.andThen(new MoveToFulcrum(swerveSubsystem))
         .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
         .andThen(new SetTo90(swerveSubsystem, 0.25))
         );
@@ -183,7 +183,7 @@ public class RobotContainer {
           ),
           new SequentialCommandGroup(
             new InstantCommand(() -> swerveSubsystem.resetOdometry(trajForwardPart1.getInitialPose())),
-            new ManualEncoderCalibration(swerveSubsystem),
+            // new ManualEncoderCalibration(swerveSubsystem),
             util.getSwerveControllerCommand(trajForwardPart1.concatenate(trajForwardPart2).concatenate(trajBackwardPart3), swerveSubsystem)
           )
 
@@ -248,7 +248,7 @@ public class RobotContainer {
         util.scoreHighGoal(extender, claw, arm)
         .andThen(util.retractArm(extender, claw, arm))
         .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Right1.getInitialPose())))
-        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        // .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(traj12Right1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
         .andThen(util.getSwerveControllerCommand(traj12Right2, swerveSubsystem))
@@ -272,7 +272,7 @@ public class RobotContainer {
         util.scoreHighGoal(extender, claw, arm)
         .andThen(util.retractArm(extender, claw, arm))
         .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
-        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        // .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
         .andThen(util.getSwerveControllerCommand(traj12Left2, swerveSubsystem))
@@ -291,7 +291,7 @@ public class RobotContainer {
         util.scoreHighGoal(extender, claw, arm)
         .andThen(util.retractArm(extender, claw, arm))
         .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
-        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        // .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
         .andThen(util.getSwerveControllerCommand(traj12Left2, swerveSubsystem))
@@ -313,7 +313,7 @@ public class RobotContainer {
          util.scoreHighGoal(extender, claw, arm)
         .andThen(util.retractArm(extender, claw, arm))
         .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj9Right1.getInitialPose())))
-        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        // .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(traj9Right1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
         .andThen(util.getSwerveControllerCommand(traj9Right2, swerveSubsystem))
@@ -331,7 +331,7 @@ public class RobotContainer {
         util.scoreHighGoal(extender, claw, arm)
         .andThen(util.retractArm(extender, claw, arm))
         .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj9Left1.getInitialPose())))
-        .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        // .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(traj9Left1, swerveSubsystem))
         .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
         .andThen(util.getSwerveControllerCommand(traj9Left2, swerveSubsystem))

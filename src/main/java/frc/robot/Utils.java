@@ -55,13 +55,14 @@ public class Utils {
         return trajectory;
     }
 
-    public SequentialCommandGroup autonDriveCommand(String string, SwerveSubsystem swerveSubsystem){
+    public SequentialCommandGroup 
+    autonDriveCommand(String string, SwerveSubsystem swerveSubsystem){
       Trajectory trajectory = getTrajectory(string);
       SwerveControllerCommand swerveControllerCommand = getSwerveControllerCommand(trajectory, swerveSubsystem);
 
       return new SequentialCommandGroup(
         new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())), 
-        new ManualEncoderCalibration(swerveSubsystem),
+        // new ManualEncoderCalibration(swerveSubsystem),
         swerveControllerCommand, 
         new InstantCommand(() -> swerveSubsystem.stopModules()));
       
