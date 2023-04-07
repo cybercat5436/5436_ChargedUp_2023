@@ -32,9 +32,9 @@ public class SwerveJoystickCmd extends CommandBase {
     private double kLimelightTurning =  0.1;
     private double targetHeading = 0;
     // private double superFastModeConstant = 7.5;
-    private SlewRateLimiter slewRateLimiterX = new SlewRateLimiter(DriveConstants.kPhysicalMaxSpeedMetersPerSecond * 2.0);
-    private SlewRateLimiter slewRateLimiterY = new SlewRateLimiter(DriveConstants.kPhysicalMaxSpeedMetersPerSecond * 2.0);
-    private SlewRateLimiter slewRateLimiterTheta = new SlewRateLimiter(DriveConstants.kPhysicalMaxSpeedMetersPerSecond * 2.0);
+    private SlewRateLimiter slewRateLimiterX = new SlewRateLimiter(DriveConstants.kPhysicalMaxSpeedMetersPerSecond * 1.5);
+    private SlewRateLimiter slewRateLimiterY = new SlewRateLimiter(DriveConstants.kPhysicalMaxSpeedMetersPerSecond * 1.5);
+    private SlewRateLimiter slewRateLimiterTheta = new SlewRateLimiter(DriveConstants.kPhysicalMaxSpeedMetersPerSecond * 1.5);
     private double xSpeed, ySpeed, turningSpeed;
     private boolean isSlewActive;
     //Robot is tippy in Y direction so we are decreasing yspeed
@@ -166,8 +166,8 @@ public class SwerveJoystickCmd extends CommandBase {
     private double applySlewRateLimiter(double scaledDriveSpeed, SlewRateLimiter slewRateLimiter){
         // If right trigger is pulled, return slewRate figure, otherwise use scaled speed
         double slewedSpeed = slewRateLimiter.calculate(scaledDriveSpeed);
-        return isSlewActive ? slewedSpeed : scaledDriveSpeed;
-       // return slewedSpeed;
+        // return isSlewActive ? slewedSpeed : scaledDriveSpeed;
+        return slewedSpeed;
     }
 
     @Override

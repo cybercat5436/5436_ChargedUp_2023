@@ -138,15 +138,15 @@ public class RobotContainer {
         
         //for testing
         // autonChooser.setDefaultOption("Chargepad 21 point auton", 
-        // // util.scoreHighGoal(extender, claw, arm)
-        // // .andThen(util.retractArm(extender, claw, arm))
+        //  util.scoreHighGoal(extender, claw, arm)
+        // .andThen(util.retractArm(extender, claw, arm))
         // util.autonDriveCommand("paths/ChargePadForward1.5.wpilib.json", swerveSubsystem)
         // .andThen(util.autonDriveCommand("paths/ChargePadBackward1.5.wpilib.json", swerveSubsystem))
         // .andThen(new MoveToFulcrum(swerveSubsystem))
         // .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
         // .andThen(new SetTo90(swerveSubsystem, 0.25))
         // .andThen(new InstantCommand(() -> System.out.println("Inside the instant command"))));
-        // // util.autonDriveCommand("paths/exitCommunity.wpilib.json", swerveSubsystem));
+        // util.autonDriveCommand("paths/exitCommunity.wpilib.json", swerveSubsystem));
 
         // ****************************************************************
         // Full 21 point auton routine
@@ -160,9 +160,9 @@ public class RobotContainer {
         // .andThen(new ManualEncoderCalibration(swerveSubsystem))
         .andThen(util.getSwerveControllerCommand(trajOverChargePad.concatenate(trajReverseToFulcrum), swerveSubsystem))
         .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
-        //.andThen(new SeekFulcrum(swerveSubsystem))
-        //.andThen(new MoveToFulcrum(swerveSubsystem))
-        .andThen(new AutonomousAutoBalance(swerveSubsystem, 5.5))
+        .andThen(new SeekFulcrum(swerveSubsystem))
+        .andThen(new MoveToFulcrum(swerveSubsystem))
+        .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
         .andThen(new SetTo90(swerveSubsystem, 0.25))
         );
 
@@ -320,6 +320,17 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> intake.stopIntake()))
         );
 
+
+        autonChooser.addOption("Right 9pt (TESTING)",  
+         util.scoreHighGoal(extender, claw, arm)
+        .andThen(util.retractArm(extender, claw, arm))
+        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj9Right1.getInitialPose())))
+        // .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        .andThen(util.getSwerveControllerCommand(traj9Right1, swerveSubsystem))
+        // .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
+        // .andThen(util.getSwerveControllerCommand(traj9Right2, swerveSubsystem))
+        // .andThen(new InstantCommand(() -> intake.stopIntake()))
+        );
       // ****************************************************************
         // Left Grab   
         // 9 pt auton
