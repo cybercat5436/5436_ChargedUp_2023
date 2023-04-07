@@ -162,7 +162,7 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
         //.andThen(new SeekFulcrum(swerveSubsystem))
         //.andThen(new MoveToFulcrum(swerveSubsystem))
-        .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
+        .andThen(new AutonomousAutoBalance(swerveSubsystem, 5.5))
         .andThen(new SetTo90(swerveSubsystem, 0.25))
         );
 
@@ -171,30 +171,30 @@ public class RobotContainer {
         Trajectory trajBackwardPart3 = util.getTrajectory("paths/ChargepadBackwardSpeed2.5.wpilib.json");
 
 
-        autonChooser.setDefaultOption("Chargepad 21 point auton V2",  
-        util.scoreHighGoal(extender, claw, arm)
-        .andThen(util.retractArm2(extender, claw, arm))
+        // autonChooser.setDefaultOption("Chargepad 21 point auton V2",  
+        // util.scoreHighGoal(extender, claw, arm)
+        // .andThen(util.retractArm2(extender, claw, arm))
 
-        .andThen(new ParallelCommandGroup(
+        // .andThen(new ParallelCommandGroup(
 
-          new SequentialCommandGroup(
-            new ExtenderRetractToZero(extender),
-            new InstantCommand(()->arm.armMoveToZeroPosition())
-          ),
-          new SequentialCommandGroup(
-            new InstantCommand(() -> swerveSubsystem.resetOdometry(trajForwardPart1.getInitialPose())),
-            // new ManualEncoderCalibration(swerveSubsystem),
-            util.getSwerveControllerCommand(trajForwardPart1.concatenate(trajForwardPart2).concatenate(trajBackwardPart3), swerveSubsystem)
-          )
+        //   new SequentialCommandGroup(
+        //     new ExtenderRetractToZero(extender),
+        //     new InstantCommand(()->arm.armMoveToZeroPosition())
+        //   ),
+        //   new SequentialCommandGroup(
+        //     new InstantCommand(() -> swerveSubsystem.resetOdometry(trajForwardPart1.getInitialPose())),
+        //     // new ManualEncoderCalibration(swerveSubsystem),
+        //     util.getSwerveControllerCommand(trajForwardPart1.concatenate(trajForwardPart2).concatenate(trajBackwardPart3), swerveSubsystem)
+        //   )
 
-        ))
+        // ))
 
-        .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
-        .andThen(new SeekFulcrum(swerveSubsystem))
-        .andThen(new MoveToFulcrum(swerveSubsystem))
-        .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
-        .andThen(new SetTo90(swerveSubsystem, 0.25))
-        );
+        // .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
+        // .andThen(new SeekFulcrum(swerveSubsystem))
+        // .andThen(new MoveToFulcrum(swerveSubsystem))
+        // .andThen(new AutonomousAutoBalance(swerveSubsystem, 4.0))
+        // .andThen(new SetTo90(swerveSubsystem, 0.25))
+        // );
 
 
 
@@ -268,7 +268,7 @@ public class RobotContainer {
         Trajectory traj12Left3 = util.getTrajectory("paths/left-3.wpilib.json");
         Trajectory traj12Left3Offset = util.getTrajectory("paths/left-3-alternate.wpilib.json");
 
-        autonChooser.addOption("Left Grab-n-Score 12pt",  
+        autonChooser.addOption("(FOR TESTING; DO NOT CHOOSE) Left Grab-n-Score 12pt",  
         util.scoreHighGoal(extender, claw, arm)
         .andThen(util.retractArm(extender, claw, arm))
         .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
@@ -287,20 +287,20 @@ public class RobotContainer {
         // Left Grab and Score with offset
         // 12 pt auton
 
-        autonChooser.addOption("Left Grab-n-Score Offset (FOR TESTING)",  
-        util.scoreHighGoal(extender, claw, arm)
-        .andThen(util.retractArm(extender, claw, arm))
-        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
-        // .andThen(new ManualEncoderCalibration(swerveSubsystem))
-        .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
-        .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
-        .andThen(util.getSwerveControllerCommand(traj12Left2, swerveSubsystem))
-        .andThen(new InstantCommand(() -> intake.stopIntake()))
-        .andThen(util.getSwerveControllerCommand(traj12Left3Offset, swerveSubsystem))
-        .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
-        .andThen(new InstantCommand(() -> intake.intakeFeedOut()).repeatedly().withTimeout(3.0))
-        .andThen(new InstantCommand(() -> intake.stopIntake()))
-        );
+        // autonChooser.addOption("Left Grab-n-Score Offset (FOR TESTING)",  
+        // util.scoreHighGoal(extender, claw, arm)
+        // .andThen(util.retractArm(extender, claw, arm))
+        // .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
+        // // .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        // .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
+        // .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
+        // .andThen(util.getSwerveControllerCommand(traj12Left2, swerveSubsystem))
+        // .andThen(new InstantCommand(() -> intake.stopIntake()))
+        // .andThen(util.getSwerveControllerCommand(traj12Left3Offset, swerveSubsystem))
+        // .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
+        // .andThen(new InstantCommand(() -> intake.intakeFeedOut()).repeatedly().withTimeout(3.0))
+        // .andThen(new InstantCommand(() -> intake.stopIntake()))
+        // );
 
       // ****************************************************************
         // Right Grab   
