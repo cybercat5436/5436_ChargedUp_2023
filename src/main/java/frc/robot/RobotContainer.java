@@ -268,26 +268,26 @@ public class RobotContainer {
         Trajectory traj12Left3 = util.getTrajectory("paths/left-3.wpilib.json");
         Trajectory traj12Left3Offset = util.getTrajectory("paths/left-3-alternate.wpilib.json");
 
-        autonChooser.addOption("(FOR TESTING; DO NOT CHOOSE) Left Grab-n-Score 12pt",  
-        util.scoreHighGoal(extender, claw, arm)
-        .andThen(util.retractArm(extender, claw, arm))
-        .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
-        // .andThen(new ManualEncoderCalibration(swerveSubsystem))
-        .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
-        .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
-        .andThen(util.getSwerveControllerCommand(traj12Left2, swerveSubsystem))
-        .andThen(new InstantCommand(() -> intake.stopIntake()))
-        .andThen(util.getSwerveControllerCommand(traj12Left3, swerveSubsystem))
-        .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
-        .andThen(new InstantCommand(() -> intake.intakeFeedOut()).repeatedly().withTimeout(1.5))
-        .andThen(new InstantCommand(() -> intake.stopIntake()))
-        );
+        // autonChooser.addOption("(FOR TESTING; DO NOT CHOOSE) Left Grab-n-Score 12pt",  
+        // util.scoreHighGoal(extender, claw, arm)
+        // .andThen(util.retractArm(extender, claw, arm))
+        // .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
+        // // .andThen(new ManualEncoderCalibration(swerveSubsystem))
+        // .andThen(util.getSwerveControllerCommand(traj12Left1, swerveSubsystem))
+        // .andThen(new InstantCommand(() -> intake.intakeFeedIn()))
+        // .andThen(util.getSwerveControllerCommand(traj12Left2, swerveSubsystem))
+        // .andThen(new InstantCommand(() -> intake.stopIntake()))
+        // .andThen(util.getSwerveControllerCommand(traj12Left3, swerveSubsystem))
+        // .andThen(new InstantCommand(() -> swerveSubsystem.stopModules()))
+        // .andThen(new InstantCommand(() -> intake.intakeFeedOut()).repeatedly().withTimeout(1.5))
+        // .andThen(new InstantCommand(() -> intake.stopIntake()))
+        // );
 
       // ****************************************************************
       //   Left Grab and Score with offset
       //   12 pt auton
 
-        autonChooser.addOption("Left Grab-n-Score Offset (FOR TESTING) 12pt",  
+        autonChooser.addOption("Left Grab-n-Score Offset 12pt",  
         util.scoreHighGoal(extender, claw, arm)
         .andThen(util.retractArm(extender, claw, arm))
         .andThen(new InstantCommand(() -> swerveSubsystem.resetOdometry(traj12Left1.getInitialPose())))
