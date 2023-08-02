@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -26,6 +27,8 @@ public class LimeLight extends SubsystemBase {
   private boolean targetInView = false;
   public double spinThreshold = 75;
 
+  DoubleArraySubscriber botPose;
+
   public LimeLight(String networkTableName) {
     tableLimelight = NetworkTableInstance.getDefault().getTable(networkTableName);
     txLocal = tableLimelight.getEntry("tx"); // communicates horizontal degree offset from target
@@ -34,7 +37,7 @@ public class LimeLight extends SubsystemBase {
     tvLocal = tableLimelight.getEntry("tv"); // communicates whether a valid target is acquired, 0 or 1
     tsLocal = tableLimelight.getEntry("ts"); // communicates skew offset from target
     tLongLocal = tableLimelight.getEntry("tlong");
-  
+    botPose = tableLimelight.getDoubleArrayTopic("botpose_targetspace").subscribe(new double[] {});
 }
 
 @Override
@@ -145,8 +148,10 @@ public class LimeLight extends SubsystemBase {
 
     return returnValue;
   }
-
-
+  
+  public double[] getBotPose(){
+    return botPose.get();
+  }
   public double getVisionTargetHorizontalError(){
     return txLocal.getDouble(0);
   }

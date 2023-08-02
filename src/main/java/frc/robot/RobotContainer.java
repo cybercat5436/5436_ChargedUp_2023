@@ -14,6 +14,7 @@ import frc.robot.commands.AutonomousAutoBalance;
 import frc.robot.commands.ArmGoToHighMotionMagic;
 import frc.robot.commands.AbsoluteEncoderCalibration;
 import frc.robot.commands.ArmGoToMid;
+import frc.robot.commands.AutoAlign;
 import frc.robot.commands.ExtenderRetractToZero;
 import frc.robot.commands.ManualEncoderCalibration;
 import frc.robot.commands.MoveToFulcrum;
@@ -370,6 +371,9 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+      
+      primaryController.start().whileTrue(new AutoAlign(limeLightGrid));
+      
       //Arm Buttons
       secondaryController.pov(0).whileTrue(new InstantCommand(()->arm.armUp()));
       secondaryController.pov(-1).whileTrue(new InstantCommand(()->arm.stopArm()));
