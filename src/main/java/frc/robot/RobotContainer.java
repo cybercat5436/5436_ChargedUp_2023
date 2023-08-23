@@ -372,7 +372,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
       
-      primaryController.start().whileTrue(new AutoAlign(limeLightGrid));
+      primaryController.start().whileTrue(new AutoAlign(limeLightGrid, swerveSubsystem));
       
       //Arm Buttons
       secondaryController.pov(0).whileTrue(new InstantCommand(()->arm.armUp()));
