@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.LimeLight;
@@ -18,11 +19,11 @@ public class AutoAlign extends CommandBase {
   private double tx;
   private double ty;
   private double tz;
-  private double targetTx = -1.0;
-  private double targetTz = -1.8;
+  private double targetTx = 0.0;
+  private double targetTz = -0.8;
   private double txError, tzError, ySpeed, xSpeed;
   private double[] botpose;
-  private double kXSpeed = 0.3;
+  private double kXSpeed = 0.4;
   private double kZSpeed = 0.3;
 
   
@@ -61,9 +62,11 @@ public class AutoAlign extends CommandBase {
       System.out.println("txError: "+txError);
       System.out.println("tzError: "+tzError);
 
-      xSpeed = kZSpeed * tzError * -1;
-      ySpeed = kXSpeed * txError;
-
+      xSpeed = kZSpeed * tzError;
+      ySpeed = kXSpeed * txError * -1;
+      
+      SmartDashboard.putNumber("AutoAlign xSpeed", xSpeed);
+      SmartDashboard.putNumber("AutoAlign ySpeed", ySpeed);
       ChassisSpeeds chassisSpeeds;
       chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, 0);
       SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
