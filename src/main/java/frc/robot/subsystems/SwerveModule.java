@@ -12,6 +12,7 @@ import frc.robot.enums.WheelPosition;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -37,6 +38,7 @@ public class SwerveModule implements Sendable{
   private final RelativeEncoder turningEncoder;
 
   private final PIDController turningPidController;
+  private final SparkMaxPIDController velocityPidController;
 
   private final AnalogInput absoluteEncoder;
   private final boolean absoluteEncoderReversed;
@@ -44,7 +46,9 @@ public class SwerveModule implements Sendable{
 
   public final WheelPosition wheelPosition;
   
-  
+  public double kP = (6e-4);
+  public double kFF = 0.00018;
+
 
   /** Creates a new SwerveModule. */
   public SwerveModule(WheelPosition wheelPosition, int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed,
@@ -83,6 +87,10 @@ public class SwerveModule implements Sendable{
 
     turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
     turningPidController.enableContinuousInput(-Math.PI, Math.PI);
+
+    velocityPidController = driveMotor.getPIDController();
+    velocityPidController.setP(kP);
+    velocityPidController.setFF(kFF);   
 
     resetDriveEncoders();
     resetTurningEncoderWithAbsolute();
@@ -169,9 +177,14 @@ public class SwerveModule implements Sendable{
 
     state = SwerveModuleState.optimize(state, getState().angle);
 
-    double driveMotorPower = state.speedMetersPerSecond /DriveConstants.kPhysicalMaxSpeedMetersPerSecond;
-    
-    driveMotor.set(driveMotorPower);
+    //double driveMotorPower = state.speedMetersPerSecond /DriveConstants.kPhysicalMaxSpeedMetersPerSecond;
+    double driveMotorPower = (state.speedMetersPerSecond/DriveConstants.kPhysicalMaxSpeedMetersPerSecond)*5200;
+
+    driveMotorPower = Math.min(5200.0, Math.abs(driveMotorPower)) * Math.signum(driveMotorPower);
+
+    //driveMotor.set(driveMotorPower);
+
+    velocityPidController.setReference(driveMotorPower, CANSparkMax.ControlType.kVelocity);
 
     turningMotor.set(turningPidController.calculate(turningEncoder.getPosition(), state.angle.getRadians()));
 
