@@ -46,8 +46,8 @@ public class SwerveModule implements Sendable{
 
   public final WheelPosition wheelPosition;
   
-  public double kP = (6e-4);
-  public double kFF = 0.00018;
+  public double kP = 0.45;
+  public double kFF = 0.225;
 
 
   /** Creates a new SwerveModule. */
@@ -178,13 +178,13 @@ public class SwerveModule implements Sendable{
     state = SwerveModuleState.optimize(state, getState().angle);
 
     //double driveMotorPower = state.speedMetersPerSecond /DriveConstants.kPhysicalMaxSpeedMetersPerSecond;
-    double driveMotorPower = (state.speedMetersPerSecond/DriveConstants.kPhysicalMaxSpeedMetersPerSecond)*5200;
+    // double driveMotorPower = (state.speedMetersPerSecond/DriveConstants.kPhysicalMaxSpeedMetersPerSecond)*5200;
 
-    driveMotorPower = Math.min(5200.0, Math.abs(driveMotorPower)) * Math.signum(driveMotorPower);
+    // driveMotorPower = Math.min(5200.0, Math.abs(driveMotorPower)) * Math.signum(driveMotorPower);
 
     //driveMotor.set(driveMotorPower);
 
-    velocityPidController.setReference(driveMotorPower, CANSparkMax.ControlType.kVelocity);
+    velocityPidController.setReference(state.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
 
     turningMotor.set(turningPidController.calculate(turningEncoder.getPosition(), state.angle.getRadians()));
 
