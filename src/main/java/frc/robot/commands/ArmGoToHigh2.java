@@ -35,6 +35,7 @@ public class ArmGoToHigh2 extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     //arm.restoreMaxSpeed();
+    System.out.println("ArmGoToHigh2 End");
   }
 
   // Returns true when the command should end.
